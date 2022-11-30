@@ -2,6 +2,7 @@
 using EduTrack.Application.Authentication.Common;
 using EduTrack.Application.Authentication.Queries.Login;
 using EduTrack.Contracts.Authentication;
+using EduTrack.WebUI.Shared.Authentication;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -34,14 +35,14 @@ namespace EduTrack.WebUI.Server.Controllers
         /// <param name="request"></param>
         /// <returns>request</returns>
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public async Task<IActionResult> Register(UserRegisterDto request)
         {
             var command = _mapper.Map<RegisterCommand>(request);
 
             var authResult = await _mediator.Send(command);
 
             return authResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
+                authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
                 errors => Problem(errors));
         }
 
@@ -51,7 +52,7 @@ namespace EduTrack.WebUI.Server.Controllers
         /// <param name="request"></param>
         /// <returns>AuthenticationResponse Object</returns>
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login(UserLoginDto request)
         {
             var query = _mapper.Map<LoginQuery>(request);
 
@@ -65,7 +66,7 @@ namespace EduTrack.WebUI.Server.Controllers
             }
 
             return authResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
+                authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
                 errors => Problem(errors));
         }
     }

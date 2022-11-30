@@ -1,5 +1,7 @@
 ﻿@page "/counter"
 
+@attribute [Authorize(Roles = "student")]
+
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
@@ -7,6 +9,21 @@
 <p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<hr /> 
+
+<AuthorizeView>
+    <NotAuthorized>
+        Authentication: <strong>No</strong>
+    </NotAuthorized>
+    <Authorized>
+        Authentication: <strong>Yes</strong><br />
+        @foreach (var claim in context.User.Claims)
+        {
+            <li><b>@claim.Type</b>: @claim.Value</li>
+        }
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private int currentCount = 0;

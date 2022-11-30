@@ -1,4 +1,5 @@
 ﻿using EduTrack.Contracts.Authentication;
+using EduTrack.WebUI.Shared.Authentication;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -9,7 +10,7 @@ namespace EduTrack.WebUI.Server.Swagger
     {
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)
         {
-            if(context.Type == typeof(LoginRequest))
+            if(context.Type == typeof(UserLoginDto))
             {
                 schema.Example = new OpenApiObject()
                 {
@@ -18,7 +19,7 @@ namespace EduTrack.WebUI.Server.Swagger
                 };
             }
 
-            if (context.Type == typeof(RegisterRequest))
+            if (context.Type == typeof(UserRegisterDto))
             {
                 schema.Example = new OpenApiObject()
                 {

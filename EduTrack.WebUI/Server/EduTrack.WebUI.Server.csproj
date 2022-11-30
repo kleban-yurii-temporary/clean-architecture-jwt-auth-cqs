@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\EduTrack.Application\EduTrack.Application.csproj" />
-    <ProjectReference Include="..\..\EduTrack.Contracts\EduTrack.Contracts.csproj" />
     <ProjectReference Include="..\..\EduTrack.Infrastracture\EduTrack.Infrastracture.csproj" />
     <ProjectReference Include="..\Client\EduTrack.WebUI.Client.csproj" />
     <ProjectReference Include="..\Shared\EduTrack.WebUI.Shared.csproj" />

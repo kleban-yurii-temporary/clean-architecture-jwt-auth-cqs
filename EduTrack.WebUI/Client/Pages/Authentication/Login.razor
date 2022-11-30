@@ -1,0 +1,33 @@
+﻿@using EduTrack.WebUI.Shared.Authentication;
+
+@inject HttpAuthenticationService AuthenticationService
+@inject AuthenticationStateProvider AuthentificationStateProvider
+@inject ILocalStorageService LocalStorage
+
+
+<h3>Login</h3>
+
+<EditForm Model="@model" OnValidSubmit="ExecuteLogin">
+    <FluentValidationValidator />
+    <ValidationSummary />
+
+    <InputText placeholder="First name" @bind-Value="model.Email" />
+    <InputText placeholder="Last name" @bind-Value="model.Password" />
+    <ValidationMessage For="@(() => model.Email)" />
+    <ValidationMessage For="@(() => model.Password)" />
+
+    <p><button type="submit">Submit</button></p>
+</EditForm>
+
+
+@code {
+
+    private UserLoginDto model = new();
+
+    private async Task ExecuteLogin()
+    {
+        Console.WriteLine("Form Submitted Successfully!");
+    }
+
+
+}
