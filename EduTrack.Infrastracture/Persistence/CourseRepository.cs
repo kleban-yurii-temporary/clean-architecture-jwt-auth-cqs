@@ -12,15 +12,31 @@ namespace EduTrack.Infrastracture.Persistence
     {
         private readonly List<Course> _courses = new();
 
-        public CourseRepository() {
-        
-            _courses.Add(new Course { Id= Guid.NewGuid(),
-            Desription = "Lorem ipsum description",
-            EduYear = "2022/2023",
-            Name = "Основи програмування"});
+        public CourseRepository()
+        {
+            _courses.AddRange(
+                new List<Course> {
+                    new Course {
+                        Id = Guid.NewGuid(),
+                        Desription = "Lorem ipsum description",
+                        EduYear = "2022/2023",
+                        Title = "Основи програмування"
+                    },
+                    new Course {
+                        Id = Guid.NewGuid(),
+                        Desription = "Lorem ipsum description",
+                        EduYear = "2022/2023",
+                        Title = "Modern database systems: SQL + NoSQL"
+                    }
+                });
         }
 
         public async Task<Guid> AddAsync(Course course)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Course> GetAsync(Guid id)
         {
             throw new NotImplementedException();
         }

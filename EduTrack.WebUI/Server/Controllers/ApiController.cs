@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -7,6 +8,7 @@ namespace EduTrack.WebUI.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[AllowAnonymous]
     public class ApiController : ControllerBase
     {
         protected IActionResult Problem(List<Error> errors)

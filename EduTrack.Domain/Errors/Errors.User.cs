@@ -15,6 +15,14 @@ namespace EduTrack.Domain.Errors
             public static Error NotFound
                = Error.Conflict("User.NotFound",
                    description: Lang_Errors.User_NotFound);
+
+            public static Error RoleNotFound
+               = Error.Conflict("User.Role.NotFound",
+                   description: Lang_Errors.UserRole_NotFound);
+
+            public static Error NotApproved
+               = Error.Conflict("User.NotApproved",
+                   description: Lang_Errors.User_NotApproved);
         }
     }
 }

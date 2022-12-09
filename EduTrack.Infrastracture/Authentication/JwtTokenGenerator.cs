@@ -14,11 +14,17 @@ namespace EduTrack.Infrastracture.Authentication
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
-        private readonly JwtSettings _jwtSettings;
+        public JwtSettings _jwtSettings;
+
+       
+
         public JwtTokenGenerator(IOptions<JwtSettings> jwtOptions)
         {
             _jwtSettings = jwtOptions.Value;
         }
+
+        public int TokenExpiriesMinutes => _jwtSettings.ExpiryMinutes;
+
         public string GenerateToken(User user)
         {
             var signinngCredentials = new SigningCredentials(

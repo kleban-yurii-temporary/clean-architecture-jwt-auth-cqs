@@ -54,10 +54,10 @@ namespace EduTrack.WebUI.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto request)
         {
-            var query = _mapper.Map<LoginQuery>(request);
+            var query = _mapper.Map<UserQuery>(request);
 
             var authResult = await _mediator.Send(query);
-
+           
             if (authResult.IsError && authResult.FirstError == DomainErrors.Errors.Authentication.InvalidPassword)
             {
                 return Problem(
@@ -69,5 +69,7 @@ namespace EduTrack.WebUI.Server.Controllers
                 authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
                 errors => Problem(errors));
         }
+
+
     }
 }

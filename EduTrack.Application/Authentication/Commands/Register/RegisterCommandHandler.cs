@@ -4,6 +4,7 @@ using EduTrack.Application.Common.Interfaces.Persistence;
 using EduTrack.Domain.Entities;
 using ErrorOr;
 using MediatR;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,15 @@ namespace EduTrack.Application.Authentication.Commands.Register
     {
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordGenerator _passwordGenerator;
 
         public RegisterCommandHandler(
             IJwtTokenGenerator jwtTokenGenerator,
+            IPasswordGenerator passwordGenerator,
             IUserRepository userRepository)
         {
             _jwtTokenGenerator = jwtTokenGenerator;
+            _passwordGenerator= passwordGenerator;
             _userRepository = userRepository;
         }
 
@@ -38,14 +42,17 @@ namespace EduTrack.Application.Authentication.Commands.Register
                 return DomainErrors.Errors.Authentication.DuplicateEmail;
             }
 
+            var (hash, salt) = _passwordGenerator.CreatePasswordHash(command.Password);
+
             user = new User
             {
                 Email = command.Email,
                 FirstName = command.FirstName,
                 LastName = command.LastName,
-                PasswordHash = command.Password
+                PasswordHash = hash,
+                PasswordSalt = salt
             };
-
+                        
             await _userRepository.AddAsync(user);
 
             var token = _jwtTokenGenerator.GenerateToken(user);

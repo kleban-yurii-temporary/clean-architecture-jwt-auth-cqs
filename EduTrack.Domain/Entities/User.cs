@@ -13,7 +13,8 @@ namespace EduTrack.Domain.Entities
         public string? Email { get; set; } = string.Empty;
         public string? FirstName { get; set; } = string.Empty;
         public string? LastName { get; set; } = string.Empty;
-        public string? PasswordHash { get; set; } = string.Empty;
+        public string PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
         public virtual ICollection<Course>? TeacherCourses { get; set; }
         public virtual ICollection<Group>? StudentGroups { get; set; }
         public string? Role { get; set; } = "student";

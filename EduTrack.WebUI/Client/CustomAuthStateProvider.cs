@@ -1,19 +1,37 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace EduTrack.WebUI.Client
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
+        private readonly ILocalStorageService _localStorage;
+        private readonly HttpClient _httpClient;
+        public CustomAuthStateProvider(
+            ILocalStorageService localStorage,
+            HttpClient httpClient)
+        {
+            _localStorage = localStorage;
+            _httpClient = httpClient;
+        }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MWQxMTJkYi1lZWY5LTQ4OTUtYjE0My1jZGM3ODVkNWE0NDEiLCJnaXZlbl9uYW1lIjoiWXVyaWkiLCJmYW1pbHlfbmFtZSI6IktsZWJhbiIsImp0aSI6ImFmMDU1ODFmLTFlNmYtNGZjZi05OTFhLTFiNmI3YWI4OGQ1NyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InN0dWRlbnQiLCJleHAiOjE2Njk3OTg5NjQsImlzcyI6IkVkdVRyYWNrQXBwIiwiYXVkIjoiRWR1VHJhY2tBcHAifQ.J0c0ZY1sR0XH4HTmrvfXwnLwdtRiOGUDfU7W1gNpwk0";
+            string token = await _localStorage.GetItemAsync<string>("token");
 
-            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+            var identity = new ClaimsIdentity();
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token.Replace("\"", ""));
+            }
 
             var user = new ClaimsPrincipal(identity);
-
             var state = new AuthenticationState(user);
 
             NotifyAuthenticationStateChanged(Task.FromResult(state));

@@ -12,6 +12,8 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 builder.Services
     .AddPresentation()
     .AddApplication()
@@ -98,7 +100,8 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseAuthentication();
+app.UseAuthorization();
 //app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");

@@ -12,6 +12,7 @@ namespace EduTrack.Infrastracture.Persistence
     public class UserRepository : IUserRepository
     {
         private readonly List<User> _users = new();
+
         public async Task AddAsync(User user)
         {
             _users.Add(user);
@@ -26,6 +27,28 @@ namespace EduTrack.Infrastracture.Persistence
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
             return _users;
+        }
+
+        public async Task<User>? GetUserAsync(Guid id)
+        {
+            return _users.First(x=> x.Id == id);
+        }
+
+        public async Task<bool> AddUserToRoleAsync(Guid id, string role)
+        {
+            role = StringHelper.ApplyTL(role);
+
+            var user = _users.First(x => x.Id == id);
+            user.Role = role;
+
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> UpdateUserApproveStatusAsync(Guid id, bool status)
+        {
+            var user = _users.First(x => x.Id == id);
+            user.IsApproved = status;
+            return user.IsApproved;
         }
     }
 }

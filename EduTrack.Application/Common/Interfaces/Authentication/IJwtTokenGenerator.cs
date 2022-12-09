@@ -10,5 +10,6 @@ namespace EduTrack.Application.Common.Interfaces.Authentication
     public interface IJwtTokenGenerator
     {
         string GenerateToken(User user);
+        int TokenExpiriesMinutes { get; }
     }
 }

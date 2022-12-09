@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Contracts.Authentication
+namespace EduTrack.WebUI.Shared.Authentication
 {
     public record AuthenticationResponseDto (
         Guid Id,

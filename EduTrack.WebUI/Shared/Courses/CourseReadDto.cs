@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Contracts.Courses
+namespace EduTrack.WebUI.Shared.Courses
 {
     public record CourseReadDto(
         Guid Id,
-        string Name,
+        string Title,
         string Desription,
-        bool IsActive);    
+        string EduYear,
+        bool IsActive);
 }

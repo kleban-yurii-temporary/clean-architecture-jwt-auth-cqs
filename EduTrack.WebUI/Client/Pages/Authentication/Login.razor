@@ -1,33 +1,92 @@
-﻿@using EduTrack.WebUI.Shared.Authentication;
+﻿@page "/login"
+
+@layout CleanLayout
+
+@using EduTrack.WebUI.Shared.Authentication;
+@using System.Text.Json;
 
 @inject HttpAuthenticationService AuthenticationService
 @inject AuthenticationStateProvider AuthentificationStateProvider
 @inject ILocalStorageService LocalStorage
+@inject NavigationManager Navigation
 
+<h4 class="text-center"><span class="text-danger">Edu</span> Track App <small style="font-size:12px" class="text-muted">v0.1</small></h4>
+<SfCard>
+    <CardContent>
+        <h5 class="text-center" style="margin: 7px 35px 0">Вхід у систему</h5>
+        <hr />
+        <EditForm Model="@model" OnValidSubmit="@HandleLogin">
+            <DataAnnotationsValidator />
+            @* <ValidationSummary /> *@
 
-<h3>Login</h3>
+            <div style="padding: 5px 10px 5px">
+                <div class="row">
+                    <div class="col-md-12">
+                        <SfTextBox @bind-Value="model.Email" @ref="TextBoxEmail" Type="Syncfusion.Blazor.Inputs.InputType.Email" Placeholder="Email" FloatLabelType="@FloatLabelType.Auto" Created="@AddEmailIcon"></SfTextBox>
+                        <ValidationMessage For="@(() => model.Email)" class="badge bg-danger" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <SfTextBox @bind-Value="model.Password" @ref="TextBoxPassword" Type="Syncfusion.Blazor.Inputs.InputType.Password" Placeholder="Пароль" FloatLabelType="@FloatLabelType.Auto" Created="@AddPasswordIcon"></SfTextBox>
+                        <ValidationMessage For="@(() => model.Password)" class="badge bg-danger" />
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px">
+                    <div class="col-md-12 text-center">
+                        <SfButton CssClass="e-success" OnClick="@HandleLogin">Увійти</SfButton>
+                    </div>
+                </div>
 
-<EditForm Model="@model" OnValidSubmit="ExecuteLogin">
-    <FluentValidationValidator />
-    <ValidationSummary />
+                <div class="text-center text-danger" style="margin: 7px 10px; font-size: 12px">@ServerError</div>
+            </div>
 
-    <InputText placeholder="First name" @bind-Value="model.Email" />
-    <InputText placeholder="Last name" @bind-Value="model.Password" />
-    <ValidationMessage For="@(() => model.Email)" />
-    <ValidationMessage For="@(() => model.Password)" />
-
-    <p><button type="submit">Submit</button></p>
-</EditForm>
+        </EditForm>
+    </CardContent>
+</SfCard>
+<div class="text-center text-muted" style="margin-top: 10px; font-size: 12px;">&copy; @DateTime.Now.Year Юрій Клебан</div>
 
 
 @code {
 
     private UserLoginDto model = new();
 
-    private async Task ExecuteLogin()
+    string ServerError = " ";
+
+    protected override void OnParametersSet()
     {
-        Console.WriteLine("Form Submitted Successfully!");
+        model.Email = "demo@email.com";
+        model.Password = "demoPA$$W0RD";
     }
 
+    private async Task HandleLogin()
+    {
+        var response = await AuthenticationService.LoginAsync(model);
 
+        if (response.IsError)
+        {
+            ServerError = response.Title;
+        }
+        else
+        {
+            await LocalStorage.SetItemAsync<string>("token", response.Value.Token);
+            await AuthentificationStateProvider.GetAuthenticationStateAsync();
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    SfTextBox TextBoxEmail;
+    SfTextBox TextBoxPassword;
+
+    public void AddEmailIcon()
+    {
+        this.TextBoxEmail.AddIconAsync("append", "e-icons e-chevron-down");
+
+    }
+
+    public void AddPasswordIcon()
+    {
+        this.TextBoxPassword.AddIconAsync("append", "e-icons e-chevron-down");
+        this.TextBoxPassword.Type = Syncfusion.Blazor.Inputs.InputType.Text;
+    }
 }

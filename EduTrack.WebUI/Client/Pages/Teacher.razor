@@ -1,0 +1,37 @@
+﻿@page "/dashboard/teacher"
+
+@using EduTrack.WebUI.Shared.Courses;
+
+@inject NavigationManager Navigation
+@inject HttpCoursesService CoursesService
+
+@attribute [Authorize(Roles = "teacher")]
+
+<h3>Список Ваших курсів:</h3>
+
+<hr />
+
+@if(Courses is null)
+{
+    <SfSpinner Type="SpinnerType.Material" Label="Pfdfynf;tyyz"></SfSpinner>
+} 
+else if(!Courses.Any())
+{
+    <SfMessage Severity="MessageSeverity.Info">Курси відсутні</SfMessage>
+} else
+{
+    <Syncfusion.Blazor.Grids.SfGrid DataSource="@Courses">
+
+    </Syncfusion.Blazor.Grids.SfGrid>
+}
+
+@code {
+
+    private IEnumerable<CourseReadDto> Courses = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = await CoursesService.GetListAsync();
+    }
+
+}

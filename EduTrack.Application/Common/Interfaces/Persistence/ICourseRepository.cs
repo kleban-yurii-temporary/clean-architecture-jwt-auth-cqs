@@ -10,6 +10,7 @@ namespace EduTrack.Application.Common.Interfaces.Persistence
     public interface ICourseRepository
     {
         Task<IEnumerable<Course>> GetListAsync();
+        Task<Course> GetAsync(Guid id);
         Task<Guid> AddAsync(Course course);
     }
 }

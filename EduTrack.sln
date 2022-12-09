@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EduTrack.Infrastracture", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EduTrack.Localization", "EduTrack.Localization\EduTrack.Localization.csproj", "{0822C9AB-B577-4805-8DCD-A01E757B9D54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduTrack.WebUI.Client.HttpServices", "EduTrack.Client.HttpServices\EduTrack.WebUI.Client.HttpServices.csproj", "{5438B7D1-DEF3-465E-80F9-9AF682FE5ECE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EduTrack.WebUI.Client.HttpServices", "EduTrack.Client.HttpServices\EduTrack.WebUI.Client.HttpServices.csproj", "{5438B7D1-DEF3-465E-80F9-9AF682FE5ECE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,20 +12,23 @@ using System.Threading.Tasks;
 namespace EduTrack.Application.Authentication.Queries.Login
 {
     public class LoginQueryHandler
-         : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
+         : IRequestHandler<UserQuery, ErrorOr<AuthenticationResult>>
     {
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IPasswordGenerator _passwordGenerator;
         private readonly IUserRepository _userRepository;
 
         public LoginQueryHandler(
             IJwtTokenGenerator jwtTokenGenerator,
+            IPasswordGenerator passwordGenerator,
             IUserRepository userRepository)
         {
             _jwtTokenGenerator = jwtTokenGenerator;
+            _passwordGenerator = passwordGenerator;
             _userRepository = userRepository;
         }
 
-        public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
+        public async Task<ErrorOr<AuthenticationResult>> Handle(UserQuery query, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
@@ -36,12 +39,19 @@ namespace EduTrack.Application.Authentication.Queries.Login
                 return Domain.Errors.Errors.User.NotFound;
             }
 
-            if (user.PasswordHash != query.Password)
+            if(!user.IsApproved)
+            {
+                return Domain.Errors.Errors.User.NotApproved;
+            }
+
+            if (!_passwordGenerator.VerifyPasswordHash(query.Password, user.PasswordHash, user.PasswordSalt))
             {
                 return Domain.Errors.Errors.Authentication.InvalidPassword;
             }
 
-            var token = _jwtTokenGenerator.GenerateToken(user);
+            var token = _jwtTokenGenerator.GenerateToken(user); 
+            
+           _jwtTokenGenerator.GenerateToken(user);
 
             return new AuthenticationResult(user, token);
         }

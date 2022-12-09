@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Contracts.Courses
+namespace EduTrack.WebUI.Shared.Courses
 {
-    public record CourseCreateDto(string Name);
+    public record CourseCreateDto(string Title);
 }

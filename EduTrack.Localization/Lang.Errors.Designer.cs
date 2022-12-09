@@ -61,7 +61,7 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User with current email already exists..
+        ///   Looks up a localized string similar to Користувач з такою Email уже зареєстровано у системі.
         /// </summary>
         public static string Authentication_DuplicateEmail {
             get {
@@ -70,7 +70,7 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid user password.
+        ///   Looks up a localized string similar to Некоректний пароль користувача.
         /// </summary>
         public static string Authentication_InvalidPassword {
             get {
@@ -79,11 +79,29 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User not found.
+        ///   Looks up a localized string similar to Обліковий запис користувача не активовано, завершіть реєстрацію.
+        /// </summary>
+        public static string User_NotApproved {
+            get {
+                return ResourceManager.GetString("User.NotApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Користувач з такими обліковими даними відсутній.
         /// </summary>
         public static string User_NotFound {
             get {
                 return ResourceManager.GetString("User.NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Роль не знайдено у системі.
+        /// </summary>
+        public static string UserRole_NotFound {
+            get {
+                return ResourceManager.GetString("UserRole.NotFound", resourceCulture);
             }
         }
     }
