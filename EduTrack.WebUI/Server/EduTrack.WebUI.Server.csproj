@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
      <GenerateDocumentationFile>true</GenerateDocumentationFile>
      <UserSecretsId>9dc7cf9f-c2da-443a-8c2a-4605385d732f</UserSecretsId>
+     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
