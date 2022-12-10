@@ -14,8 +14,15 @@ namespace EduTrack.Infrastracture.Persistence
         private readonly List<User> _users = new();
 
         public async Task AddAsync(User user)
-        {
+        {            
             _users.Add(user);
+
+            if (_users.Count() == 1)
+            {
+                await AddUserToRoleAsync(user.Id, "teacher");
+                await UpdateUserApproveStatusAsync(user.Id, true);
+            }
+            
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

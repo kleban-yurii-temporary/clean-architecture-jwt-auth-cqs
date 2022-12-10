@@ -20,7 +20,8 @@ namespace EduTrack.Infrastracture.Persistence
                         Id = Guid.NewGuid(),
                         Desription = "Lorem ipsum description",
                         EduYear = "2022/2023",
-                        Title = "Основи програмування"
+                        Title = "Основи програмування",
+                        IsActive = true
                     },
                     new Course {
                         Id = Guid.NewGuid(),

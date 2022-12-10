@@ -11,6 +11,7 @@ namespace EduTrack.Domain.Entities
     {
         public string? EduYear { get; set; }
         public string? Desription { get; set; }
+        public bool IsActive { get; set; }
         public Group? Group { get; set; }
         public User? Teacher { get; set; }
     }

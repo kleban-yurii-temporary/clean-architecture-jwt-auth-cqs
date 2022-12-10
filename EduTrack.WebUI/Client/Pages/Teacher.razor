@@ -1,6 +1,7 @@
 ﻿@page "/dashboard/teacher"
 
 @using EduTrack.WebUI.Shared.Courses;
+@using Syncfusion.Blazor.Grids
 
 @inject NavigationManager Navigation
 @inject HttpCoursesService CoursesService
@@ -11,17 +12,40 @@
 
 <hr />
 
-@if(Courses is null)
+@if (Courses is null)
 {
-    <SfSpinner Type="SpinnerType.Material" Label="Pfdfynf;tyyz"></SfSpinner>
-} 
-else if(!Courses.Any())
+    <SfSpinner Type="SpinnerType.Material" Label="Завантаження"></SfSpinner>
+}
+else if (!Courses.Any())
 {
     <SfMessage Severity="MessageSeverity.Info">Курси відсутні</SfMessage>
-} else
+}
+else
 {
-    <Syncfusion.Blazor.Grids.SfGrid DataSource="@Courses">
-    </Syncfusion.Blazor.Grids.SfGrid>
+    <SfGrid DataSource="@Courses">
+        <GridPageSettings PageSize="40"></GridPageSettings>
+        <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+        <GridEvents CommandClicked="OnCommandClicked" TValue="CourseReadDto"></GridEvents>
+        <GridColumns>
+            <GridColumn Field=@nameof(CourseReadDto.Id) Visible="false" IsPrimaryKey="true"></GridColumn>
+            <GridColumn Field=@nameof(CourseReadDto.Title) HeaderText="Назва"></GridColumn>
+            <GridColumn Field=@nameof(CourseReadDto.Desription) HeaderText="Опис"></GridColumn>
+            <GridColumn Field=@nameof(CourseReadDto.EduYear) HeaderText="Навч. рік"></GridColumn>
+            <GridColumn HeaderText="Статус">
+                <Template>
+                    @{
+                        var c = (context as CourseReadDto);
+                        <SfCheckBox Checked="@c.IsActive" Disabled="true" />                      
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn HeaderText="Деталі" TextAlign="TextAlign.Center" Width="150">
+                <GridCommandColumns>
+                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { IconCss ="e-icons e-eye" })" Title="View"></GridCommandColumn>
+                </GridCommandColumns>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
 }
 
 @code {
@@ -33,4 +57,8 @@ else if(!Courses.Any())
         Courses = await CoursesService.GetListAsync();
     }
 
+    public void OnCommandClicked(CommandClickEventArgs<CourseReadDto> args)
+    {
+        Navigation.NavigateTo($"/courses/{args.RowData.Id}");
+    }
 }

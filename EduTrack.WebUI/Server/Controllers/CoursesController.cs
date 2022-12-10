@@ -12,6 +12,7 @@ namespace EduTrack.WebUI.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CoursesController : ApiController
     {
         private readonly IMediator _mediator;
@@ -25,8 +26,7 @@ namespace EduTrack.WebUI.Server.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        [Authorize]
+        [HttpGet]        
         public async Task<IActionResult> GetListAsync()
         {
             var result = await _mediator.Send(new GetCoursesQuery());
@@ -37,9 +37,10 @@ namespace EduTrack.WebUI.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "teacher")]
         public async Task<IActionResult> CreateAsync()
         {
-            return Ok(Array.Empty<Course>());
+            return Ok("Yeah!");
         }
     }
 }
