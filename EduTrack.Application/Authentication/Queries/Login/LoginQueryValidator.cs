@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Authentication.Queries.Login
 {
-    public class LoginQueryValidator : AbstractValidator<UserQuery>
+    public class LoginQueryValidator : AbstractValidator<LoginQuery>
     {
         public LoginQueryValidator()
         {

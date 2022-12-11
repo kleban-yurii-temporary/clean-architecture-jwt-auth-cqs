@@ -1,8 +1,10 @@
 ﻿using EduTrack.Application.Authentication.Commands.Register;
 using EduTrack.Application.Authentication.Common;
 using EduTrack.Application.Authentication.Queries.Login;
+using EduTrack.Application.Users.Queries.GetUser;
 using EduTrack.Contracts.Authentication;
 using EduTrack.WebUI.Shared.Authentication;
+using EduTrack.WebUI.Shared.Users;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -27,6 +29,23 @@ namespace EduTrack.WebUI.Server.Controllers
         {
             _mediator = mediator;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAuthDataAsync()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Problem(
+                  statusCode: StatusCodes.Status401Unauthorized,
+                  title: "Користувач не авторизований");
+            }
+
+            var result = await _mediator.Send(new GetUserByIdQuery(Guid.Parse(User.Claims.First().Value)));
+
+            return result.Match(
+                result => Ok(_mapper.Map<UserReadDto>(result)),
+                errors => Problem(errors));
         }
 
         /// <summary>
@@ -54,7 +73,7 @@ namespace EduTrack.WebUI.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto request)
         {
-            var query = _mapper.Map<UserQuery>(request);
+            var query = _mapper.Map<LoginQuery>(request);
 
             var authResult = await _mediator.Send(query);
            
@@ -69,7 +88,5 @@ namespace EduTrack.WebUI.Server.Controllers
                 authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
                 errors => Problem(errors));
         }
-
-
     }
 }

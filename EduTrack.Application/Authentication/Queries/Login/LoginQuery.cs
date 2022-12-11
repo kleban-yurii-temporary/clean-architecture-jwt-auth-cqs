@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Authentication.Queries.Login
 {
-    public record UserQuery(
+    public record LoginQuery(
         string Email,
         string Password) : IRequest<ErrorOr<AuthenticationResult>>;
 

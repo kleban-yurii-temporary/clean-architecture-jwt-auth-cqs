@@ -25,7 +25,7 @@ namespace EduTrack.Infrastracture
             services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
 
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
+            services.AddSingleton<IPasswordHashGenerator, PasswordHashGenerator>();
 
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters

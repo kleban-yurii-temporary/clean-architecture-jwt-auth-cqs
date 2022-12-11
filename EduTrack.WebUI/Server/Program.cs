@@ -86,7 +86,7 @@ else
     app.UseHsts();
 }
 
-app.UseExceptionHandler("/api/error");
+//app.UseExceptionHandler("/api/error");
 
 /*app.Map("/api/error", (HttpContext httpContext) =>
 {

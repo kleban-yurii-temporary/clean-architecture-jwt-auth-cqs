@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 namespace EduTrack.Application.Authentication.Queries.Login
 {
     public class LoginQueryHandler
-         : IRequestHandler<UserQuery, ErrorOr<AuthenticationResult>>
+         : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
     {
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
-        private readonly IPasswordGenerator _passwordGenerator;
+        private readonly IPasswordHashGenerator _passwordGenerator;
         private readonly IUserRepository _userRepository;
 
         public LoginQueryHandler(
             IJwtTokenGenerator jwtTokenGenerator,
-            IPasswordGenerator passwordGenerator,
+            IPasswordHashGenerator passwordGenerator,
             IUserRepository userRepository)
         {
             _jwtTokenGenerator = jwtTokenGenerator;
@@ -28,7 +28,7 @@ namespace EduTrack.Application.Authentication.Queries.Login
             _userRepository = userRepository;
         }
 
-        public async Task<ErrorOr<AuthenticationResult>> Handle(UserQuery query, CancellationToken cancellationToken)
+        public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 

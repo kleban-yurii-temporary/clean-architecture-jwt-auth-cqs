@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Infrastracture.Authentication
 {
-    public class PasswordGenerator : IPasswordGenerator
+    public class PasswordHashGenerator : IPasswordHashGenerator
     {
         public (string, byte[]) CreatePasswordHash(string password)
         {
-            var passwordSalt = RandomNumberGenerator.GetBytes(128 / 8); ;
+            var passwordSalt = RandomNumberGenerator.GetBytes(128 / 8); 
+
             var passwordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                             password: password!,
                             salt: passwordSalt,

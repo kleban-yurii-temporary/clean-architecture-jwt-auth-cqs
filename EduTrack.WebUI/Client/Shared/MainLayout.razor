@@ -1,4 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using EduTrack.WebUI.Client.Pages.Authentication
+@inherits LayoutComponentBase
+
+@inject NavigationManager Navigation
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize]
 
 <div class="page">
     <div class="sidebar">
@@ -25,10 +31,22 @@
 </div>
 
 @code {
-    private ErrorBoundary errorBoundary;
-    /*
-    protected override void OnParametersSet()
+
+    protected async override Task OnInitializedAsync()
     {
-        errorBoundary.Recover();
-    }*/
+        Console.WriteLine("I am here!");
+        Console.WriteLine("Check if user exists!");
+        //var user = AuthStateProvider.;
+        /*
+        if (!user.Identity.IsAuthenticated)
+        {
+            Console.WriteLine("401");
+            Navigation.NavigateTo("/login");
+        }
+          await LocalStorage.RemoveItemAsync("token");
+        await AuthStateProvider.GetAuthenticationStateAsync();
+        Navigation.NavigateTo("/login");
+
+        */
+    }
 }

@@ -1,0 +1,27 @@
+[]	Project structure: Clean Architecture
+	https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure
+	https://www.youtube.com/watch?v=tLk4pZZtiDY
+	https://jasontaylor.dev/clean-architecture-solution-template-for-blazor-webassembly/
+
+	Domain: Entities, Entity Errors, Repositories
+
+[]	Syncfusion Blazor 
+	https://blazor.syncfusion.com/demos/datagrid/overview
+
+[]	JSON Web Tokens
+
+	https://www.rfc-editor.org/rfc/rfc7519
+	https://jwt.io/introduction
+	Server side + https://jwt.io/ check
+
+	Client side
+
+[]	Command Query Responsibility Segregation (CQRS)
+	https://www.apriorit.com/dev-blog/783-web-clean-architecture-and-cqrs-in-net-core-apps
+
+[]	ErrorOr<> package
+	https://github.com/amantinband/error-or
+
+[]	Errors Handling with ProblemDetails
+
+[]	ProblemOr<> class for Client

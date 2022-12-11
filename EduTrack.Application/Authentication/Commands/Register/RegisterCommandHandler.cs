@@ -19,11 +19,11 @@ namespace EduTrack.Application.Authentication.Commands.Register
     {
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordGenerator _passwordGenerator;
+        private readonly IPasswordHashGenerator _passwordGenerator;
 
         public RegisterCommandHandler(
             IJwtTokenGenerator jwtTokenGenerator,
-            IPasswordGenerator passwordGenerator,
+            IPasswordHashGenerator passwordGenerator,
             IUserRepository userRepository)
         {
             _jwtTokenGenerator = jwtTokenGenerator;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Common.Interfaces.Authentication
 {
-    public interface IPasswordGenerator
+    public interface IPasswordHashGenerator
     {
         (string, byte[])  CreatePasswordHash(string password);
 

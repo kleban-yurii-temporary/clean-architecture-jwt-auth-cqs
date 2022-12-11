@@ -37,23 +37,6 @@ namespace EduTrack.WebUI.Server.Controllers
                 errors => Problem(errors));
         }*/
 
-        [HttpGet("current")]
-        public async Task<IActionResult> GetCurrentAsync()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Problem(
-                  statusCode: StatusCodes.Status401Unauthorized,
-                  title: "Користувач не авторизований");
-            }
-
-            var result = await _mediator.Send(new GetUserByIdQuery(Guid.Parse(User.Claims.First().Value)));
-
-            return result.Match(
-                result => Ok(_mapper.Map<UserReadDto>(result)),
-                errors => Problem(errors));
-        }
-
         [HttpPut("role")]
         public async Task<IActionResult> UpdateRoleAsync(UpdateUserRoleDto userRoleDto)
         {
