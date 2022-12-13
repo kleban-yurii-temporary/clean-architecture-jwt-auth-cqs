@@ -13,6 +13,7 @@ namespace EduTrack.WebUI.Client.HttpServices
         public async Task<ProblemOr<AuthenticationResponseDto>> LoginAsync(UserLoginDto request)
         {
             var response = await _httpClient.PostAsJsonAsync("/api/auth/login", request);
+           
             return response.IsSuccessStatusCode
                 ? new ProblemOr<AuthenticationResponseDto> { Value = await response.Content.ReadFromJsonAsync<AuthenticationResponseDto>() }
                 : await response.Content.ReadFromJsonAsync<ProblemOr<AuthenticationResponseDto>>();

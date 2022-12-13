@@ -11,7 +11,6 @@ namespace EduTrack.WebUI.Shared.Common
     {
         public bool IsError { get { return this.Status != null; } }
         public T Value { get; set; }
-
         public string Type { get; set; }
         public string Title { get; set; }
         public int? Status { get; set; }

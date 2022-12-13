@@ -5,11 +5,10 @@
 
 	Domain: Entities, Entity Errors, Repositories
 
-[]	Syncfusion Blazor 
+[-]	Syncfusion Blazor 
 	https://blazor.syncfusion.com/demos/datagrid/overview
 
 []	JSON Web Tokens
-
 	https://www.rfc-editor.org/rfc/rfc7519
 	https://jwt.io/introduction
 	Server side + https://jwt.io/ check
@@ -25,3 +24,6 @@
 []	Errors Handling with ProblemDetails
 
 []	ProblemOr<> class for Client
+
+[]	Docker
+	

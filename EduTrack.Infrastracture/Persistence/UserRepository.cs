@@ -17,11 +17,11 @@ namespace EduTrack.Infrastracture.Persistence
         {            
             _users.Add(user);
 
-            if (_users.Count() == 1)
+            /*if (_users.Count() == 1)
             {
                 await AddUserToRoleAsync(user.Id, "teacher");
                 await UpdateUserApproveStatusAsync(user.Id, true);
-            }
+            }*/
             
         }
 

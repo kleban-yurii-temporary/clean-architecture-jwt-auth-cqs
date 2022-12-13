@@ -51,7 +51,7 @@ namespace EduTrack.Application.Authentication.Queries.Login
 
             var token = _jwtTokenGenerator.GenerateToken(user); 
             
-           _jwtTokenGenerator.GenerateToken(user);
+            _jwtTokenGenerator.GenerateToken(user);
 
             return new AuthenticationResult(user, token);
         }

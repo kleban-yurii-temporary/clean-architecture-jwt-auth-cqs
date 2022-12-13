@@ -14,9 +14,7 @@ namespace EduTrack.Infrastracture.Authentication
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
-        public JwtSettings _jwtSettings;
-
-       
+        public JwtSettings _jwtSettings;              
 
         public JwtTokenGenerator(IOptions<JwtSettings> jwtOptions)
         {

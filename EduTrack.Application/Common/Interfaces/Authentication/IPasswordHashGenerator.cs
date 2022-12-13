@@ -10,7 +10,7 @@ namespace EduTrack.Application.Common.Interfaces.Authentication
     {
         (string, byte[])  CreatePasswordHash(string password);
 
-       bool VerifyPasswordHash(string password, string passwordHash, byte[] passwordSalt);
+        bool VerifyPasswordHash(string password, string passwordHash, byte[] passwordSalt);
 
         /* (byte[], byte[]) CreatePasswordHash(string password);
 
