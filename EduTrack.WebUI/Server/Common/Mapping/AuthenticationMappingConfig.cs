@@ -9,9 +9,9 @@ namespace EduTrack.WebUI.Server.Common.Mapping
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<AuthenticationResult, AuthenticationResponseDto>()
+            /*config.NewConfig<AuthenticationResult, AuthenticationResponseDto>()
                 .Map(dest => dest.Token, src => src.Token)
-                .Map(dest => dest, src => src.User);
+                .Map(dest => dest, src => src.User);*/
         }
     }
 }

@@ -9,7 +9,7 @@
 @code {
 
     protected override async Task OnInitializedAsync()
-    {        
+    {
         var state = await AuthStateProvider.GetAuthenticationStateAsync();
 
         if(!state.User.Identity.IsAuthenticated)
@@ -19,11 +19,13 @@
 
         if(state.User.IsInRole("teacher"))
         {
+            Console.WriteLine("teacher");
             Navigation.NavigateTo("/dashboard/teacher");
         }
 
         if (state.User.IsInRole("student"))
         {
+            Console.WriteLine("std");
             Navigation.NavigateTo("/dashboard/student");
         }
     }

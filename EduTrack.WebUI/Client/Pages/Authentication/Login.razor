@@ -2,6 +2,7 @@
 
 @layout CleanLayout
 
+@using EduTrack.WebUI.Client.HttpServices.Authentification;
 @using EduTrack.WebUI.Shared.Authentication;
 @using System.Text.Json;
 
@@ -9,6 +10,7 @@
 @inject AuthenticationStateProvider AuthentificationStateProvider
 @inject ILocalStorageService LocalStorage
 @inject NavigationManager Navigation
+@inject TokenManagerService TokenManagerService
 
 <h4 class="text-center"><span class="text-danger">Edu</span> Track App <small style="font-size:12px" class="text-muted">v0.1</small></h4>
 <SfCard>
@@ -69,7 +71,8 @@
         }
         else
         {
-            await LocalStorage.SetItemAsync<string>("token", response.Value.Token);
+            await TokenManagerService.SetTokenAsync(response.Value.Token);
+            await LocalStorage.SetItemAsync<string>("refreshToken", response.Value.RefreshToken);
             await AuthentificationStateProvider.GetAuthenticationStateAsync();
             Navigation.NavigateTo("/");
         }

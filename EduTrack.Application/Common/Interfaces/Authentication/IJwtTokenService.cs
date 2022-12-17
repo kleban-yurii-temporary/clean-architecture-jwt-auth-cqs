@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Common.Interfaces.Authentication
 {
-    public interface IJwtTokenGenerator
+    public interface IJwtTokenService
     {
         string GenerateToken(User user);
+        string GenerateRefreshToken();
         int TokenExpiriesMinutes { get; }
     }
 }

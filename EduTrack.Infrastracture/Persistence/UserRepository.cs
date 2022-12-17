@@ -17,11 +17,11 @@ namespace EduTrack.Infrastracture.Persistence
         {            
             _users.Add(user);
 
-            /*if (_users.Count() == 1)
+            if (_users.Count() == 1)
             {
                 await AddUserToRoleAsync(user.Id, "teacher");
                 await UpdateUserApproveStatusAsync(user.Id, true);
-            }*/
+            }
             
         }
 
@@ -56,6 +56,18 @@ namespace EduTrack.Infrastracture.Persistence
             var user = _users.First(x => x.Id == id);
             user.IsApproved = status;
             return user.IsApproved;
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            var dbUser = _users.Find(x => x.Id == user.Id);
+
+            if (dbUser.RefreshToken != user.RefreshToken)
+            {
+                _users.Find(x => x.Id == user.Id).RefreshToken = user.RefreshToken;
+                _users.Find(x => x.Id == user.Id).RefreshTokenExpiryTime = user.RefreshTokenExpiryTime;
+            }
+
         }
     }
 }

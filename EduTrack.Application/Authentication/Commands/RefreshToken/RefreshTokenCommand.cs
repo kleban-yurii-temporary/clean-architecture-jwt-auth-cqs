@@ -9,6 +9,5 @@ namespace EduTrack.Application.Authentication.Commands.RefreshToken
 {
     public record RefreshTokenCommand(
         string Token,
-        DateTime Created,
-        DateTime Expiries);    
+        DateTime ExpiryDate);    
 }

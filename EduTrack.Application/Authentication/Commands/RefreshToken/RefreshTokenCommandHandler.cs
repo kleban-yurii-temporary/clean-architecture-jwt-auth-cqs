@@ -14,19 +14,18 @@ using DomainErrors = EduTrack.Domain.Errors;
 
 namespace EduTrack.Application.Authentication.Commands.Register
 {
-    public class RegisterCommandHandler 
-        : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+    /*public class RefreshTokenCommandHandler 
+        : IRequestHandler<RefreshTokenCommand, ErrorOr<AuthenticationResult>>
     {
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordHashGenerator _passwordGenerator;
 
         public RegisterCommandHandler(
-            IJwtTokenService jwtTokenService,
+            IJwtTokenGenerator jwtTokenGenerator,
             IPasswordHashGenerator passwordGenerator,
             IUserRepository userRepository)
         {
-            _jwtTokenService = jwtTokenService;
+            _jwtTokenGenerator = jwtTokenGenerator;
             _passwordGenerator= passwordGenerator;
             _userRepository = userRepository;
         }
@@ -55,14 +54,9 @@ namespace EduTrack.Application.Authentication.Commands.Register
                         
             await _userRepository.AddAsync(user);
 
-            var token = _jwtTokenService.GenerateToken(user);
+            var token = _jwtTokenGenerator.GenerateToken(user);
 
-            user.RefreshToken = _jwtTokenService.GenerateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(_jwtTokenService.TokenExpiriesMinutes);
-
-            await _userRepository.UpdateAsync(user);
-
-            return new AuthenticationResult(token, user.RefreshToken);
+            return new AuthenticationResult(user, token);
         }
-    }
+    }*/
 }

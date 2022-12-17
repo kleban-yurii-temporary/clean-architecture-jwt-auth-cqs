@@ -19,5 +19,8 @@ namespace EduTrack.Domain.Entities
         public virtual ICollection<Group>? StudentGroups { get; set; }
         public string? Role { get; set; } = "student";
         public bool IsApproved { get; set; } = false;
+
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }

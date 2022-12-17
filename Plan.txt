@@ -26,4 +26,8 @@
 []	ProblemOr<> class for Client
 
 []	Docker
-	
+	cd E:\Repos\OA_2023\clean-architecture-jwt-auth-cqs\EduTrack.DockerDemo
+	docker build -t kleban/dockerdemo .
+	docker images
+	docker run -p 8080:80 kleban/dockerdemo
+	localhost:8080

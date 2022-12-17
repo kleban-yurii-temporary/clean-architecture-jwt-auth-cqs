@@ -1,9 +1,11 @@
-﻿using EduTrack.Application.Authentication.Commands.Register;
+﻿using EduTrack.Application.Authentication.Commands.RefreshToken;
+using EduTrack.Application.Authentication.Commands.Register;
 using EduTrack.Application.Authentication.Common;
 using EduTrack.Application.Authentication.Queries.Login;
 using EduTrack.Application.Users.Queries.GetUser;
 using EduTrack.Contracts.Authentication;
 using EduTrack.WebUI.Shared.Authentication;
+using EduTrack.WebUI.Shared.Dtos.Authentication;
 using EduTrack.WebUI.Shared.Users;
 using MapsterMapper;
 using MediatR;
@@ -88,5 +90,17 @@ namespace EduTrack.WebUI.Server.Controllers
                 authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
                 errors => Problem(errors));
         }
+
+       /* [HttpPost("token/refresh")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenDto request)          
+        {
+            var command = _mapper.Map<RefreshTokenCommand>(request);
+
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+                result => Ok(_mapper.Map<AuthenticationResponseDto>(result)),
+                errors => Problem(errors));
+        }*/
     }
 }

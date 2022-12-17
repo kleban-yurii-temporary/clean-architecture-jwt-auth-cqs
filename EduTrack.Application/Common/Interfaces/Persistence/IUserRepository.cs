@@ -15,5 +15,6 @@ namespace EduTrack.Application.Common.Interfaces.Persistence
         Task<IEnumerable<User>> GetUsersAsync();
         Task<bool> AddUserToRoleAsync(Guid id, string role);
         Task<bool> UpdateUserApproveStatusAsync(Guid id, bool status);
+        Task UpdateAsync(User user);
     }
 }

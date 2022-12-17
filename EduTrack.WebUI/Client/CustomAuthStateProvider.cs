@@ -3,30 +3,31 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Net.Http.Headers;
+using EduTrack.WebUI.Client.HttpServices.Authentification;
 
 namespace EduTrack.WebUI.Client
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorage;
+        private readonly TokenManagerService _tokenManager;
         private readonly HttpClient _httpClient;
         public CustomAuthStateProvider(
-            ILocalStorageService localStorage,
-            HttpClient httpClient)
+            HttpClient httpClient, 
+            TokenManagerService tokenManager)
         {
-            _localStorage = localStorage;
             _httpClient = httpClient;
+            _tokenManager = tokenManager;
         }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string token = await _localStorage.GetItemAsync<string>("token");
+            string token = await _tokenManager.GetTokenAsync();
 
             var identity = new ClaimsIdentity();
             _httpClient.DefaultRequestHeaders.Authorization = null;
 
             if (!string.IsNullOrEmpty(token))
             {
-                identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                identity = new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwt");
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token.Replace("\"", ""));
             }
@@ -34,29 +35,12 @@ namespace EduTrack.WebUI.Client
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
 
+            Console.WriteLine($"state: {state.User.Identity.IsAuthenticated}");
+
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;
         }
-
-        public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-        {
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
-        }
-
-        private static byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-            return Convert.FromBase64String(base64);
-        }
-
-
+            
     }
 }

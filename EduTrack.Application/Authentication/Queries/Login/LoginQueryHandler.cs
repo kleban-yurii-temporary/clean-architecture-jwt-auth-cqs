@@ -14,16 +14,16 @@ namespace EduTrack.Application.Authentication.Queries.Login
     public class LoginQueryHandler
          : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
     {
-        private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IJwtTokenService _jwtTokenService;
         private readonly IPasswordHashGenerator _passwordGenerator;
         private readonly IUserRepository _userRepository;
 
         public LoginQueryHandler(
-            IJwtTokenGenerator jwtTokenGenerator,
+            IJwtTokenService jwtTokenService,
             IPasswordHashGenerator passwordGenerator,
             IUserRepository userRepository)
         {
-            _jwtTokenGenerator = jwtTokenGenerator;
+            _jwtTokenService = jwtTokenService;
             _passwordGenerator = passwordGenerator;
             _userRepository = userRepository;
         }
@@ -49,11 +49,14 @@ namespace EduTrack.Application.Authentication.Queries.Login
                 return Domain.Errors.Errors.Authentication.InvalidPassword;
             }
 
-            var token = _jwtTokenGenerator.GenerateToken(user); 
-            
-            _jwtTokenGenerator.GenerateToken(user);
+            var token = _jwtTokenService.GenerateToken(user);
 
-            return new AuthenticationResult(user, token);
+            user.RefreshToken = _jwtTokenService.GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(_jwtTokenService.TokenExpiriesMinutes);
+
+            await _userRepository.UpdateAsync(user);
+
+            return new AuthenticationResult(token, user.RefreshToken);
         }
     }
 }

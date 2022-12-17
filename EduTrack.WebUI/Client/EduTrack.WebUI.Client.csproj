@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\EduTrack.Client.HttpServices\EduTrack.WebUI.Client.HttpServices.csproj" />
-    <ProjectReference Include="..\Shared\EduTrack.WebUI.Shared.csproj" />
+    <ProjectReference Include="..\Shared\EduTrack.WebUI.Shared.Dtos.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using EduTrack.Contracts.Authentication;
 using EduTrack.WebUI.Shared.Authentication;
 using EduTrack.WebUI.Shared.Common;
+using EduTrack.WebUI.Shared.Dtos.Authentication;
 using System.Net.Http.Json;
 using System.Text.Json;
 
