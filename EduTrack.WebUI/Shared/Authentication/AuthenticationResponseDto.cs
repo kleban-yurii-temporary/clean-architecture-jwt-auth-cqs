@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace EduTrack.WebUI.Shared.Dtos.Authentication
 {
-    public record AuthenticationResponseDto (
-        string? Token,
+    public record AuthenticationResponse(
+        string? AccessToken,
         string? RefreshToken
     );
+
+    public record RefreshTokenRequest(
+        string? AccessToken, 
+        string? RefreshToken);
 }

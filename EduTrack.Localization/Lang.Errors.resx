@@ -123,6 +123,12 @@
   <data name="Authentication.InvalidPassword" xml:space="preserve">
     <value>Некоректний пароль користувача</value>
   </data>
+  <data name="Authentication.InvalidToken" xml:space="preserve">
+    <value>Неправильний JWT Token</value>
+  </data>
+  <data name="Authentication.RefreshTokenExpired" xml:space="preserve">
+    <value>Термін дії RefreshToken-у закінчився</value>
+  </data>
   <data name="User.NotApproved" xml:space="preserve">
     <value>Обліковий запис користувача не активовано, завершіть реєстрацію</value>
   </data>

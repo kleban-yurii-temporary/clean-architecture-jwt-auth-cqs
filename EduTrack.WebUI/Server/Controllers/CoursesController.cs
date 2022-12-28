@@ -15,18 +15,10 @@ namespace EduTrack.WebUI.Server.Controllers
     [Authorize]
     public class CoursesController : ApiController
     {
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
+        public CoursesController(IMediator mediator, IMapper mapper)
+            : base(mediator, mapper) { }
 
-        public CoursesController(
-            IMediator mediator,
-            IMapper mapper)
-        {
-            _mediator = mediator;
-            _mapper = mapper;
-        }
-
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> GetListAsync()
         {
             var result = await _mediator.Send(new GetCoursesQuery());

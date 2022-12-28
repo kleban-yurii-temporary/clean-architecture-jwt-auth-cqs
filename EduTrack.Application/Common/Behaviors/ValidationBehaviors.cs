@@ -1,5 +1,4 @@
 ﻿using EduTrack.Application.Authentication.Commands.Register;
-using EduTrack.Application.Authentication.Common;
 using ErrorOr;
 using FluentValidation;
 using MediatR;

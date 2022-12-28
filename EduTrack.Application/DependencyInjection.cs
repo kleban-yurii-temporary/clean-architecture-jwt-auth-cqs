@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using MediatR;
 using EduTrack.Application.Authentication.Commands.Register;
 using ErrorOr;
-using EduTrack.Application.Authentication.Common;
 using EduTrack.Application.Common.Behaviors;
 using FluentValidation;
 using System.Reflection;

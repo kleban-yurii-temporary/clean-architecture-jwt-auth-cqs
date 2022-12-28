@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Security.Claims;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace EduTrack.WebUI.Client.HttpServices.Authentification
+namespace EduTrack.Helpers.Jwt
 {
     public class JwtParser
     {

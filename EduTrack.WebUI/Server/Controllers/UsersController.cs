@@ -3,10 +3,12 @@ using EduTrack.Application.Users.Commands.ChangeRole;
 using EduTrack.Application.Users.Queries;
 using EduTrack.Application.Users.Queries.GetUser;
 using EduTrack.Contracts.Authentication;
+using EduTrack.WebUI.Shared.ApiHelpers;
 using EduTrack.WebUI.Shared.Authentication;
 using EduTrack.WebUI.Shared.Users;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,16 +18,7 @@ namespace EduTrack.WebUI.Server.Controllers
     [ApiController]
     public class UsersController : ApiController
     {
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-
-        public UsersController(
-            IMediator mediator,
-            IMapper mapper)
-        {
-            _mediator = mediator;
-            _mapper = mapper;
-        }
+        public UsersController(IMediator mediator, IMapper mapper) : base(mediator, mapper) {}
 
         /*[HttpGet]
         public async Task<IActionResult> GetUsersAsync()
@@ -59,6 +52,15 @@ namespace EduTrack.WebUI.Server.Controllers
             return result.Match(
                 result => Ok(result),
                 errors => Problem(errors));
-        }       
+        }
+
+        [HttpGet(ApiUrl.Users.All)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var result = await _mediator.Send(new GetAllUsersQuery());
+            return Ok(_mapper.Map<IEnumerable<UserReadDto>>(result));
+        }
+
     }
 }

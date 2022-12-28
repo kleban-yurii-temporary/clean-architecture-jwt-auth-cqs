@@ -15,7 +15,7 @@ namespace EduTrack.WebUI.Server.Swagger
             {
                 schema.Example = new OpenApiObject()
                 {
-                    ["email"] = new OpenApiString("demo@email.com"),
+                    ["email"] = new OpenApiString("yurakleban@gmail.com"),
                     ["password"] = new OpenApiPassword("demoPA$$W0RD")
                 };
             }
@@ -24,7 +24,7 @@ namespace EduTrack.WebUI.Server.Swagger
             {
                 schema.Example = new OpenApiObject()
                 {
-                    ["email"] = new OpenApiString("demo@email.com"),
+                    ["email"] = new OpenApiString("yurakleban@gmail.com"),
                     ["password"] = new OpenApiPassword("demoPA$$W0RD"),
                     ["firstname"] = new OpenApiString("Yurii"),
                     ["lastname"] = new OpenApiPassword("Kleban")

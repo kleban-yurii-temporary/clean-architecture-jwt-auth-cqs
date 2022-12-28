@@ -1,6 +1,8 @@
 ﻿using EduTrack.Application;
 using EduTrack.Application.Common.Interfaces.Persistence;
 using EduTrack.Domain.Entities;
+using EduTrack.Infrastracture.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,63 +13,65 @@ namespace EduTrack.Infrastracture.Persistence
 {
     public class UserRepository : IUserRepository
     {
-        private readonly List<User> _users = new();
+        private DataContext _ctx;
 
-        public async Task AddAsync(User user)
-        {            
-            _users.Add(user);
+        public UserRepository(DataContext ctx)
+        {
+            _ctx = ctx;
+        }
 
-            if (_users.Count() == 1)
-            {
-                await AddUserToRoleAsync(user.Id, "teacher");
-                await UpdateUserApproveStatusAsync(user.Id, true);
-            }
-            
+        public async Task<Guid> AddAsync(User user)
+        {
+            var newUser = await _ctx.Users.AddAsync(user);
+            await _ctx.SaveChangesAsync();
+            return newUser.Entity.Id;
         }
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
             email = StringHelper.ApplyTL(email);
-            return _users.FirstOrDefault(x => x.Email == email);
+            return await _ctx.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return _users;
+            return await _ctx.Users.ToListAsync();
         }
 
         public async Task<User>? GetUserAsync(Guid id)
         {
-            return _users.First(x=> x.Id == id);
+            return await _ctx.Users.FirstAsync(x=> x.Id == id);
         }
 
         public async Task<bool> AddUserToRoleAsync(Guid id, string role)
         {
             role = StringHelper.ApplyTL(role);
 
-            var user = _users.First(x => x.Id == id);
+            var user = await _ctx.Users.FirstAsync(x => x.Id == id);
             user.Role = role;
-
+            await _ctx.SaveChangesAsync();
             return await Task.FromResult(true);
         }
 
         public async Task<bool> UpdateUserApproveStatusAsync(Guid id, bool status)
         {
-            var user = _users.First(x => x.Id == id);
+            var user = await _ctx.Users.FirstAsync(x => x.Id == id);
             user.IsApproved = status;
+            await _ctx.SaveChangesAsync();
             return user.IsApproved;
         }
 
         public async Task UpdateAsync(User user)
-        {
-            var dbUser = _users.Find(x => x.Id == user.Id);
+        {           
+            var dbUser = await _ctx.Users.FirstAsync(x => x.Id == user.Id);
 
             if (dbUser.RefreshToken != user.RefreshToken)
             {
-                _users.Find(x => x.Id == user.Id).RefreshToken = user.RefreshToken;
-                _users.Find(x => x.Id == user.Id).RefreshTokenExpiryTime = user.RefreshTokenExpiryTime;
+                dbUser.RefreshToken = user.RefreshToken;
+                dbUser.RefreshTokenExpiryTime = user.RefreshTokenExpiryTime;
             }
 
+            await _ctx.SaveChangesAsync();
         }
     }
 }

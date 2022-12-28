@@ -9,6 +9,6 @@ namespace EduTrack.Domain.Common
 {
     public class BaseNamedEntity : BaseEntity
     {
-        public string Title { get; set; }
+        public string? Title { get; set; } = string.Empty;
     }
 }

@@ -15,6 +15,7 @@
     <PackageReference Include="FluentValidation" Version="11.4.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
+    <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
@@ -22,6 +23,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EduTrack.Domain\EduTrack.Domain.csproj" />
+    <ProjectReference Include="..\EduTrack.Helpers\EduTrack.Helpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Authentication\Common\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using EduTrack.Application.Authentication.Common;
+﻿using EduTrack.Application.Authentication.Commands.RefreshToken;
 using EduTrack.Application.Common.Interfaces.Authentication;
 using EduTrack.Application.Common.Interfaces.Persistence;
 using EduTrack.Domain.Entities;
@@ -10,53 +10,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DomainErrors = EduTrack.Domain.Errors;
+using EduTrack.Domain.AppErrors;
+using EduTrack.Helpers.Jwt;
+using EduTrack.Helpers.Crypto;
+using IdentityModel;
 
 namespace EduTrack.Application.Authentication.Commands.Register
 {
-    /*public class RefreshTokenCommandHandler 
-        : IRequestHandler<RefreshTokenCommand, ErrorOr<AuthenticationResult>>
+    public class RefreshTokenCommandHandler 
+        : IRequestHandler<RefreshTokenCommand, ErrorOr<string>>
     {
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUserRepository _userRepository;
 
-        public RegisterCommandHandler(
-            IJwtTokenGenerator jwtTokenGenerator,
-            IPasswordHashGenerator passwordGenerator,
+        public RefreshTokenCommandHandler(
+            IJwtTokenService jwtTokenService,
             IUserRepository userRepository)
         {
-            _jwtTokenGenerator = jwtTokenGenerator;
-            _passwordGenerator= passwordGenerator;
+            _jwtTokenService = jwtTokenService;
             _userRepository = userRepository;
         }
 
-        public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
+        public async Task<ErrorOr<string>> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
-            var user = await _userRepository.GetUserByEmailAsync(command.Email);
+            var claims = JwtParser.ParseClaimsFromJwt(command.AccessToken);
 
-            if (user is not null)
-            {
-                return DomainErrors.Errors.Authentication.DuplicateEmail;
-            }
+            if (!claims.Any(x=> x.Type == JwtClaimTypes.Id))            
+                return Errors.Authentication.InvalidToken;
+            
+            var userId = Guid.Parse(claims.First(x => x.Type == JwtClaimTypes.Id).Value);
+            var user = await _userRepository.GetUserAsync(userId);
 
-            var (hash, salt) = _passwordGenerator.CreatePasswordHash(command.Password);
+            if (user is null)            
+                return Errors.User.NotFound;
 
-            user = new User
-            {
-                Email = command.Email,
-                FirstName = command.FirstName,
-                LastName = command.LastName,
-                PasswordHash = hash,
-                PasswordSalt = salt
-            };
-                        
-            await _userRepository.AddAsync(user);
+            var tokenPlain = CryptoService.Decrypt(command.RefreshToken, userId.ToString());
 
-            var token = _jwtTokenGenerator.GenerateToken(user);
+            if (user.RefreshTokenExpiryTime > DateTime.UtcNow || user.RefreshToken == tokenPlain)
+                return Errors.Authentication.RefreshTokenExpired;
 
-            return new AuthenticationResult(user, token);
+            return _jwtTokenService.GenerateToken(user);
         }
-    }*/
+    }
 }

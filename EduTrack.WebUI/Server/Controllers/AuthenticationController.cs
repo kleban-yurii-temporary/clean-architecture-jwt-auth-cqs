@@ -1,6 +1,5 @@
 ﻿using EduTrack.Application.Authentication.Commands.RefreshToken;
 using EduTrack.Application.Authentication.Commands.Register;
-using EduTrack.Application.Authentication.Common;
 using EduTrack.Application.Authentication.Queries.Login;
 using EduTrack.Application.Users.Queries.GetUser;
 using EduTrack.Contracts.Authentication;
@@ -12,7 +11,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DomainErrors = EduTrack.Domain.Errors;
+using EduTrack.WebUI.Shared.ApiHelpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EduTrack.WebUI.Server.Controllers
 {
@@ -22,18 +22,12 @@ namespace EduTrack.WebUI.Server.Controllers
     [Route("api/auth")]
     public class AuthenticationController : ApiController
     {
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-
         public AuthenticationController(
             IMediator mediator,
-            IMapper mapper)
-        {
-            _mediator = mediator;
-            _mapper = mapper;
-        }
+            IMapper mapper) : base(mediator, mapper) {}
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAuthDataAsync()
         {
             if (!User.Identity.IsAuthenticated)
@@ -55,52 +49,52 @@ namespace EduTrack.WebUI.Server.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns>request</returns>
-        [HttpPost("register")]
+        [HttpPost(ApiUrl.Authentication.Register)]
         public async Task<IActionResult> Register(UserRegisterDto request)
         {
             var command = _mapper.Map<RegisterCommand>(request);
 
             var authResult = await _mediator.Send(command);
 
+
             return authResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
+                authResult => Ok(authResult),
                 errors => Problem(errors));
         }
 
-        /// <summary>
-        /// Login API mathod
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>AuthenticationResponse Object</returns>
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginDto request)
+        [HttpPost(ApiUrl.Authentication.Login)]
+        public async Task<IActionResult> LoginAsync(UserLoginDto request)
         {
-            var query = _mapper.Map<LoginQuery>(request);
-
-            var authResult = await _mediator.Send(query);
+            var loginQuery = _mapper.Map<LoginQuery>(request);
+            var jwt = await _mediator.Send(loginQuery);
            
-            if (authResult.IsError && authResult.FirstError == DomainErrors.Errors.Authentication.InvalidPassword)
+            if (jwt.IsError && jwt.FirstError == EduTrack.Domain.AppErrors.Errors.Authentication.InvalidPassword)
             {
                 return Problem(
                     statusCode: StatusCodes.Status401Unauthorized,
-                    title: authResult.FirstError.Description);
+                    title: jwt.FirstError.Description);
             }
 
-            return authResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponseDto>(authResult)),
+            var refreshToken = await _mediator.Send(new CreateRefreshTokenCommand(request.Email));
+
+            return jwt.Match(
+                authResult => Ok(new AuthenticationResponse(
+                    jwt.Value,
+                    refreshToken.Value.Token)),
                 errors => Problem(errors));
         }
 
-       /* [HttpPost("token/refresh")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenDto request)          
+        [HttpPost(ApiUrl.Authentication.RefreshToken)]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshTokenAsync(RefreshTokenRequest request)          
         {
             var command = _mapper.Map<RefreshTokenCommand>(request);
 
             var result = await _mediator.Send(command);
 
             return result.Match(
-                result => Ok(_mapper.Map<AuthenticationResponseDto>(result)),
+                result => Ok(result),
                 errors => Problem(errors));
-        }*/
+        }
     }
 }

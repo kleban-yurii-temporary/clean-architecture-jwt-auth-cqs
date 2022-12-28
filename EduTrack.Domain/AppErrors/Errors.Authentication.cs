@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using EduTrack.Localization;
 using ErrorOr;
 
-namespace EduTrack.Domain.Errors
+namespace EduTrack.Domain.AppErrors
 {
     public static partial class Errors
     {
@@ -19,6 +19,14 @@ namespace EduTrack.Domain.Errors
             public static Error InvalidPassword
                = Error.Custom(401, "Authentication.InvalidPassword",
                    description: Lang_Errors.Authentication_InvalidPassword);
+
+            public static Error InvalidToken
+               = Error.Conflict("Authentication.InvalidToken",
+                   description: Lang_Errors.Authentication_InvalidToken);
+
+            public static Error RefreshTokenExpired
+                 = Error.Conflict("Authentication.RefreshTokenExpired",
+                   description: Lang_Errors.Authentication_RefreshTokenExpired);
         }
     }
 }

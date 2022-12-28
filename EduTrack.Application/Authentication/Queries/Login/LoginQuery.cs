@@ -1,5 +1,4 @@
-﻿using EduTrack.Application.Authentication.Common;
-using ErrorOr;
+﻿using ErrorOr;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,6 @@ namespace EduTrack.Application.Authentication.Queries.Login
 {
     public record LoginQuery(
         string Email,
-        string Password) : IRequest<ErrorOr<AuthenticationResult>>;
+        string Password) : IRequest<ErrorOr<string>>;
 
 }

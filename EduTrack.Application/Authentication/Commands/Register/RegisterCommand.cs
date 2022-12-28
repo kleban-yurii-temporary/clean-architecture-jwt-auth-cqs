@@ -1,5 +1,4 @@
-﻿using EduTrack.Application.Authentication.Common;
-using ErrorOr;
+﻿using ErrorOr;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,9 +9,9 @@ using System.Threading.Tasks;
 namespace EduTrack.Application.Authentication.Commands.Register
 {
     public record RegisterCommand(
-        string FirstName, 
-        string LastName,
-        string Email, 
-        string Password) : IRequest<ErrorOr<AuthenticationResult>>;
-    
+        string Email,
+        string Password,
+        string FirstName,
+        string LastName) : IRequest<ErrorOr<Guid>>;
+
 }

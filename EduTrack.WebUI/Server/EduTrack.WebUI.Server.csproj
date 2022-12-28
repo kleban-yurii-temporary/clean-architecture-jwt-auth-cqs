@@ -24,6 +24,11 @@
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -31,6 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\EduTrack.Application\EduTrack.Application.csproj" />
     <ProjectReference Include="..\..\EduTrack.Infrastracture\EduTrack.Infrastracture.csproj" />
+    <ProjectReference Include="..\..\EduTrack.WebUI.Shared.ApiHelpers\EduTrack.WebUI.Shared.ApiHelpers.csproj" />
     <ProjectReference Include="..\Client\EduTrack.WebUI.Client.csproj" />
     <ProjectReference Include="..\Shared\EduTrack.WebUI.Shared.Dtos.csproj" />
   </ItemGroup>

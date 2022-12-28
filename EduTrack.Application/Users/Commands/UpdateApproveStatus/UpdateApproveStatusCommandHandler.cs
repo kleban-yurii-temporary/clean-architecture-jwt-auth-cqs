@@ -1,5 +1,4 @@
 ﻿using EduTrack.Application.Authentication.Commands.Register;
-using EduTrack.Application.Authentication.Common;
 using EduTrack.Application.Common.Interfaces.Authentication;
 using EduTrack.Application.Common.Interfaces.Persistence;
 using ErrorOr;
@@ -10,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DomainErrors = EduTrack.Domain.Errors;
+using EduTrack.Domain.AppErrors;
 
 namespace EduTrack.Application.Users.Commands.ChangeRole
 {
@@ -32,7 +31,7 @@ namespace EduTrack.Application.Users.Commands.ChangeRole
 
             if (user is null)
             {
-                return Domain.Errors.Errors.User.NotFound;
+                return Errors.User.NotFound;
             }
             
             return await _userRepository.UpdateUserApproveStatusAsync(command.Id, command.IsApproved); 

@@ -12,7 +12,7 @@ namespace EduTrack.Domain.Entities
     {
         public string? Desription { get; set; } = string.Empty;
         public Group? Parent { get; set; }
-        public virtual ICollection<User>? SubGroups { get; }        
+        public virtual ICollection<Group>? SubGroups { get; }        
         public virtual ICollection<User>? Students { get; set; }
         public Course? Course { get; set; }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using EduTrack.Localization;
 using ErrorOr;
 
-namespace EduTrack.Domain.Errors
+namespace EduTrack.Domain.AppErrors
 {
     public static partial class Errors
     {

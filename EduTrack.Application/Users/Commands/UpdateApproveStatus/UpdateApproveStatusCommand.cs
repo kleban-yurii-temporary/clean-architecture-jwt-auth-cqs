@@ -1,5 +1,4 @@
-﻿using EduTrack.Application.Authentication.Common;
-using ErrorOr;
+﻿using ErrorOr;
 using MediatR;
 using System;
 using System.Collections.Generic;

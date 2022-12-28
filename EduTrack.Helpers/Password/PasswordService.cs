@@ -1,20 +1,18 @@
-﻿using EduTrack.Application.Common.Interfaces.Authentication;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace EduTrack.Infrastracture.Authentication
+namespace EduTrack.Helpers.Password
 {
-    public class PasswordHashGenerator : IPasswordHashGenerator
+    public class PasswordService 
     {
-        public (string, byte[]) CreatePasswordHash(string password)
+        public static (string, byte[]) CreatePasswordHash(string password)
         {
-            var passwordSalt = RandomNumberGenerator.GetBytes(128 / 8); 
+            var passwordSalt = RandomNumberGenerator.GetBytes(128 / 8);
 
             var passwordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                             password: password!,
@@ -26,7 +24,7 @@ namespace EduTrack.Infrastracture.Authentication
             return (passwordHash, passwordSalt);
         }
 
-        public bool VerifyPasswordHash(string password, string passwordHash, byte[] passwordSalt)
+        public static bool VerifyPasswordHash(string password, string passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
@@ -35,7 +33,7 @@ namespace EduTrack.Infrastracture.Authentication
                             salt: passwordSalt,
                             prf: KeyDerivationPrf.HMACSHA256,
                             iterationCount: 100000,
-                            numBytesRequested: 256 / 8)); 
+                            numBytesRequested: 256 / 8));
 
                 return computeHash == passwordHash;
             }

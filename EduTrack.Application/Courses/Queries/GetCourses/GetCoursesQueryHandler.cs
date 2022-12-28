@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static EduTrack.Domain.Errors.Errors;
+using EduTrack.Domain.AppErrors;
 
 namespace EduTrack.Application.Courses.Queries.GetCourses
 {

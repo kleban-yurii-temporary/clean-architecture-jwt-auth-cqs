@@ -16,20 +16,23 @@ namespace EduTrack.Infrastracture.Authentication
 {
     public class JwtTokenService : IJwtTokenService
     {
-        public JwtSettings _jwtSettings;              
+        public JwtSettings _jwtSettings;
 
-        public JwtTokenService(IOptions<JwtSettings> jwtOptions)
+        public JwtTokenService(
+            IOptions<JwtSettings> jwtOptions)
         {
             _jwtSettings = jwtOptions.Value;
         }
 
-        public int TokenExpiriesMinutes => _jwtSettings.ExpiryMinutes;
+        public int TokenExpiriesMinutes => _jwtSettings.TokenExpiryMinutes;
+
+        public int RefreshTokenExpiriesMinutes => _jwtSettings.RefreshTokenExpiryMinutes;
 
         public string GenerateRefreshToken()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
-
+       
         public string GenerateToken(User user)
         {
             var signinngCredentials = new SigningCredentials(
@@ -48,7 +51,7 @@ namespace EduTrack.Infrastracture.Authentication
             var secyrityToken = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpiryMinutes),
                 claims: claims,
                 signingCredentials: signinngCredentials);
 

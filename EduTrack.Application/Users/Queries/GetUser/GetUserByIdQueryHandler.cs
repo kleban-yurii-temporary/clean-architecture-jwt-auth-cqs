@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EduTrack.Domain.AppErrors;
 
 namespace EduTrack.Application.Users.Queries.GetUser
 {
@@ -27,7 +28,7 @@ namespace EduTrack.Application.Users.Queries.GetUser
 
             if (user is null)
             {
-                return Domain.Errors.Errors.User.NotFound;
+                return Errors.User.NotFound;
             }
 
             return user;

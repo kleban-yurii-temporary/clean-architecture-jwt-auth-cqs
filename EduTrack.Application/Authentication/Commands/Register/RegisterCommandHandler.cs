@@ -1,5 +1,4 @@
-﻿using EduTrack.Application.Authentication.Common;
-using EduTrack.Application.Common.Interfaces.Authentication;
+﻿using EduTrack.Application.Common.Interfaces.Authentication;
 using EduTrack.Application.Common.Interfaces.Persistence;
 using EduTrack.Domain.Entities;
 using ErrorOr;
@@ -10,28 +9,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DomainErrors = EduTrack.Domain.Errors;
+using EduTrack.Domain.AppErrors;
+using EduTrack.Helpers.Password;
 
 namespace EduTrack.Application.Authentication.Commands.Register
 {
     public class RegisterCommandHandler 
-        : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+        : IRequestHandler<RegisterCommand, ErrorOr<Guid>>
     {
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordHashGenerator _passwordGenerator;
 
         public RegisterCommandHandler(
             IJwtTokenService jwtTokenService,
-            IPasswordHashGenerator passwordGenerator,
             IUserRepository userRepository)
         {
             _jwtTokenService = jwtTokenService;
-            _passwordGenerator= passwordGenerator;
             _userRepository = userRepository;
         }
 
-        public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Guid>> Handle(RegisterCommand command, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
@@ -39,10 +36,10 @@ namespace EduTrack.Application.Authentication.Commands.Register
 
             if (user is not null)
             {
-                return DomainErrors.Errors.Authentication.DuplicateEmail;
+                return Errors.Authentication.DuplicateEmail;
             }
 
-            var (hash, salt) = _passwordGenerator.CreatePasswordHash(command.Password);
+            var (hash, salt) = PasswordService.CreatePasswordHash(command.Password);
 
             user = new User
             {
@@ -53,16 +50,9 @@ namespace EduTrack.Application.Authentication.Commands.Register
                 PasswordSalt = salt
             };
                         
-            await _userRepository.AddAsync(user);
+            var userId = await _userRepository.AddAsync(user);           
 
-            var token = _jwtTokenService.GenerateToken(user);
-
-            user.RefreshToken = _jwtTokenService.GenerateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(_jwtTokenService.TokenExpiriesMinutes);
-
-            await _userRepository.UpdateAsync(user);
-
-            return new AuthenticationResult(token, user.RefreshToken);
+            return userId;
         }
     }
 }

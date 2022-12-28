@@ -1,5 +1,4 @@
-﻿using EduTrack.Application.Authentication.Common;
-using EduTrack.Contracts.Authentication;
+﻿using EduTrack.Contracts.Authentication;
 using EduTrack.WebUI.Shared.Authentication;
 using Mapster;
 

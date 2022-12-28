@@ -1,4 +1,6 @@
 ﻿using ErrorOr;
+using MapsterMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +10,21 @@ namespace EduTrack.WebUI.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     //[AllowAnonymous]
     public class ApiController : ControllerBase
     {
+        protected readonly IMediator _mediator;
+        protected readonly IMapper _mapper;
+
+        public ApiController(
+            IMediator mediator,
+            IMapper mapper)
+        {
+            _mediator = mediator;
+            _mapper = mapper;
+        }
+
         protected IActionResult Problem(List<Error> errors)
         {
             if (!errors.Any())

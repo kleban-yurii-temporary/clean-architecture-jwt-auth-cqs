@@ -12,5 +12,6 @@ namespace EduTrack.Application.Common.Interfaces.Authentication
         string GenerateToken(User user);
         string GenerateRefreshToken();
         int TokenExpiriesMinutes { get; }
+        int RefreshTokenExpiriesMinutes { get; }
     }
 }

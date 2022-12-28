@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EduTrack.Helpers\EduTrack.Helpers.csproj" />
+    <ProjectReference Include="..\EduTrack.WebUI.Shared.ApiHelpers\EduTrack.WebUI.Shared.ApiHelpers.csproj" />
     <ProjectReference Include="..\EduTrack.WebUI\Shared\EduTrack.WebUI.Shared.Dtos.csproj" />
   </ItemGroup>
 

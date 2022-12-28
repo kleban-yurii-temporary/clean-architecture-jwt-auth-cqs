@@ -79,6 +79,24 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Неправильний JWT Token.
+        /// </summary>
+        public static string Authentication_InvalidToken {
+            get {
+                return ResourceManager.GetString("Authentication.InvalidToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Термін дії RefreshToken-у закінчився.
+        /// </summary>
+        public static string Authentication_RefreshTokenExpired {
+            get {
+                return ResourceManager.GetString("Authentication.RefreshTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Обліковий запис користувача не активовано, завершіть реєстрацію.
         /// </summary>
         public static string User_NotApproved {
