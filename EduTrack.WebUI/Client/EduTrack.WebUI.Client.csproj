@@ -12,13 +12,14 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Syncfusion.Blazor" Version="20.3.0.59" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.3.0.59" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\EduTrack.Client.HttpServices\EduTrack.WebUI.Client.HttpServices.csproj" />
-    <ProjectReference Include="..\..\EduTrack.WebUI.Shared.ApiHelpers\EduTrack.WebUI.Shared.ApiHelpers.csproj" />
+    <ProjectReference Include="..\..\EduTrack.WebUI.Shared.ApiHelpers\EduTrack.WebUI.Shared.Helpers.csproj" />
     <ProjectReference Include="..\Shared\EduTrack.WebUI.Shared.Dtos.csproj" />
   </ItemGroup>
 

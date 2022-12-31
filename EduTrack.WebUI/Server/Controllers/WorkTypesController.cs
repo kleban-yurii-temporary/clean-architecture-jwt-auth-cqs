@@ -17,7 +17,7 @@ namespace EduTrack.WebUI.Server.Controllers
             : base(mediator, mapper) { }
 
 
-        [HttpGet]
+        [HttpGet(Shared.ApiHelpers.ApiUrl.WorkTypes.All)]
         public async Task<IActionResult> GetAllAsync()
         {
             var result = await _mediator.Send(new GetWorkTypesQuery());

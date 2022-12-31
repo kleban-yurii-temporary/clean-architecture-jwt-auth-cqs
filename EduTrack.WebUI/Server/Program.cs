@@ -19,6 +19,19 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
+builder.Services.AddCors(options =>
+    {
+        // this defines a CORS policy called "default"
+        options.AddPolicy("default", policy =>
+        {
+            policy.WithOrigins("https://localhost:44303", "https://*.zoom.us")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -94,7 +107,7 @@ else
     return Results.Problem();
 });*/
 
-
+app.UseCors("default");
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();

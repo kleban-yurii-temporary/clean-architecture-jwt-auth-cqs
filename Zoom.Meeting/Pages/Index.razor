@@ -1,0 +1,73 @@
+﻿@page "/"
+
+@inject HttpClient httpClient
+@inject NavigationManager Navigation
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<hr />
+
+<p>Token: <strong>@token</strong></p>
+<p>Host: <strong>@host</strong></p>
+<p>Url: <strong>@queryUrl</strong></p>
+<p>User State: <strong>@userState</strong></p>
+<br />
+
+<button type="button" @onclick="@GetToken" class="btn btn-primary">Connect to Zoom</button>
+
+
+
+@code {
+
+
+    string authUrl = "https://zoom.us/oauth/authorize";
+
+    string client_id = "xcmBTlkyTNGJqIOvupD1A";
+    string client_secret = "POgBxWJ4BYxB1nFa0VEQ7tIQQO8ddt71";
+
+    string queryUrl = "---";
+    string host = "---";
+    string userState = "";
+
+    string token = "empty";
+
+    protected override async Task OnInitializedAsync()
+    {
+        host = httpClient.BaseAddress.ToString();
+        queryUrl = $"{authUrl}?response_type=code&client_id={client_id}&redirect_uri={host}";
+        Navigation.TryGetQueryString<string>("code", out token);
+        Navigation.TryGetQueryString<string>("state", out userState);
+    }
+
+    public async Task GetToken()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, queryUrl);
+        request.SetBrowserRequestMode(BrowserRequestMode.NoCors);  
+        // request.SetBrowserRequestCache(BrowserRequestCache.NoStore); 
+
+        using (var httpClient = new HttpClient())  
+        {
+            var response = await httpClient.SendAsync(request);
+            if(response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Success");
+            }
+            var content = await response.Content.ReadAsStringAsync();  
+
+            Console.WriteLine($"resp: {content}");
+        }
+
+        // httpClient.DefaultRequestHeaders.Authorization
+        //= new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", "");
+       
+        
+        //Console.WriteLine(response.Result.ToString();
+
+    }
+}
+
+

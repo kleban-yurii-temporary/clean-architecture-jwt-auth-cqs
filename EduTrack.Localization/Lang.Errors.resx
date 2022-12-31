@@ -129,6 +129,12 @@
   <data name="Authentication.RefreshTokenExpired" xml:space="preserve">
     <value>Термін дії RefreshToken-у закінчився</value>
   </data>
+  <data name="Option.EmptyValue" xml:space="preserve">
+    <value>Значення для параметра {0} відсутнє. Перевірте налаштування</value>
+  </data>
+  <data name="Option.NotFound" xml:space="preserve">
+    <value>Параметер {0} відсутній. Перевірте налаштування</value>
+  </data>
   <data name="User.NotApproved" xml:space="preserve">
     <value>Обліковий запис користувача не активовано, завершіть реєстрацію</value>
   </data>

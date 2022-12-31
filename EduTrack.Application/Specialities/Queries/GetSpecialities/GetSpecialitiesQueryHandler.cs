@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Specialities.Queries.GetSpecialities
 {
-    public class etSpecialitiesQueryHandler : IRequestHandler<GetSpecialitiesQuery, IEnumerable<Speciality>>
+    public class GetSpecialitiesQueryHandler : IRequestHandler<GetSpecialitiesQuery, IEnumerable<Speciality>>
     {
         private readonly ISpecialityRepository specialityRepository;
 
-        public etSpecialitiesQueryHandler(ISpecialityRepository specialityRepository)
+        public GetSpecialitiesQueryHandler(ISpecialityRepository specialityRepository)
         {
             this.specialityRepository = specialityRepository;
         }

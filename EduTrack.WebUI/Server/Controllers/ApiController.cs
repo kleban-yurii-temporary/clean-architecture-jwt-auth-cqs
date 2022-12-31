@@ -17,6 +17,14 @@ namespace EduTrack.WebUI.Server.Controllers
         protected readonly IMediator _mediator;
         protected readonly IMapper _mapper;
 
+        protected Guid? CurrentUserId { 
+            get {
+                if (User.Identity.IsAuthenticated)
+                    return Guid.Parse(User.Claims.First().Value);
+                return null;
+            } 
+        } 
+
         public ApiController(
             IMediator mediator,
             IMapper mapper)

@@ -1,5 +1,6 @@
 ﻿using EduTrack.Application.Authentication.Commands.Register;
 using EduTrack.Application.Common.Interfaces.Authentication;
+using EduTrack.Application.Options.Keys.Zoom;
 using EduTrack.Application.Users.Commands.ChangeRole;
 using EduTrack.Contracts.Authentication;
 using EduTrack.Domain.Entities;
@@ -20,10 +21,10 @@ namespace EduTrack.WebUI.Server.Controllers
         private readonly DataContext _ctx;
 
         public DbController(
-            IMediator mediator, 
+            IMediator mediator,
             IMapper mapper,
-            DataContext ctx) 
-            : base(mediator, mapper) 
+            DataContext ctx)
+            : base(mediator, mapper)
         {
             _ctx = ctx;
         }
@@ -39,11 +40,65 @@ namespace EduTrack.WebUI.Server.Controllers
             await initUsersAsync();
             await initSpecialities();
             await initWorkTypes();
+            await initOptions();
+
+            var opts = await _ctx.Options.ToListAsync();
 
             await Task.CompletedTask;
 
             return Ok("Базу ініціалізовано");
         }
+
+        #region Options
+
+        private async Task initOptions()
+        {
+            await _ctx.Options.AddRangeAsync(
+                new List<Option>
+                {
+                    new Option {
+                        Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.General.BaseUrl,
+                        Value = "https://api.zoom.us/v2",
+                        CantBeRemoved = true
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.Users.Me,
+                        Value = "https://api.zoom.us/v2/users/me",
+                        CantBeRemoved = true
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.General.ClientId, 
+                        Value = "Yo_UM8esSOqJCHMRHCJVg", 
+                        CantBeRemoved = true, 
+                        Owner = await _ctx.Users.FirstAsync(x=> x.Email == "yurakleban@gmail.com")
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group, 
+                        Key = ZoomApiKeys.General.ClientSecret, 
+                        Value = "PsF2x0mNgKwe77LhROffARNyI6rDCZeO", 
+                        CantBeRemoved = true,
+                        Owner = await _ctx.Users.FirstAsync(x=> x.Email == "yurakleban@gmail.com")
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group, 
+                        Key = ZoomApiKeys.Authorize.Url, 
+                        Value = "https://zoom.us/oauth/authorize", 
+                        CantBeRemoved = true
+                    },
+                new Option {
+                        Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.Token.AccessTokenUrl,
+                        Value = "https://zoom.us/oauth/token",
+                        CantBeRemoved = true
+                    }});
+
+            await _ctx.SaveChangesAsync();
+        }
+
+        #endregion
 
         #region WorkTypes 
 
@@ -98,8 +153,8 @@ namespace EduTrack.WebUI.Server.Controllers
                 await _ctx.WorkTypes.AddAsync(new WorkType
                 {
                     Order = i,
-                    Title = wts[i-1],
-                    ShortTitle = wts_s[i-1]
+                    Title = wts[i - 1],
+                    ShortTitle = wts_s[i - 1]
                 });
             }
 
@@ -118,10 +173,10 @@ namespace EduTrack.WebUI.Server.Controllers
             await Task.CompletedTask;
 
             var ek = await _ctx.Specialities
-                .AddAsync(new Speciality {Title = "Спеціальність 051 Економіка (економічна кібернетика)"});
+                .AddAsync(new Speciality { Title = "Спеціальність 051 Економіка (економічна кібернетика)" });
 
             var kn = await _ctx.Specialities
-                .AddAsync(new Speciality {Title = "Спеціальність 122 Комп'ютерні науки"});
+                .AddAsync(new Speciality { Title = "Спеціальність 122 Комп'ютерні науки" });
 
             await _ctx.SaveChangesAsync();
 
@@ -163,14 +218,6 @@ namespace EduTrack.WebUI.Server.Controllers
             await _mediator.Send(new UpdateApproveStatusCommand(result.Value, true));
         }
 
-        #endregion
-
-        [HttpDelete("/api/db/drop")]
-        public async Task<IActionResult> CleanDatabaseAsync()
-        {
-            _ctx.Database.EnsureDeleted();
-            await _ctx.SaveChangesAsync();
-            return Ok("Базу очищено");
-        }
+        #endregion        
     }
 }

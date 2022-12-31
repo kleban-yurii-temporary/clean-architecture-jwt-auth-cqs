@@ -17,5 +17,6 @@ namespace EduTrack.Infrastracture.Context
         public DbSet<Speciality> Specialities => Set<Speciality>();
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<WorkType> WorkTypes => Set<WorkType>();
+        public DbSet<Option> Options => Set<Option>();
     }
 }

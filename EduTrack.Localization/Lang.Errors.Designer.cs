@@ -97,6 +97,24 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Значення для параметра {0} відсутнє. Перевірте налаштування.
+        /// </summary>
+        public static string Option_EmptyValue {
+            get {
+                return ResourceManager.GetString("Option.EmptyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Параметер {0} відсутній. Перевірте налаштування.
+        /// </summary>
+        public static string Option_NotFound {
+            get {
+                return ResourceManager.GetString("Option.NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Обліковий запис користувача не активовано, завершіть реєстрацію.
         /// </summary>
         public static string User_NotApproved {
