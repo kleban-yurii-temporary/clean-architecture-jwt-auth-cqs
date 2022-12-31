@@ -71,7 +71,7 @@ namespace EduTrack.WebUI.Server.Controllers
                     new Option {
                         Group = ZoomApiKeys.Group,
                         Key = ZoomApiKeys.Users.Meetings,
-                        Value = "https://api.zoom.us/v2/users/me/meetings",
+                        Value = "https://api.zoom.us/v2/users/me/meetings?type=previous_meetings",
                         CantBeRemoved = true
                     },
                     new Option {

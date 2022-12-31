@@ -1,0 +1,36 @@
+﻿@using EduTrack.WebUI.Client.Pages.Authentication
+@using EduTrack.WebUI.Client.Shared.PlainAdmin;
+
+@inherits LayoutComponentBase
+
+@inject NavigationManager Navigation
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@*@attribute [Authorize] *@
+
+<PlainAdminSidebar />
+<main class="main-wrapper">
+    <PlainAdminHeader />
+    <section class="section">
+        <div class="container-fluid">
+            <ErrorBoundary>
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent>
+                    @context.Message
+                </ErrorContent>
+            </ErrorBoundary>
+        </div>
+    </section>
+    <PlainAdminFooter />
+</main>
+
+
+@code {
+
+    protected async override Task OnInitializedAsync()
+    {
+       
+    }
+}

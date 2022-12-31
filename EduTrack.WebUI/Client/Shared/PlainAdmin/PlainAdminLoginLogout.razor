@@ -1,0 +1,33 @@
+﻿@inject NavigationManager Navigation
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+
+<AuthorizeView>
+    <NotAuthorized>
+        <SfButton IconCss="oi oi-account-login" IsPrimary="true" OnClick="@GoToLogin">Увійти</SfButton>
+    </NotAuthorized>
+    <Authorized>
+        <span>
+            Вітаємо,
+            @context.User.Claims.First(x=> x.Type == "given_name").Value
+            @context.User.Claims.First(x=> x.Type == "family_name").Value
+            <SfButton OnClick="@Logout" IconCss="oi oi-account-logout">Вийти</SfButton>
+        </span>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+    void GoToLogin()
+    {
+        Navigation.NavigateTo("/login");
+    }
+
+    async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("token");
+        await LocalStorage.RemoveItemAsync("refreshToken");
+        await AuthStateProvider.GetAuthenticationStateAsync();
+        Navigation.NavigateTo("/login");
+    }
+}
