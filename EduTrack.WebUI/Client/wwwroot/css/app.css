@@ -1,4 +1,4 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -72,12 +72,12 @@ a, .btn-link {
     display: block;
     width: 8rem;
     height: 8rem;
-    margin: 20vh auto 1rem auto;
+    margin: 15px auto 0 auto;
 }
 
     .loading-progress circle {
         fill: none;
-        stroke: #e0e0e0;
+        stroke: #4a6cf7;
         stroke-width: 0.6rem;
         transform-origin: 50% 50%;
         transform: rotate(-90deg);
@@ -93,9 +93,9 @@ a, .btn-link {
     position: absolute;
     text-align: center;
     font-weight: bold;
-    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+    inset: 100px 0 auto 0.2rem;
 }
 
     .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
+        content: var(--blazor-load-percentage-text, "Loading...");
     }

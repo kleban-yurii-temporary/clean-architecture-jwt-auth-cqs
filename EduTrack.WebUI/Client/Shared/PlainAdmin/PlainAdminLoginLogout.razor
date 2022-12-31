@@ -2,19 +2,29 @@
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthStateProvider
 
-<AuthorizeView>
-    <NotAuthorized>
-        <SfButton IconCss="oi oi-account-login" IsPrimary="true" OnClick="@GoToLogin">Увійти</SfButton>
-    </NotAuthorized>
-    <Authorized>
-        <span>
-            Вітаємо,
-            @context.User.Claims.First(x=> x.Type == "given_name").Value
-            @context.User.Claims.First(x=> x.Type == "family_name").Value
-            <SfButton OnClick="@Logout" IconCss="oi oi-account-logout">Вийти</SfButton>
-        </span>
-    </Authorized>
-</AuthorizeView>
+
+    <AuthorizeView>
+        <NotAuthorized>
+            <div style="text-align: center;">
+            <SfButton IconCss="fa-solid fa-arrow-right-to-bracket" IsPrimary="true" OnClick="@GoToLogin">Увійти</SfButton>
+        </div>
+        </NotAuthorized>
+        <Authorized>
+
+        <div style="border:1px solid #eee; border-radius: 5px; margin: 12px 23px 0; text-align: center; padding: 5px 7px">
+                <div>                   
+                    <strong>
+                        @context.User.Claims.First(x=> x.Type == "given_name").Value
+                        @context.User.Claims.First(x=> x.Type == "family_name").Value
+                    </strong>
+                </div>
+                <div class="text-muted">викладач</div>
+                <SfButton OnClick="@Logout" CssClass="e-link" IconCss="fa-solid fa-arrow-right-to-bracket">Вийти</SfButton>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+
+
 
 @code {
 

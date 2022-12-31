@@ -1,5 +1,7 @@
-﻿@inject NavigationManager Navigation
-@inject ILocalStorageService LocalStorage
+﻿@using EduTrack.WebUI.Client.HttpServices.Authentification;
+@inject NavigationManager Navigation
+@inject HttpAuthenticationService HttpAuthenticationService
+@inject TokenManagerService TokenManager
 @inject AuthenticationStateProvider AuthStateProvider
 
 <AuthorizeView>
@@ -25,8 +27,8 @@
 
     async Task Logout()
     {
-        await LocalStorage.RemoveItemAsync("token");
-        await LocalStorage.RemoveItemAsync("refreshToken");
+        await TokenManager.DropRefreshTokenAsync();
+        await TokenManager.DropAccessTokenAsync();
         await AuthStateProvider.GetAuthenticationStateAsync();
         Navigation.NavigateTo("/login");
     }
