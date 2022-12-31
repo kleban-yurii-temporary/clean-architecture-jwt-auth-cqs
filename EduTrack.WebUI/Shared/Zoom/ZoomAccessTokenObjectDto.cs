@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Zoom.Meeting.WebApi.Tmp
+namespace EduTrack.WebUI.Shared.Dtos.Zoom
 {
-    public class AccessTokenResponse
+    public class ZoomAccessTokenObjectDto
     {
         [JsonPropertyName("access_token")]
         public string? AccessToken { get; set; }

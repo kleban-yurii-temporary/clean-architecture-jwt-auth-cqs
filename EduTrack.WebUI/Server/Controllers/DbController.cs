@@ -70,6 +70,24 @@ namespace EduTrack.WebUI.Server.Controllers
                     },
                     new Option {
                         Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.Users.Meetings,
+                        Value = "https://api.zoom.us/v2/users/me/meetings",
+                        CantBeRemoved = true
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.Users.Recordings,
+                        Value = "https://api.zoom.us/v2/users/me/recordings",
+                        CantBeRemoved = true
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group,
+                        Key = ZoomApiKeys.Users.Webinars,
+                        Value = "https://api.zoom.us/v2/users/me/webinars",
+                        CantBeRemoved = true
+                    },
+                    new Option {
+                        Group = ZoomApiKeys.Group,
                         Key = ZoomApiKeys.General.ClientId, 
                         Value = "Yo_UM8esSOqJCHMRHCJVg", 
                         CantBeRemoved = true, 
@@ -84,7 +102,7 @@ namespace EduTrack.WebUI.Server.Controllers
                     },
                     new Option {
                         Group = ZoomApiKeys.Group, 
-                        Key = ZoomApiKeys.Authorize.Url, 
+                        Key = ZoomApiKeys.Authorize.AuthUrl, 
                         Value = "https://zoom.us/oauth/authorize", 
                         CantBeRemoved = true
                     },

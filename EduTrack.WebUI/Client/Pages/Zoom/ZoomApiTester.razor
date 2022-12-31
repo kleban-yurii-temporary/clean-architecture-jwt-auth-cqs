@@ -1,0 +1,57 @@
+﻿@page "/zoom/config/test"
+
+@using WebUI.Shared.ApiHelpers;
+
+@inject HttpClient httpClient;
+@inject IJSRuntime jsRuntime;
+
+<h3>ZoomApiTester</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <InputSelect class="form-control" @bind-Value="@selectedQuery">
+            @foreach(var q in queries)
+            {
+                <option value="@q.Value">@q.Key</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary" @onclick="@RunAsync">Run</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12"><textarea id="jsonViewerRawArea" class="form-control" style="width:100%; height: 500px;">@json</textarea></div>
+</div>
+
+
+
+
+@code {
+
+    List<KeyValuePair<string, string>> queries = new List<KeyValuePair<string, string>>
+    {
+        new KeyValuePair<string, string>("Me", ApiUrl.Zoom.Users.Me),
+        new KeyValuePair<string, string>("Meetings List", ApiUrl.Zoom.Meetings.All),
+        new KeyValuePair<string, string>("Webinars List", ApiUrl.Zoom.Webinars.All),
+        new KeyValuePair<string, string>("Recordings List", ApiUrl.Zoom.Recordings.All)
+    };
+
+    string json = "{\"empty\": \"none\"}";    
+    string selectedQuery = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        string selectedQuery = queries.First().Value;
+       // await jsRuntime.InvokeVoidAsync("initZoomJsonViewer", json);
+    }
+      
+
+    async Task RunAsync()
+    {
+        Console.WriteLine($"Selected Query: {selectedQuery}");
+        json = await httpClient.GetStringAsync(selectedQuery);
+    }
+
+}

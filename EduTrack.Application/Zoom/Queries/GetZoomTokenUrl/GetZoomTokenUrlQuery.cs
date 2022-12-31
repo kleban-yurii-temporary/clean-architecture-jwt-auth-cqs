@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Zoom.Queries.GetAuthUrl
 {
-    public record GetZoomTokenUrlQuery(Guid UserId) : IRequest<ErrorOr<string>>;
+    public record GetZoomTokenUrlQuery(Guid UserId, string AuthCode) : IRequest<ErrorOr<string>>;
 }

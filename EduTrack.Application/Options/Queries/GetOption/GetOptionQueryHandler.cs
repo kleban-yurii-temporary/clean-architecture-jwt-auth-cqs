@@ -26,12 +26,12 @@ namespace EduTrack.Application.Specialities.Queries.GetOptions
         {
             await Task.CompletedTask;
 
-            if (!await optionsRepository.AnyByKeyAsync(request.Key, request.UserId))
-            {
-                return Errors.Options.NotFound(request.Key);
-            }
+            var option = await optionsRepository.GetByKeyAsync(request.Key, request.UserId);
 
-            return await optionsRepository.GetByKeyAsync(request.Key, request.UserId);
+            if (option is null)            
+                return Errors.Options.NotFound(request.Key);            
+
+            return option;
         }
     }
 }

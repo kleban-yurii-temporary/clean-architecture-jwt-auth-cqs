@@ -31,45 +31,31 @@ namespace EduTrack.Application.Specialities.Queries.GetOptions
         {
             await Task.CompletedTask;
 
-            Option option = null;
+            Option option = await optionsRepository.GetByKeyAsync(request.Key, request.UserId);
 
-            if (request.UserId == null)
+            if(option is not null)
             {
-                if (await optionsRepository.AnyByKeyAsync(request.Key))
-                {
-                    option = await optionsRepository.GetByKeyAsync(request.Key);
-                    option.Value = request.Value;
-                    option.Group = request.Group;
-                    option = await optionsRepository.UpdateAsync(option);
-                }
-                else
-                    option = await optionsRepository.AddAsync(new Option
-                    {
-                        Key= request.Key.Trim().ToLower(),
-                        Group= request.Group,
-                        Value= request.Value
-                    });                
-            } 
+                option = await optionsRepository.GetByKeyAsync(request.Key);
+                option.Value = request.Value;
+                option.Group = request.Group;
+                option = await optionsRepository.UpdateAsync(option, request.UserId);
+            }
             else
             {
-                var user = await userRepository.GetUserAsync((Guid)request.UserId);
-
-                if (user is null) return Errors.User.NotFound;
-
-                if (await optionsRepository.AnyByKeyAsync(request.Key, user.Id))
+                option = new Option
                 {
-                    option = await optionsRepository.GetByKeyAsync(request.Key, user.Id);
-                    option.Value = request.Value;
-                    option.Group = request.Group;
-                    option = await optionsRepository.UpdateAsync(option, user.Id);
+                    Key = request.Key.Trim().ToLower(),
+                    Group = request.Group,
+                    Value = request.Value
+                };
+
+                if(request.UserId is not null)
+                {
+                    var user = await userRepository.GetUserAsync((Guid)request.UserId);
+                    if (user is null) return Errors.User.NotFound;
                 }
-                else
-                    option = await optionsRepository.AddAsync(new Option
-                    {
-                        Key = request.Key.Trim().ToLower(),
-                        Group = request.Group,
-                        Value = request.Value
-                    }, user.Id);
+
+                option = await optionsRepository.AddAsync(option, request.UserId);
             }
 
             return option;

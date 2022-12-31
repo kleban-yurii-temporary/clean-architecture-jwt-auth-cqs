@@ -29,25 +29,29 @@ namespace EduTrack.Application.Users.Queries.GetUser
 
             string client_id = string.Empty, client_secret = string.Empty;
 
-            if (!await optionsRepository.AnyByKeyAsync(ZoomApiKeys.General.ClientId))
+            var option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.General.ClientId);
+
+            if (option is null)
             {
                 return Errors.Options.NotFound(ZoomApiKeys.General.ClientId);
             } 
             else 
             {
-                client_id = (await optionsRepository.GetByKeyAsync(ZoomApiKeys.General.ClientId)).Value;
+                client_id = option.Value;
 
                 if(string.IsNullOrEmpty(client_id))
                     return Errors.Options.EmptyValue(ZoomApiKeys.General.ClientId);
             }
 
-            if (!await optionsRepository.AnyByKeyAsync(ZoomApiKeys.General.ClientSecret))
+            option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.General.ClientSecret);
+
+            if (option is null)
             {
                 return Errors.Options.NotFound(ZoomApiKeys.General.ClientSecret);
             }
             else
             {
-                client_secret = (await optionsRepository.GetByKeyAsync(ZoomApiKeys.General.ClientSecret)).Value;
+                client_secret = option.Value;
 
                 if (string.IsNullOrEmpty(client_secret))
                     return Errors.Options.EmptyValue(ZoomApiKeys.General.ClientSecret);

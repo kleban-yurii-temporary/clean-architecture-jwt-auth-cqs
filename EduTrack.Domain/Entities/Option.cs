@@ -23,7 +23,10 @@ namespace EduTrack.Domain.Entities
 
         public bool CantBeRemoved { get; set; } = false;
 
-        public User? Owner { get; set; }
+        public User? Owner { get; set; } = null;
+
+        [ForeignKey("Owner")]
+        public Guid? OwnerId { get; set; } = null;
 
         [NotMapped]
         public bool IsGlobal { get { return Owner is null; } } 

@@ -27,8 +27,8 @@ namespace EduTrack.Application.Users.Queries.GetUser
         {
             await Task.CompletedTask;
 
-            string token_url = string.Empty, code = string.Empty, client_url = string.Empty;
-
+            string token_url, redirect_url;
+            
             var option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.Token.AccessTokenUrl);
 
             if (option is null)
@@ -42,39 +42,22 @@ namespace EduTrack.Application.Users.Queries.GetUser
                 if(string.IsNullOrEmpty(token_url))
                     return Errors.Options.EmptyValue(ZoomApiKeys.Token.AccessTokenUrl);
             }
-
-            option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.Authorize.AuthorizationCode, request.UserId);
-
-            if (option is null)
-            {
-                return Errors.Options.NotFound(ZoomApiKeys.Authorize.AuthorizationCode);
-            }
-            else
-            {
-                code = option.Value;
-
-                if (string.IsNullOrEmpty(code))
-                    return Errors.Options.EmptyValue(ZoomApiKeys.Authorize.AuthorizationCode);
-
-            }
-
-            option = await optionsRepository.GetByKeyAsync(OptionKeys.Client.Url);
+                       
+            option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.Authorize.RedirectUrl);
 
             if (option is null)
             {
-                return Errors.Options.NotFound(OptionKeys.Client.Url);
+                return Errors.Options.NotFound(ZoomApiKeys.Authorize.RedirectUrl);
             }
             else
             {
-                client_url = option.Value;
+                redirect_url = option.Value;
 
-                if (string.IsNullOrEmpty(client_url))
-                    return Errors.Options.EmptyValue(OptionKeys.Client.Url);
+                if (string.IsNullOrEmpty(redirect_url))
+                    return Errors.Options.EmptyValue(ZoomApiKeys.Authorize.RedirectUrl);
             }
 
-            var redirect_uri = $"{client_url}111";
-
-            return $"{token_url}?grant_type=suthorization_code&code={code}&redirect_uri={redirect_uri}"; 
+            return $"{token_url}?grant_type=authorization_code&code={request.AuthCode}&redirect_uri={redirect_url}"; 
         }
     }
 }

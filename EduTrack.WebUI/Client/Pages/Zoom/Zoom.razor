@@ -1,0 +1,40 @@
+﻿@page "/zoom/config"
+@using EduTrack.WebUI.Client.Extensions;
+
+@inject HttpClient httpClient
+@inject NavigationManager Navigation
+
+@attribute [Authorize(Roles = "teacher")]
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<hr />
+
+<p>Url: <strong>@ZoomAuthUrl</strong></p>
+<br />
+
+<button type="button" @onclick="@GetToken" class="btn btn-primary">Connect to Zoom</button>
+
+<a href="/zoom/config/test">Api Test</a>
+
+@code {
+
+    private string ZoomAuthUrl = "---";
+
+    protected override async Task OnInitializedAsync()
+    {
+        ZoomAuthUrl = await httpClient.GetStringAsync($"{WebUI.Shared.ApiHelpers.ApiUrl.Zoom.OAuth.AuthorizeUrl}?redirect_url={httpClient.BaseAddress.ToString()}zoom/config/oauth/redirect");
+    }
+
+    public async Task GetToken()
+    {
+        Navigation.NavigateTo(ZoomAuthUrl);
+    }
+}
+
+
+

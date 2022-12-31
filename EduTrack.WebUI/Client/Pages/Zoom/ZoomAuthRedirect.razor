@@ -1,0 +1,27 @@
+﻿@page "/zoom/config/oauth/redirect"
+@using EduTrack.WebUI.Client.Extensions;
+
+@inject NavigationManager Navigation
+@inject HttpClient httpClient
+
+<h3>ZoomAuthRedirect</h3>
+
+<p>@message</p>
+<p>@response</p>
+@code {
+    string message = "---";
+    string response = "---";
+    protected override async Task OnInitializedAsync()
+    {
+        if(Navigation.TryGetQueryString<string>("code", out string code))
+        {
+            message = $"Access code: {code}.";
+            response = await httpClient.GetStringAsync($"{WebUI.Shared.ApiHelpers.ApiUrl.Zoom.OAuth.Redirect}?code={code}");
+        } 
+        else
+        {
+            message = "Code is empty";
+        }
+    }
+
+}

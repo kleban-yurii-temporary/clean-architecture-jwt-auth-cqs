@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace EduTrack.WebUI.Shared.Dtos.Options
 {
-    public record OptionDto(string Key, string Value, string Group, bool CantBeRemoved);
+    public record OptionDto(string Key, string Value, string Group, bool CantBeRemoved, Guid? OwnerId = null);
 }

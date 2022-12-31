@@ -27,20 +27,20 @@ namespace EduTrack.Application.Users.Queries.GetUser
         {
             await Task.CompletedTask;
 
-            string auth_url = string.Empty, client_id = string.Empty, client_url;
+            string auth_url = string.Empty, client_id = string.Empty, client_url, redirect_url;
 
-            var option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.Authorize.Url);
+            var option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.Authorize.AuthUrl);
 
             if (option is null)
             {
-                return Errors.Options.NotFound(ZoomApiKeys.Authorize.Url);
+                return Errors.Options.NotFound(ZoomApiKeys.Authorize.AuthUrl);
             } 
             else 
             {
                 auth_url = option.Value;
 
                 if(string.IsNullOrEmpty(auth_url))
-                    return Errors.Options.EmptyValue(ZoomApiKeys.Authorize.Url);
+                    return Errors.Options.EmptyValue(ZoomApiKeys.Authorize.AuthUrl);
             }
 
             option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.General.ClientId, request.UserId);
@@ -57,22 +57,21 @@ namespace EduTrack.Application.Users.Queries.GetUser
                     return Errors.Options.EmptyValue(ZoomApiKeys.General.ClientId);
             }
 
-            option = await optionsRepository.GetByKeyAsync(OptionKeys.Client.Url);
+            option = await optionsRepository.GetByKeyAsync(ZoomApiKeys.Authorize.RedirectUrl);
 
             if (option is null)
             {
-                return Errors.Options.NotFound(OptionKeys.Client.Url);
+                return Errors.Options.NotFound(ZoomApiKeys.Authorize.RedirectUrl);
             }
             else
             {
-                client_url = option.Value;
+                redirect_url = option.Value;
 
-                if (string.IsNullOrEmpty(client_url))
-                    return Errors.Options.EmptyValue(OptionKeys.Client.Url);
+                if (string.IsNullOrEmpty(redirect_url))
+                    return Errors.Options.EmptyValue(OptionKeys.Client.ClientUrl);
             }
 
-            var redirect_uri = $"{client_url}api/zoom/oauthredirect";
-            return $"{auth_url}?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}"; 
+            return $"{auth_url}?response_type=code&client_id={client_id}&redirect_uri={redirect_url}"; 
         }
     }
 }

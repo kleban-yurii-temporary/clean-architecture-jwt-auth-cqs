@@ -30,17 +30,21 @@ namespace EduTrack.Infrastracture.Persistence
             return newOption.Entity;
         }
              
-        public async Task DeleteAsync(string key)
-        {
-            key = key.Trim().ToLower();
-            var option = await _dbCtx.Options.FirstAsync(x => x.Key == key);
-            _dbCtx.Options.Remove(option);
-            await SaveAsync();
+        public async Task DeleteAsync(string key, Guid? userId = null)
+        {            
+            var option = await GetByKeyAsync(key, userId);
+
+            if (option is not null)
+            {
+                _dbCtx.Options.Remove(option);
+                await SaveAsync();
+            }
         }
 
         public async Task<IEnumerable<Option>> GetAllAsync(Guid userId, bool ownOnly = true)
         {
             var options = await _dbCtx.Options.Where(x => x.Owner.Id == userId).ToListAsync();
+
             if (!ownOnly)
                 options.AddRange(await _dbCtx.Options.Where(x => x.Owner == null).ToListAsync());
 
