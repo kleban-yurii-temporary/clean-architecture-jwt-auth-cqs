@@ -1,0 +1,47 @@
+﻿@page "/dictionaries/worktypes"
+@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.WorkTypes;
+
+@layout PlainAdminLayout
+
+@inject HttpClient _httpClient
+
+<PlainAdminPageTitle Title="Довідник типів навчальних робіт">
+    <Breadcrumbs>
+        <BreadcrumbItem Title="Панель керування" NavigationLink="/" />
+        <BreadcrumbItem Title="Довідник типів навч. робіт" />
+    </Breadcrumbs>
+</PlainAdminPageTitle>
+
+<PlainAdminCard>
+    <CardBody>
+        @if(WorkTypesList == null)
+        {
+            <EduTrackSpinner></EduTrackSpinner>
+        } 
+        else
+        {
+            <SfGrid RowHeight="25" DataSource="@WorkTypesList">
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(WorkTypeDto.Id) Visible="false" IsPrimaryKey="true"></GridColumn>
+                    <GridColumn Field=@nameof(WorkTypeDto.Order) HeaderText="Порядок"></GridColumn>
+                    <GridColumn Field=@nameof(WorkTypeDto.Title) HeaderText="Назва"></GridColumn>
+                    <GridColumn Field=@nameof(WorkTypeDto.ShortTitle) HeaderText="Назва скор."></GridColumn>
+                    <GridColumn Field=@nameof(WorkTypeDto.PerStudentNorm) HeaderText="Норма на студ., год"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        }
+    </CardBody>
+</PlainAdminCard>
+
+@code {
+    IEnumerable<WorkTypeDto> WorkTypesList = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        WorkTypesList = await _httpClient.GetFromJsonAsync<IEnumerable<WorkTypeDto>>(ApiUrl.WorkTypes.All);
+    }
+
+}

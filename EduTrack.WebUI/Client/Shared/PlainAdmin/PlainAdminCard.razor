@@ -1,0 +1,18 @@
+﻿<div class="card-style mb-30 p-3 @CssClass">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <h6 class="mb-25">@Title</h6>
+    }
+    @CardBody
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    [Parameter]
+    public RenderFragment CardBody { get; set; }
+}

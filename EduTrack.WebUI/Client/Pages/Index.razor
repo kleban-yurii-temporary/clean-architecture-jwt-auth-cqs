@@ -15,7 +15,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-       /* var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
 
         if(!state.User.Identity.IsAuthenticated)
         {
@@ -25,13 +25,13 @@
         if(state.User.IsInRole("teacher"))
         {
             Console.WriteLine("teacher");
-            Navigation.NavigateTo("/dashboard/teacher");
+            Navigation.NavigateTo("/teacher");
         }
 
         if (state.User.IsInRole("student"))
         {
             Console.WriteLine("std");
-            Navigation.NavigateTo("/dashboard/student");
-        }*/
+            Navigation.NavigateTo("/student");
+        }
     }
 }

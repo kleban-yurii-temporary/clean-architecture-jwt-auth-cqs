@@ -49,9 +49,10 @@ namespace EduTrack.Infrastracture
                 }); ;
 
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ISpecialityRepository, SpecialityRepository>();
             services.AddScoped<IWorkTypesRepository, WorkTypesRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IOtherCourseRepository, OtherCourseRepository>();
+            services.AddScoped<ICourseTypeRepository, CourseTypeRepository>();
             services.AddScoped<IOptionsRepository, OptionsRepository>();
 
             return services;

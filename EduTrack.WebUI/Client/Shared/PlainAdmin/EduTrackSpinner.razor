@@ -1,0 +1,24 @@
+﻿
+<div class="text-center" style="margin: 15px 0">    
+    <img src="/plainadmin/assets/images/loader/loader.gif" width="32" alt="" />
+    @if(Type == EduTrackSpinnerType.Horizontal)
+    {
+        <span style="padding: 7px 0 0 7px; ">Завантаження...</span>
+    } 
+    else
+    {
+        <div style="padding: 7px 0 0; ">Завантаження...</div>
+    }  
+</div>
+
+@code {
+    [Parameter]
+    public EduTrackSpinnerType Type { get; set; } = EduTrackSpinnerType.Horizontal;
+
+    public enum EduTrackSpinnerType
+    {
+        Vertical,
+        Horizontal
+    }
+}
+

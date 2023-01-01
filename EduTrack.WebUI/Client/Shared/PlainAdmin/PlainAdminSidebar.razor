@@ -1,4 +1,6 @@
-﻿    <aside class="sidebar-nav-wrapper">
+﻿@inject NavigationManager Nvaigation    
+
+<aside class="sidebar-nav-wrapper">
       <div class="navbar-logo" style="margin-bottom:0">
         <a href="/">
           <img src="/plainadmin/assets/images/logo/logo.png" style="width:100%" alt="logo" />
@@ -7,14 +9,42 @@
 
       <PlainAdminLoginLogout />
 
+      <style>
+        .nav-item > .nav-link.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #4a6cf7;
+            border-radius: 0 3px 3px 0px;
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transition: all 0.3s ease-out 0s;
+            -moz-transition: all 0.3s ease-out 0s;
+            -ms-transition: all 0.3s ease-out 0s;
+            -o-transition: all 0.3s ease-out 0s;
+            transition: all 0.3s ease-out 0s;
+          }
+      </style>
+
       <nav class="sidebar-nav">
         <ul>
-          <li class="nav-item">
-            <a href="/dashboard/teacher">
-                <span class="icon"><i class="fa-solid fa-chalkboard-user"></i></span>
-                <span class="text">Панель керування</span>
-            </a>            
-          </li>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                            <span class="icon"><i class="fa-solid fa-chalkboard-user"></i></span>
+                            <span class="text">Панель керування</span>
+                        </NavLink>
+                    </li>
+                </NotAuthorized>                
+            </AuthorizeView>
+
+            <TeacherNavigation />
+
+            @*
           <li class="nav-item nav-item-has-children">
             <a
               href="#0"
@@ -240,7 +270,7 @@
               </span>
               <span class="text">Notifications</span>
             </a>
-          </li>
+          </li>*@
         </ul>
       </nav>
       

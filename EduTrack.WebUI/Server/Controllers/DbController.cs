@@ -37,16 +37,97 @@ namespace EduTrack.WebUI.Server.Controllers
             _ctx.Database.EnsureDeleted();
             _ctx.Database.EnsureCreated();
 
-            await initUsersAsync();
-            await initSpecialities();
+            var teacherId = await initUsersAsync();
             await initWorkTypes();
             await initOptions();
+            await initCourses(teacherId);
+            await initOtherCourses(teacherId);
 
             var opts = await _ctx.Options.ToListAsync();
 
             await Task.CompletedTask;
 
             return Ok("Базу ініціалізовано");
+        }
+
+        private async Task initOtherCourses(Guid teacherId)
+        {
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                EduYear = "2022/2023",
+                GroupCode = "Ек-3",
+                Hours = 21,
+                IsActive= true,
+                OwnerId= teacherId,
+                Title  ="Курсова робота",
+                Semestr = 2,
+                StudentsCount = 7,
+                WorkType = await _ctx.WorkTypes.FirstAsync(x=> x.Order == 9)                
+            });
+
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                EduYear = "2022/2023",
+                GroupCode = "Ек-4",
+                Hours = 6,
+                IsActive = true,
+                OwnerId = teacherId,
+                Title = "Курсова робота",
+                Semestr = 2,
+                StudentsCount = 2,
+                WorkType = await _ctx.WorkTypes.FirstAsync(x => x.Order == 9)
+            });
+
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                EduYear = "2022/2023",
+                GroupCode = "Кн-2",
+                Hours = 16,
+                IsActive = true,
+                OwnerId = teacherId,
+                Title = "Навчальна практика з дисципліни \"Програмування С#\"",
+                Semestr = 2,
+                StudentsCount = 8,
+                WorkType = await _ctx.WorkTypes.FirstAsync(x => x.Order == 14)
+            });
+
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                EduYear = "2022/2023",
+                GroupCode = "Кн-4",
+                Hours = 75,
+                IsActive = true,
+                OwnerId = teacherId,
+                Title = "Кваліфікаційна робота/проєкт",
+                Semestr = 2,
+                StudentsCount =5,
+                WorkType = await _ctx.WorkTypes.FirstAsync(x => x.Order == 10)
+            });
+
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                EduYear = "2022/2023",
+                GroupCode = "Кн-4",
+                Hours = 7.5,
+                IsActive = true,
+                OwnerId = teacherId,
+                Title = "Захист кваліфікаційних робіт",
+                Semestr = 2,
+                StudentsCount = 15,
+                WorkType = await _ctx.WorkTypes.FirstAsync(x => x.Order == 13)
+            });
+
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                EduYear = "2022/2023",
+                Hours = 17,
+                IsActive = true,
+                OwnerId = teacherId,
+                Title = "Консультації впродовж семестру",
+                Semestr = 2
+            });
+
+            await _ctx.SaveChangesAsync();
         }
 
         #region Options
@@ -168,62 +249,77 @@ namespace EduTrack.WebUI.Server.Controllers
 
             for (int i = 1; i <= wts.Length; i++)
             {
-                await _ctx.WorkTypes.AddAsync(new WorkType
+                var wt = new WorkType
                 {
                     Order = i,
                     Title = wts[i - 1],
-                    ShortTitle = wts_s[i - 1]
-                });
+                    ShortTitle = wts_s[i - 1]                    
+                };
+
+                if (wt.Order == 6 || wt.Order == 7) wt.PerStudentNorm = 0.25;
+                if (wt.Order == 8) wt.PerStudentNorm = 0.33;
+                if (wt.Order == 9) wt.PerStudentNorm = 3;
+                if (wt.Order == 10) wt.PerStudentNorm = 15;
+                if (wt.Order == 13) wt.PerStudentNorm = 0.5;
+                if (wt.Order == 14) wt.PerStudentNorm = 2;
+                await _ctx.WorkTypes.AddAsync(wt);
             }
 
             await _ctx.SaveChangesAsync();
         }
 
         #endregion
-
-        #region Specialities
-
-        private Guid ekSpecId;
-        private Guid knSpecId;
-
-        private async Task initSpecialities()
-        {
-            await Task.CompletedTask;
-
-            var ek = await _ctx.Specialities
-                .AddAsync(new Speciality { Title = "Спеціальність 051 Економіка (економічна кібернетика)" });
-
-            var kn = await _ctx.Specialities
-                .AddAsync(new Speciality { Title = "Спеціальність 122 Комп'ютерні науки" });
-
-            await _ctx.SaveChangesAsync();
-
-            ekSpecId = ek.Entity.Id;
-            knSpecId = kn.Entity.Id;
-        }
-
-        #endregion
-
+  
         #region Courses
 
-        private async Task initCourses()
+        private async Task initCourses(Guid teacherId)
         {
             await Task.CompletedTask;
 
-            /*await _ctx.Specialities.AddRangeAsync(new[]
+            var vybirk = await _ctx.CourseTypes.AddAsync(new CourseType { Title = "Вибірковий" });
+            var obovyaz = await _ctx.CourseTypes.AddAsync(new CourseType { Title = "Обов'язковий" });
+            await _ctx.SaveChangesAsync();
+
+            var rCourseEc = await _ctx.Courses.AddAsync(new Course
             {
-                new Speciality {Title = "Спеціальність 051 Економіка (економічна кібернетика)"},
-                new Speciality {Title = "Спеціальність 122 Комп'ютерні науки"}
-            });*/
+                Title = "Вступ до прикладного програмування в R",
+                StudentsCount = 13,
+                Type = obovyaz.Entity,
+                LecturesHours = 10,
+                LaboratoryHours= 26,
+                GroupCode = "Ек-1",
+                GroupsCount = 1,
+                EduYear = "2022/2023",
+                Semestr = 2,
+                IsActive = false,
+                OwnerId = teacherId
+            });
+
+            var rCourseFc = await _ctx.Courses.AddAsync(new Course
+            {
+                Title = "Вступ до прикладного програмування в R",
+                StudentsCount = 15,
+                LecturesHours = 0,
+                Type = obovyaz.Entity,
+                LaboratoryHours = 26,
+                GroupsCount = 1,
+                EduYear = "2022/2023",
+                Semestr = 2,
+                GroupCode = "Фк-1",
+                IsActive = false, 
+                OwnerId = teacherId
+            });
 
             await _ctx.SaveChangesAsync();
+
+
         }
 
         #endregion
 
         #region Users
 
-        private async Task initUsersAsync()
+        private async Task<Guid> initUsersAsync()
         {
             await Task.CompletedTask;
 
@@ -234,6 +330,8 @@ namespace EduTrack.WebUI.Server.Controllers
 
             await _mediator.Send(new UpdateRoleCommand(result.Value, "teacher"));
             await _mediator.Send(new UpdateApproveStatusCommand(result.Value, true));
+
+            return result.Value;
         }
 
         #endregion        

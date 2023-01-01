@@ -11,5 +11,6 @@ namespace EduTrack.Domain.Entities
     {
         public string? ShortTitle { get; set; }
         public int Order { get; set; }
+        public double? PerStudentNorm { get; set; }
     }
 }

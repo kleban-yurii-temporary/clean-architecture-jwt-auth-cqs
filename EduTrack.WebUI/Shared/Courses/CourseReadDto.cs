@@ -9,7 +9,18 @@ namespace EduTrack.WebUI.Shared.Courses
     public record CourseReadDto(
         Guid Id,
         string Title,
-        string Desription,
         string EduYear,
-        bool IsActive);
+        string GroupCode,
+        int Semestr,
+         int StudentsCount,
+         int StudentsCountActualy,
+          int LecturesHours,
+          int LecturesActualy,
+     int PracticeHours,
+      int PracticeActualy,
+     int LaboratoryHours,
+      int LaboratoryActualy,
+
+    int GroupsCount,
+    bool IsActive);
 }

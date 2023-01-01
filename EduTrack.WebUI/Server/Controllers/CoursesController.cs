@@ -2,6 +2,8 @@
 using EduTrack.Domain.Entities;
 using EduTrack.WebUI.Shared.Authentication;
 using EduTrack.WebUI.Shared.Courses;
+using EduTrack.WebUI.Shared.Dtos.Courses;
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,21 +20,40 @@ namespace EduTrack.WebUI.Server.Controllers
         public CoursesController(IMediator mediator, IMapper mapper)
             : base(mediator, mapper) { }
 
-        [HttpGet]
-        public async Task<IActionResult> GetListAsync()
+        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.All)]
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> GetTeachersListAsync()
         {
-            var result = await _mediator.Send(new GetCoursesQuery());
+            var result = await _mediator.Send(new GetTeacherCoursesQuery((Guid)CurrentUserId));
 
             return result.Match(
                 result => Ok(_mapper.Map<List<CourseReadDto>>(result)),
                 errors => Problem(errors));
         }
 
-        [HttpPost]
+        [HttpPost(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Create)]
         [Authorize(Roles = "teacher")]
-        public async Task<IActionResult> CreateAsync()
+        public async Task<IActionResult> CreateAsync(CourseCreateTypeEnum type)
         {
-            return Ok("Yeah!");
+            if (type == CourseCreateTypeEnum.Course)
+            {
+                var result = await _mediator.Send(new CreateCourseCommand((Guid)CurrentUserId));
+
+                return result.Match(
+                    result => Ok(result),
+                    errors => Problem(errors));
+            }
+
+            if (type == CourseCreateTypeEnum.OtherCourse)
+            {
+                var result = await _mediator.Send(new CreateCourseCommand((Guid)CurrentUserId));
+
+                return result.Match(
+                    result => Ok(result),
+                    errors => Problem(errors));
+            }
+
+            return BadRequest();
         }
     }
 }

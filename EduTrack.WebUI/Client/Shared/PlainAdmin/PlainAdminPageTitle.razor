@@ -4,23 +4,21 @@
         <div class="col-md-6">
             <div class="title d-flex align-items-center flex-wrap mb-30">
                 <h3 class="mr-30">@Title</h3>
-                <SfButton CssClass="e-primary">Btn</SfButton>
+                @Buttons              
             </div>
         </div>
         <!-- end col -->
         <div class="col-md-6">
-            <div class="breadcrumb-wrapper mb-10">
-                <nav aria-label="breadcrumb">
+            @if (Breadcrumbs != null)
+            {
+                <div class="breadcrumb-wrapper mb-10">
+                    <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#0">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            eCommerce
-                        </li>
+                        @Breadcrumbs
                     </ol>
                 </nav>
             </div>
+            }
         </div>
         <!-- end col -->
     </div>
@@ -28,6 +26,13 @@
 </div>
 
 @code {
+
     [Parameter]
     public string Title { get; set; } = "-";
+
+    [Parameter]
+    public RenderFragment Breadcrumbs { get; set; }
+
+    [Parameter]
+    public RenderFragment Buttons { get; set; }
 }

@@ -1,0 +1,57 @@
+﻿<AuthorizeView Roles="teacher">
+    <Authorized>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="/teacher" Match="NavLinkMatch.All">
+                <span class="icon"><i class="fa-solid fa-chalkboard-user"></i></span>
+                <span class="text">Панель керування</span>
+            </NavLink>
+        </li>
+        <li class="nav-item nav-item-has-children">
+            <a href="#0"
+               class="collapsed"
+               data-bs-toggle="collapse"
+               data-bs-target="#nav_zoom"
+               aria-controls="nav_zoom"
+               aria-expanded="false"
+               aria-label="Toggle navigation">
+                <span class="icon">
+                    <i class="fa-solid fa-video"></i>
+                </span>
+                <span class="text">Zoom</span>
+            </a>
+            <ul id="nav_zoom" class="collapse dropdown-nav">
+                <li>
+                    <NavLink href="/zoom/config" Match="NavLinkMatch.All">Конфігурація</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/zoom/config/test" Match="NavLinkMatch.All">Тестування запитів</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/zoom/meetings" Match="NavLinkMatch.All">Зустрічі (meetings)</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/zoom/records" Match="NavLinkMatch.All">Записи (records)</NavLink>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item nav-item-has-children">
+            <a href="#0"
+               class="collapsed"
+               data-bs-toggle="collapse"
+               data-bs-target="#nav_dictionary"
+               aria-controls="nav_dictionary"
+               aria-expanded="false"
+               aria-label="Toggle navigation">
+                <span class="icon">
+                    <i class="fa-regular fa-folder-open"></i>
+                </span>
+                <span class="text">Довідники</span>
+            </a>
+            <ul id="nav_dictionary" class="collapse dropdown-nav">
+                <li>
+                    <NavLink href="/dictionaries/worktypes" Match="NavLinkMatch.All">Види навч. робіт</NavLink>
+                </li>
+            </ul>
+        </li>
+    </Authorized>
+</AuthorizeView>

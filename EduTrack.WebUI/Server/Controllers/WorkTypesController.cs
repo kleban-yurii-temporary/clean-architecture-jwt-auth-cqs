@@ -1,5 +1,5 @@
 ﻿using EduTrack.Application.WorkTypes.Queries;
-using EduTrack.WebUI.Shared.Dtos.WorkTypes;
+using EduTrack.WebUI.Shared.Dtos.WorkTypes; 
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

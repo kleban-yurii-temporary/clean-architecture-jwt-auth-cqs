@@ -1,0 +1,24 @@
+﻿@page "/teacher/course/{Id}"
+@using EduTrack.WebUI.Shared.Dtos.Courses;
+
+@layout PlainAdminLayout
+
+<PlainAdminCard>
+    <CardBody>
+        <EduTrackSpinner></EduTrackSpinner>
+    </CardBody>
+</PlainAdminCard>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    public CourseDetailedDto Course = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        
+    }
+
+}
