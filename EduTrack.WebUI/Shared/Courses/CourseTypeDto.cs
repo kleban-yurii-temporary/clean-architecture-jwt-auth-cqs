@@ -6,9 +6,5 @@ using System.Threading.Tasks;
 
 namespace EduTrack.WebUI.Shared.Dtos.Courses
 {
-    public record CourseDetailedDto(
-        Guid Id,
-        string Title
-        );
-    
+    public record CourseTypeDto(Guid Id, string Title);
 }

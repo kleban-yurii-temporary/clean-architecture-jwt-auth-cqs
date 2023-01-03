@@ -9,6 +9,5 @@ namespace EduTrack.Domain.Entities
 {
     public class CourseType : BaseNamedEntity
     {
-        public virtual ICollection<Course>? Courses { get; set; }
     }
 }

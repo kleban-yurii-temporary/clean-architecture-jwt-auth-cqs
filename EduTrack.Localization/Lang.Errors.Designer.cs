@@ -97,6 +97,15 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Відсутній навчальний курс.
+        /// </summary>
+        public static string Course_NotFound {
+            get {
+                return ResourceManager.GetString("Course.NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Значення для параметра {0} відсутнє. Перевірте налаштування.
         /// </summary>
         public static string Option_EmptyValue {

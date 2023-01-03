@@ -13,7 +13,7 @@ namespace EduTrack.WebUI.Shared.ApiHelpers
             public static class Teacher
             {
                 public const string All = "/api/teacher/courses";
-                public const string Item = "/api/teacher/courses/{id}";
+                public const string Details = "/api/teacher/courses/{id}";
                 public const string Create = "/api/teacher/courses";
             } 
         }

@@ -13,7 +13,7 @@ namespace EduTrack.WebUI.Shared.Courses
         string GroupCode,
         int Semestr,
          int StudentsCount,
-         double? Hours,
-         double? HoursActualy,
+         double Hours,
+         double HoursActualy,
     bool IsActive);
 }

@@ -11,6 +11,7 @@
 @inject ILocalStorageService LocalStorage
 @inject NavigationManager Navigation
 @inject TokenManagerService TokenManagerService
+@inject HttpClient HClient
 
 
 <style>
@@ -66,10 +67,12 @@
                                 <br /><br />
                                 <!-- end col -->
                                 <div class="col-12">
-                                    <SfButton CssClass="e-success e-block" type="submit">Увійти</SfButton>
+                                    <SfButton CssClass="e-success e-block" type="submit">Увійти</SfButton><br />
+                                    <SfButton CssClass="e-danger e-block" OnClick="InitDbAsync">Ре-ініціалізувти БД</SfButton>
                                 </div>
                                 <div class="col-12">
                                     <div class="text-center text-danger" style="margin: 7px 10px; font-size: 14px">@ServerError</div>
+                                    <div class="text-center text-success" style="margin: 7px 10px; font-size: 14px">@InitMessage</div>
                                 </div>
                             </div>
                             <!-- end row -->
@@ -83,9 +86,6 @@
         </div>
         <!-- end row -->
     </div>
-
-
-
 </section>
 <style>
     .e-big {
@@ -99,6 +99,8 @@
     private UserLoginDto model = new();
 
     string ServerError = " ";
+
+    string InitMessage = " ";
 
     protected override void OnParametersSet()
     {
@@ -122,6 +124,12 @@
             await AuthentificationStateProvider.GetAuthenticationStateAsync();
             Navigation.NavigateTo("/");
         }
+    }
+
+    async Task InitDbAsync()
+    {
+        await HClient.GetAsync("/api/init");
+        InitMessage = "Базу даних ініціалізовано!";
     }
 
 }

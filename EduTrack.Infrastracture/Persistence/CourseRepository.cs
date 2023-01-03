@@ -17,14 +17,20 @@ namespace EduTrack.Infrastracture.Persistence
 
         public async Task<Guid> AddAsync(Course course)
         {
+            course.MaxDate = DateTime.Now.Month > 6 
+                ? new DateTime(DateTime.Now.Year, 12, 25) 
+                : new DateTime(DateTime.Now.Year + 1, 6, 25);
+
             var itm = await _dbCtx.Courses.AddAsync(course);
             await SaveAsync();
             return itm.Entity.Id;
         }
 
-        public Task<Course> GetAsync(Guid id)
+        public async Task<Course> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbCtx.Courses
+                .Include(x => x.Type)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Course>> GetListAsync()

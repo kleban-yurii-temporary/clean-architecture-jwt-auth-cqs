@@ -21,6 +21,8 @@ namespace EduTrack.Infrastracture.Context
         public DbSet<Option> Options => Set<Option>();
         public DbSet<OtherCourse> OtherCourses=> Set<OtherCourse>();
 
+        public DbSet<CourseInvite> CourseInvites => Set<CourseInvite>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()

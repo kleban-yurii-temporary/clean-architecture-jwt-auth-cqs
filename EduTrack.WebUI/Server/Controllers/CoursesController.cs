@@ -3,6 +3,7 @@ using EduTrack.Domain.Entities;
 using EduTrack.WebUI.Shared.Authentication;
 using EduTrack.WebUI.Shared.Courses;
 using EduTrack.WebUI.Shared.Dtos.Courses;
+using EduTrack.WebUI.Shared.Users;
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
@@ -54,6 +55,17 @@ namespace EduTrack.WebUI.Server.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Details)]
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> GetCourse(Guid id)
+        {
+            var result = await _mediator.Send(new GetCourseQuery(id, (Guid)CurrentUserId));
+
+            return result.Match(
+                    result => Ok(_mapper.Map<CourseReadDto>(result)),
+                    errors => Problem(errors));
         }
     }
 }

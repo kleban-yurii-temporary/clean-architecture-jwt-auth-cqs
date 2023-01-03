@@ -1,5 +1,6 @@
 ﻿using EduTrack.WebUI.Shared.Common;
 using EduTrack.WebUI.Shared.Courses;
+using EduTrack.WebUI.Shared.Dtos.Authentication;
 using EduTrack.WebUI.Shared.Dtos.Courses;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,17 @@ namespace EduTrack.WebUI.Client.HttpServices
             var response = await _httpClient.PostAsJsonAsync<CourseCreateTypeEnum>(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Create, type);
             var str = await response.Content.ReadAsStringAsync();
             return await response.Content.ReadFromJsonAsync<Guid>();
+        }
+        public async Task<ProblemOr<CourseReadDto>> GetDetailedAsync(Guid id)
+        {
+            var url = Shared.ApiHelpers.ApiUrl.Courses.Teacher.Details.Replace("{id}", id.ToString());
+            Console.WriteLine($"Url: {url}");
+
+            var response = await _httpClient.GetAsync(url);
+
+            return response.IsSuccessStatusCode
+                ? new ProblemOr<CourseReadDto> { Value = await response.Content.ReadFromJsonAsync<CourseReadDto>() }
+                : await response.Content.ReadFromJsonAsync<ProblemOr<CourseReadDto>>();
         }
     }
 }

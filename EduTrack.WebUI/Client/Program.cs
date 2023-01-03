@@ -17,6 +17,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<HttpAuthenticationService>();
 builder.Services.AddScoped<HttpTeacherCoursesService>();
+builder.Services.AddScoped<HttpTeacherOtherCoursesService>();
 builder.Services.AddScoped<TokenManagerService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

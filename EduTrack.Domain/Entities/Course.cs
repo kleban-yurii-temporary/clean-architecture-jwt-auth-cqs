@@ -19,6 +19,8 @@ namespace EduTrack.Domain.Entities
         public int GroupsCount { get; set; }
         public string? GroupCode { get; set; }
         public string? EduYear { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime MaxDate { get; set; }
         public bool IsActive { get; set; }
         public int LecturesHours { get; set; }
         public int PracticeHours { get; set; }
@@ -30,6 +32,8 @@ namespace EduTrack.Domain.Entities
         [ForeignKey("Owner")]
         public Guid OwnerId { get; set; }
         public virtual ICollection<WorkType> OtherWorkTypes { get; set; } = new HashSet<WorkType>();
+
+        public virtual ICollection<CourseInvite> Invites { get; set; } = new HashSet<CourseInvite>();
 
 
         // public Group? Group { get; set; }

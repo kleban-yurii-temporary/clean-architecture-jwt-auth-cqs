@@ -129,6 +129,9 @@
   <data name="Authentication.RefreshTokenExpired" xml:space="preserve">
     <value>Термін дії RefreshToken-у закінчився</value>
   </data>
+  <data name="Course.NotFound" xml:space="preserve">
+    <value>Відсутній навчальний курс</value>
+  </data>
   <data name="Option.EmptyValue" xml:space="preserve">
     <value>Значення для параметра {0} відсутнє. Перевірте налаштування</value>
   </data>

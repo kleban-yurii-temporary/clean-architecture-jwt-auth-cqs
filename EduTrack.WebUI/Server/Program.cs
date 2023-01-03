@@ -5,10 +5,13 @@ using EduTrack.WebUI.Server.Common.Mapping;
 using EduTrack.WebUI.Server.Errors;
 using EduTrack.WebUI.Server.Swagger;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
+using System.Globalization;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,25 @@ builder.Services
     .AddPresentation()
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    // Define the list of cultures your app will support 
+    var supportedCultures = new List<CultureInfo>()
+                {
+                    new CultureInfo("uk-UA")
+                };
+
+    // Set the default culture 
+    options.DefaultRequestCulture = new RequestCulture("uk-UA");
+    options.DefaultRequestCulture.Culture.NumberFormat.CurrencySymbol = supportedCultures[1].NumberFormat.CurrencySymbol;
+
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    options.RequestCultureProviders = new List<IRequestCultureProvider>() {
+                 new QueryStringRequestCultureProvider()
+                };
+});
 
 builder.Services.AddCors(options =>
     {
@@ -30,7 +52,8 @@ builder.Services.AddCors(options =>
         });
     });
 
-
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddSwaggerGen(options =>
 {

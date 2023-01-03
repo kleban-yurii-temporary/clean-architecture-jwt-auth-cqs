@@ -1,26 +1,37 @@
-﻿using System;
+﻿using EduTrack.WebUI.Shared.Dtos.Courses;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EduTrack.WebUI.Shared.Courses
 {
-    public record CourseReadDto(
-        Guid Id,
-        string Title,
-        string EduYear,
-        string GroupCode,
-        int Semestr,
-         int StudentsCount,
-         int StudentsCountActualy,
-          int LecturesHours,
-          int LecturesActualy,
-     int PracticeHours,
-      int PracticeActualy,
-     int LaboratoryHours,
-      int LaboratoryActualy,
+    public class CourseReadDto
+    {
+        public Guid Id { get; set; }
 
-    int GroupsCount,
-    bool IsActive);
+        [Required]
+        [MinLength(5)]
+        public string Title { get; set; }
+
+        [Required]
+        public string ShortTitle { get; set; }
+
+        public string EduYear { get; set; }
+        public string GroupCode { get; set; }
+        public int Semestr { get; set; }
+        public int StudentsCount { get; set; }
+        public int StudentsCountActualy { get; set; }
+        public int LecturesHours { get; set; }
+        public int LecturesActualy { get; set; }
+        public int PracticeHours { get; set; }
+        public int PracticeActualy { get; set; }
+        public int LaboratoryHours { get; set; }
+        public int LaboratoryActualy { get; set; }
+        public CourseTypeDto Type { get; set; }
+        public int GroupsCount { get; set; }
+        public bool IsActive { get; set; }
+    }
 }

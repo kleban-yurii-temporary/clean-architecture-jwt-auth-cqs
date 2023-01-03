@@ -8,16 +8,17 @@
 
 @inject NavigationManager Navigation
 @inject HttpTeacherCoursesService CoursesService
+@inject HttpTeacherOtherCoursesService OtherCoursesService
 
 @attribute [Authorize(Roles = "teacher")]
 
 <PlainAdminPageTitle Title="Список робіт">
     <Buttons>
-        <SfButton IconCss="fa-solid fa-plus" OnClick="@CreateCourseShowModal" CssClass="e-primary e-outline">Додати курс</SfButton>
+        <SfButton IconCss="fa-solid fa-plus" OnClick="@CreateCourseShowModal" CssClass="e-primary e-outline">Додати курс/роботи</SfButton>
     </Buttons>
     <Breadcrumbs>
-        <BreadcrumbItem Title="Панель керування" NavigationLink="/" />
-        <BreadcrumbItem Title="Список курсів" />
+        <ETBreadcrumbItem Title="Панель керування" NavigationLink="/" />
+        <ETBreadcrumbItem Title="Список курсів" />
     </Breadcrumbs>
 </PlainAdminPageTitle>
 
@@ -31,8 +32,7 @@
         }
         else if (!Courses.Any())
         {
-            <SfMessage Severity="MessageSeverity.Info">Курси відсутні</SfMessage>
-
+            <SfMessage Severity="MessageSeverity.Info">Курси відсутні.</SfMessage>
         }
         else
         {
@@ -119,40 +119,85 @@
         }
         <hr />
         <h6 class="mb-20">Інші види робіт</h6>
-        @*
-        @if (Courses == null)
+        @if (OtherCourses == null)
         {
-        <EduTrackSpinner></EduTrackSpinner>
+            <EduTrackSpinner></EduTrackSpinner>
         }
-
-
-
-        @if (!Courses.Any())
+        else if (!OtherCourses.Any())
         {
-
+            <SfMessage Severity="MessageSeverity.Info">Інші види навчальних робіт відсутні.</SfMessage>
         }
         else
         {
-        <h6 class="mb-25">Навчальні курси</h6>
-
-        <div class="row">
-        <div class="col-md-10"></div>
-        <div class="col-md-2">
+            <SfGrid DataSource="@OtherCourses">
+                <GridPageSettings PageSize="5"></GridPageSettings>
+                <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(OtherCourseReadDto.Id) Visible="false" IsPrimaryKey="true"></GridColumn>
+                    <GridColumn HeaderText="Загальна інформація">
+                        <Template>
+                            @{
+                                var c = (context as OtherCourseReadDto);
+                                <h6>@c.Title</h6>
+                              <p><small>Навч. рік: <span class="text-primary">@c.EduYear</span>, семестр: <span class="text-primary">@c.Semestr</span></small></p>
+                                @if(!string.IsNullOrEmpty(c.GroupCode))
+                                {
+                                     <p>
+                                    <small>
+                                        Група/и: <span class="text-primary">@c.GroupCode</span>,
+                                        студ.: <span class="text-primary">@c.StudentsCount</span>
+                                    </small>
+                                </p>
+                                }
+                                
+                                <p>
+                                    @if (c.IsActive)
+                                    {
+                                        <span style="font-size:12px; font-weight:normal" class="badge bg-success"><i class="fa-solid fa-check"></i> Активний</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="font-size:12px; font-weight:normal" class="badge bg-danger"><i class="fa-solid fa-xmark"></i> Неактивний</span>
+                                    }
+                                </p>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn>
+                        <Template>
+                            @{
+                                var c = (context as OtherCourseReadDto);
+                                <p>
+                                    <small>
+                                        @if (c.Hours > 0)
+                                        {
+                                            <span>
+                                                Навантаження: (<span class="text-primary">@c.Hours/@c.HoursActualy</span>) год.
+                                            </span><br />
+                                            <span>
+                                                Норма: @*(<span class="text-primary">@c.Hours/@c.HoursActualy</span>) год.*@ год./студ.
+                                            </span>
+                                        }</small>
+                                </p>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn HeaderText="Деталі" TextAlign="TextAlign.Center" Width="150">
+                        <Template>
+                            @{
+                                var c = (context as OtherCourseReadDto);
+                                <SfButton OnClick="@(e => ViewOtherCourseDetails(c.Id))" IsPrimary="true" IconCss="fa-regular fa-file-lines"></SfButton>
+                            }
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        }
+        @*
         <SfDropDownList Width="100%" CssClass="" @bind-Value="@SelectedCourseStatus" TValue="string" TItem="KeyValuePair<string, string>" DataSource="@CourseStatus">
         <DropDownListFieldSettings Value="Value" Text="Key"></DropDownListFieldSettings>
         <DropDownListEvents TValue="string" TItem="KeyValuePair<string, string>" ValueChange="OnCourseStatusChange"></DropDownListEvents>
         </SfDropDownList>
-        </div>
-        </div>
-        <div class="row">
-        <div class="col-md-12">
-
-        </div>
-        </div>
-
-        <h6 class="mb-25">Інші види робіт</h6>
-
-
         }*@
     </CardBody>
 </PlainAdminCard>
@@ -202,17 +247,22 @@
     string courseTypeChecked = "course";
 
     private IEnumerable<CourseReadDto> Courses = null;
+    private IEnumerable<OtherCourseReadDto> OtherCourses = null;
 
     protected override async Task OnInitializedAsync()
     {
         Courses = await CoursesService.GetListAsync();
+        OtherCourses = await OtherCoursesService.GetListAsync();
     }
 
     void ViewCourseDetails(Guid id)
     {
         Navigation.NavigateTo($"teacher/course/{id}");
     }
-
+    void ViewOtherCourseDetails(Guid id)
+    {
+        Navigation.NavigateTo($"teacher/othercourse/{id}");
+    }
     string SelectedCourseStatus = "active";
 
     List<KeyValuePair<string, string>> CourseStatus = new List<KeyValuePair<string, string>>
