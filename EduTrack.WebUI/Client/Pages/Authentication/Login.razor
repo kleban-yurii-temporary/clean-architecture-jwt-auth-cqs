@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@using EduTrack.WebUI.Client.Extensions;
 @using EduTrack.WebUI.Client.Shared.PlainAdmin;
 @using EduTrack.WebUI.Client.HttpServices.Authentification;
 @using EduTrack.WebUI.Shared.Authentication;
@@ -41,7 +42,7 @@
                 <div class="signin-wrapper">
                     <div class="form-wrapper">
                         <div>
-                            <img src="/plainadmin/assets/images/logo/logo.png" style="height: 40px" />
+                            <img src="/plainadmin/assets/images/logo/logo.png" style="height: 35px" />
                         </div>
                         <br />
                         <h6>Вхід у систему</h6>
@@ -122,7 +123,12 @@
             await TokenManagerService.SetRefreshTokenAsync(response.Value.RefreshToken);
 
             await AuthentificationStateProvider.GetAuthenticationStateAsync();
-            Navigation.NavigateTo("/");
+
+            var value = "/";
+
+            Navigation.TryGetQueryString<string>("redirect_url", out value);            
+
+            Navigation.NavigateTo(value??"/");
         }
     }
 

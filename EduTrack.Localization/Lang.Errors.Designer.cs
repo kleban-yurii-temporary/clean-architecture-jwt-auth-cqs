@@ -97,11 +97,65 @@ namespace EduTrack.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Курс неактивний. Зверніться до викладача.
+        /// </summary>
+        public static string Course_Inactive {
+            get {
+                return ResourceManager.GetString("Course.Inactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Відсутній навчальний курс.
         /// </summary>
         public static string Course_NotFound {
             get {
                 return ResourceManager.GetString("Course.NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Студент/ка з такою адресою елетронної пошти уже додано на курс.
+        /// </summary>
+        public static string Course_StudentExists {
+            get {
+                return ResourceManager.GetString("Course.StudentExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to У підгрупі присутні студенти.
+        /// </summary>
+        public static string Course_Subgroup_HasStudents {
+            get {
+                return ResourceManager.GetString("Course.Subgroup.HasStudents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Запрошення деактивовано викладачем.
+        /// </summary>
+        public static string Invite_Deactivated {
+            get {
+                return ResourceManager.GetString("Invite.Deactivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Термін дії запрошення закінчився. Отримайте нове запрошення у викладача.
+        /// </summary>
+        public static string Invite_Expired {
+            get {
+                return ResourceManager.GetString("Invite.Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Посилання на запрошення недійсне або видалене викладачем.
+        /// </summary>
+        public static string Invite_NotFound {
+            get {
+                return ResourceManager.GetString("Invite.NotFound", resourceCulture);
             }
         }
         

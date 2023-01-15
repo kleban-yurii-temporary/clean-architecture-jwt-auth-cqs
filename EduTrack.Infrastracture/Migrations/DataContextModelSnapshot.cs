@@ -15,7 +15,48 @@ namespace EduTrack.Infrastracture.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.ComplexGradeItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Grade")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid?>("GradeAndPresenseId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GradeAndPresenseId");
+
+                    b.ToTable("ComplexGradeItems");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.ComplexGradeItemHeader", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("LessonId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("MaxGrade")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("ComplexGradeItemHeaders");
+                });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Course", b =>
                 {
@@ -23,38 +64,53 @@ namespace EduTrack.Infrastracture.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ConsultationHours")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("ConsultationHours")
+                        .HasColumnType("REAL");
 
                     b.Property<Guid>("CourseTypeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EduYear")
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("ExamHours")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("GroupCode")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("GroupsCount")
-                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LaboratoryHours")
+                    b.Property<double>("LaboratoryHours")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("LabsGroupsCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LecturesHours")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("LecturesHours")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("MaxDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PracticeHours")
+                    b.Property<int>("PracticeGroupsCount")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("PracticeHours")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("Semestr")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShortTitle")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("StudentsCount")
                         .HasColumnType("INTEGER");
@@ -71,6 +127,31 @@ namespace EduTrack.Infrastracture.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("EduTrack.Domain.Entities.CourseInvite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpiryOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeactivated")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("CourseInvites");
+                });
+
             modelBuilder.Entity("EduTrack.Domain.Entities.CourseType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -83,6 +164,171 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CourseTypes");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.GradeAndPresense", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Grade")
+                        .HasColumnType("REAL");
+
+                    b.Property<bool>("IsPresent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("GradesAndPresenses");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.Lesson", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DocumentedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GradeType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LessonType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("MaxGrade")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Num")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("RealDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SubGroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("SubGroupUniteCode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Unlist")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("WorkTypeId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("SubGroupId");
+
+                    b.HasIndex("WorkTypeId");
+
+                    b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.LessonTime", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("End")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Num")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LessonTimes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("52bd289d-a43e-4b3c-a80e-961eb86f8d2f"),
+                            End = new DateTime(1, 1, 1, 8, 50, 0, 0, DateTimeKind.Unspecified),
+                            Num = 0,
+                            Start = new DateTime(1, 1, 1, 8, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("ceeb5b30-ff30-4236-8b9b-4696ced117c4"),
+                            End = new DateTime(1, 1, 1, 8, 50, 0, 0, DateTimeKind.Unspecified),
+                            Num = 1,
+                            Start = new DateTime(1, 1, 1, 8, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("712d3a26-a3c4-4cdb-9d32-dac82965d6d4"),
+                            End = new DateTime(1, 1, 1, 10, 20, 0, 0, DateTimeKind.Unspecified),
+                            Num = 2,
+                            Start = new DateTime(1, 1, 1, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("a5c99223-8cc3-4299-be9c-9a5c916402b1"),
+                            End = new DateTime(1, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Num = 3,
+                            Start = new DateTime(1, 1, 1, 10, 40, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("1366cece-852d-4142-95b0-9173feb77334"),
+                            End = new DateTime(1, 1, 1, 13, 50, 0, 0, DateTimeKind.Unspecified),
+                            Num = 4,
+                            Start = new DateTime(1, 1, 1, 12, 30, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("0195be5b-0c15-4d92-a6e1-4cc8bf75f728"),
+                            End = new DateTime(1, 1, 1, 15, 30, 0, 0, DateTimeKind.Unspecified),
+                            Num = 5,
+                            Start = new DateTime(1, 1, 1, 14, 10, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("7904d201-9456-4086-ac1f-d71128486c2f"),
+                            End = new DateTime(1, 1, 1, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            Num = 6,
+                            Start = new DateTime(1, 1, 1, 15, 40, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("b84a5454-0f8a-499f-80c0-8d6effffc860"),
+                            End = new DateTime(1, 1, 1, 18, 30, 0, 0, DateTimeKind.Unspecified),
+                            Num = 7,
+                            Start = new DateTime(1, 1, 1, 17, 10, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("76a3fb7d-d243-47cc-907a-258c5a1a0c99"),
+                            End = new DateTime(1, 1, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Num = 8,
+                            Start = new DateTime(1, 1, 1, 18, 40, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Option", b =>
@@ -114,6 +360,82 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Options");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("25e3698f-3ccb-4754-b855-fb16d76e2591"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_base_url",
+                            Value = "https://api.zoom.us/v2"
+                        },
+                        new
+                        {
+                            Id = new Guid("938ea27a-22af-4ea9-b1ea-d6c407d66fbd"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_users_me",
+                            Value = "https://api.zoom.us/v2/users/me"
+                        },
+                        new
+                        {
+                            Id = new Guid("fe014504-4b3e-4f3a-9bec-d829557704ce"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_users_me_meetings",
+                            Value = "https://api.zoom.us/v2/users/me/meetings?type=previous_meetings"
+                        },
+                        new
+                        {
+                            Id = new Guid("596ed383-b842-4909-8926-9b86fe827456"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_users_me_recordings",
+                            Value = "https://api.zoom.us/v2/users/me/recordings"
+                        },
+                        new
+                        {
+                            Id = new Guid("41814cfd-2d26-4ccf-ad45-24b8dc29fb66"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_users_me_webinars",
+                            Value = "https://api.zoom.us/v2/users/me/webinars"
+                        },
+                        new
+                        {
+                            Id = new Guid("0519aba1-f713-4f44-a552-816ae73a458b"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_client_id",
+                            OwnerId = new Guid("df132ae6-4c80-4282-bcf3-89b2850c9341"),
+                            Value = "Yo_UM8esSOqJCHMRHCJVg"
+                        },
+                        new
+                        {
+                            Id = new Guid("108ee04d-af96-4c3a-929d-492132e22e25"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_client_secret",
+                            OwnerId = new Guid("df132ae6-4c80-4282-bcf3-89b2850c9341"),
+                            Value = "PsF2x0mNgKwe77LhROffARNyI6rDCZeO"
+                        },
+                        new
+                        {
+                            Id = new Guid("d2f45476-ed43-4c73-8f13-8bb7d9c7a911"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_auth_url",
+                            Value = "https://zoom.us/oauth/authorize"
+                        },
+                        new
+                        {
+                            Id = new Guid("3eaa1e02-92a7-4d24-9144-5dcb7a80a549"),
+                            CantBeRemoved = true,
+                            Group = "zoom",
+                            Key = "zoom_api_access_token_url",
+                            Value = "https://zoom.us/oauth/token"
+                        });
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.OtherCourse", b =>
@@ -158,6 +480,79 @@ namespace EduTrack.Infrastracture.Migrations
                     b.ToTable("OtherCourses");
                 });
 
+            modelBuilder.Entity("EduTrack.Domain.Entities.OtherWorkHours", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Hours")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("OtherWorkHours");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.StudentRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SubGroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("SubGroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("StudentRecords");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.SubGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("SubGroups");
+                });
+
             modelBuilder.Entity("EduTrack.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -197,6 +592,21 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("df132ae6-4c80-4282-bcf3-89b2850c9341"),
+                            Email = "yurakleban@gmail.com",
+                            FirstName = "Юрій",
+                            IsApproved = true,
+                            LastName = "Клебан",
+                            PasswordHash = "ghTVSMIJ/5biUBiG5UkVBEv1mJa94uydbkXP9rYE5Hs=",
+                            PasswordSalt = new byte[] { 172, 136, 149, 206, 135, 12, 2, 149, 179, 113, 214, 7, 168, 134, 186, 182 },
+                            RefreshToken = "",
+                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Role = "teacher"
+                        });
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.WorkType", b =>
@@ -207,6 +617,9 @@ namespace EduTrack.Infrastracture.Migrations
 
                     b.Property<Guid?>("CourseId")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("LessonType")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
@@ -225,6 +638,165 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("WorkTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("368b3f7a-107f-4f83-a486-8c0f8fc69707"),
+                            LessonType = 1,
+                            Order = 1,
+                            ShortTitle = "Лекц.",
+                            Title = "Лекційні заняття"
+                        },
+                        new
+                        {
+                            Id = new Guid("c81099c5-6058-45bd-94e7-955284ea60e2"),
+                            LessonType = 2,
+                            Order = 2,
+                            ShortTitle = "Груп.",
+                            Title = "Групові заняття"
+                        },
+                        new
+                        {
+                            Id = new Guid("fdc77966-adf6-4843-b925-4014a0367514"),
+                            LessonType = 3,
+                            Order = 3,
+                            ShortTitle = "Лаб.",
+                            Title = "Лабораторні заняття"
+                        },
+                        new
+                        {
+                            Id = new Guid("8d930a69-5707-4880-9916-0ebd9726d7fd"),
+                            LessonType = 4,
+                            Order = 4,
+                            ShortTitle = "Конс. екз.",
+                            Title = "Консультації до екзамену"
+                        },
+                        new
+                        {
+                            Id = new Guid("9a53d3fa-59db-41ac-b882-49ec7afea7b9"),
+                            LessonType = -1,
+                            Order = 5,
+                            ShortTitle = "Конс. сем",
+                            Title = "Консультації впродовж семестру"
+                        },
+                        new
+                        {
+                            Id = new Guid("5004f8b6-d3fa-4edc-a66c-db45ec648f77"),
+                            LessonType = -1,
+                            Order = 6,
+                            PerStudentNorm = 0.25,
+                            ShortTitle = "Пром. контр.",
+                            Title = "Проміжний контроль"
+                        },
+                        new
+                        {
+                            Id = new Guid("05575ebf-c53d-4148-aff9-dc546da8ca94"),
+                            LessonType = -1,
+                            Order = 7,
+                            PerStudentNorm = 0.25,
+                            ShortTitle = "Залік",
+                            Title = "Залік"
+                        },
+                        new
+                        {
+                            Id = new Guid("8bddca39-d2f6-44ad-8ba9-9b776f9ee08d"),
+                            LessonType = 5,
+                            Order = 8,
+                            PerStudentNorm = 0.33000000000000002,
+                            ShortTitle = "Екзамен",
+                            Title = "Екзамен"
+                        },
+                        new
+                        {
+                            Id = new Guid("a16b62b3-5f8e-4919-81b7-bc853be65035"),
+                            LessonType = -1,
+                            Order = 9,
+                            PerStudentNorm = 3.0,
+                            ShortTitle = "Курс. роб.",
+                            Title = "Курсові роботи"
+                        },
+                        new
+                        {
+                            Id = new Guid("22cd573e-226b-45f9-88af-be26b3604081"),
+                            LessonType = -1,
+                            Order = 10,
+                            PerStudentNorm = 15.0,
+                            ShortTitle = "Кваліф. роб.",
+                            Title = "Керівництво кваліфікаційними роботами"
+                        },
+                        new
+                        {
+                            Id = new Guid("26aa70d9-27b3-4c8a-b426-a7cab749a829"),
+                            LessonType = -1,
+                            Order = 11,
+                            ShortTitle = "Реценз.",
+                            Title = "Рецензування"
+                        },
+                        new
+                        {
+                            Id = new Guid("c4dd361b-33dd-469e-988e-22dbc46d2764"),
+                            LessonType = -1,
+                            Order = 12,
+                            ShortTitle = "ЕК(захист)",
+                            Title = "Участь у роботі ЕК(захист)"
+                        },
+                        new
+                        {
+                            Id = new Guid("65740572-ba41-4281-9ed7-c72e12adcb0a"),
+                            LessonType = -1,
+                            Order = 13,
+                            PerStudentNorm = 0.5,
+                            ShortTitle = "ЕК(екзамен)",
+                            Title = "Участь у роботі ЕК(екзамен)"
+                        },
+                        new
+                        {
+                            Id = new Guid("54ca67a4-21e4-45fd-9951-a44bcfd31af6"),
+                            LessonType = -1,
+                            Order = 14,
+                            PerStudentNorm = 2.0,
+                            ShortTitle = "Кер. практ.",
+                            Title = "Керівництво практикою"
+                        },
+                        new
+                        {
+                            Id = new Guid("f9a1624f-1fd4-4f50-9531-e608ad7972bc"),
+                            LessonType = -1,
+                            Order = 15,
+                            ShortTitle = "Кер. асп.",
+                            Title = "Керівництво аспірантами"
+                        },
+                        new
+                        {
+                            Id = new Guid("99d5aca9-dacb-41ba-898b-c09a130bc515"),
+                            LessonType = -1,
+                            Order = 16,
+                            ShortTitle = "Кер. стаж.",
+                            Title = "Керівництво стажистами"
+                        },
+                        new
+                        {
+                            Id = new Guid("fbac5ad3-4111-4e8f-b793-6708ab4b7482"),
+                            LessonType = -1,
+                            Order = 17,
+                            ShortTitle = "Контр. відв.",
+                            Title = "Контрольні відвідування"
+                        });
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.ComplexGradeItem", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.GradeAndPresense", null)
+                        .WithMany("ComplexGradeItems")
+                        .HasForeignKey("GradeAndPresenseId");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.ComplexGradeItemHeader", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.Lesson", null)
+                        .WithMany("ComplexGradeItems")
+                        .HasForeignKey("LessonId");
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Course", b =>
@@ -244,6 +816,59 @@ namespace EduTrack.Infrastracture.Migrations
                     b.Navigation("Owner");
 
                     b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.CourseInvite", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.Course", "Course")
+                        .WithMany("Invites")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.GradeAndPresense", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.Lesson", "Lesson")
+                        .WithMany("GradesAndPresenses")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduTrack.Domain.Entities.StudentRecord", "Student")
+                        .WithMany("GradesAndPresense")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.Lesson", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.Course", "Course")
+                        .WithMany("Lessons")
+                        .HasForeignKey("CourseId");
+
+                    b.HasOne("EduTrack.Domain.Entities.SubGroup", "SubGroup")
+                        .WithMany("Lessons")
+                        .HasForeignKey("SubGroupId");
+
+                    b.HasOne("EduTrack.Domain.Entities.WorkType", "WorkType")
+                        .WithMany()
+                        .HasForeignKey("WorkTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("SubGroup");
+
+                    b.Navigation("WorkType");
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Option", b =>
@@ -272,6 +897,49 @@ namespace EduTrack.Infrastracture.Migrations
                     b.Navigation("WorkType");
                 });
 
+            modelBuilder.Entity("EduTrack.Domain.Entities.OtherWorkHours", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.OtherCourse", "Course")
+                        .WithMany("WorkHours")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.StudentRecord", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.Course", "Course")
+                        .WithMany("Students")
+                        .HasForeignKey("CourseId");
+
+                    b.HasOne("EduTrack.Domain.Entities.SubGroup", "SubGroup")
+                        .WithMany("Students")
+                        .HasForeignKey("SubGroupId");
+
+                    b.HasOne("EduTrack.Domain.Entities.User", "User")
+                        .WithMany("StudentRecords")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("SubGroup");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.SubGroup", b =>
+                {
+                    b.HasOne("EduTrack.Domain.Entities.Course", "Course")
+                        .WithMany("SubGroups")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("EduTrack.Domain.Entities.WorkType", b =>
                 {
                     b.HasOne("EduTrack.Domain.Entities.Course", null)
@@ -281,7 +949,15 @@ namespace EduTrack.Infrastracture.Migrations
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Course", b =>
                 {
+                    b.Navigation("Invites");
+
+                    b.Navigation("Lessons");
+
                     b.Navigation("OtherWorkTypes");
+
+                    b.Navigation("Students");
+
+                    b.Navigation("SubGroups");
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.CourseType", b =>
@@ -289,11 +965,42 @@ namespace EduTrack.Infrastracture.Migrations
                     b.Navigation("Courses");
                 });
 
+            modelBuilder.Entity("EduTrack.Domain.Entities.GradeAndPresense", b =>
+                {
+                    b.Navigation("ComplexGradeItems");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.Lesson", b =>
+                {
+                    b.Navigation("ComplexGradeItems");
+
+                    b.Navigation("GradesAndPresenses");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.OtherCourse", b =>
+                {
+                    b.Navigation("WorkHours");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.StudentRecord", b =>
+                {
+                    b.Navigation("GradesAndPresense");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.SubGroup", b =>
+                {
+                    b.Navigation("Lessons");
+
+                    b.Navigation("Students");
+                });
+
             modelBuilder.Entity("EduTrack.Domain.Entities.User", b =>
                 {
                     b.Navigation("OwnedCourses");
 
                     b.Navigation("OwnederCourses");
+
+                    b.Navigation("StudentRecords");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Reflection;
@@ -15,22 +16,19 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
 builder.Services
     .AddPresentation()
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    // Define the list of cultures your app will support 
     var supportedCultures = new List<CultureInfo>()
                 {
                     new CultureInfo("uk-UA")
                 };
-
-    // Set the default culture 
     options.DefaultRequestCulture = new RequestCulture("uk-UA");
     options.DefaultRequestCulture.Culture.NumberFormat.CurrencySymbol = supportedCultures[1].NumberFormat.CurrencySymbol;
 
@@ -43,7 +41,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.AddCors(options =>
     {
-        // this defines a CORS policy called "default"
         options.AddPolicy("default", policy =>
         {
             policy.WithOrigins("https://localhost:44303", "https://*.zoom.us")

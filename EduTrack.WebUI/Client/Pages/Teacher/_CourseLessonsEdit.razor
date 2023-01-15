@@ -1,0 +1,115 @@
+﻿@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Invites;
+@using EduTrack.WebUI.Shared.Dtos.Lessons;
+@using static EduTrack.WebUI.Shared.Dtos.Lessons.LessonDto;
+
+<div class="mt-2 mb-2">
+    <SfButton CssClass="e-warning e-outline" OnClick="@AddLessonAsyncModal" IconCss="fa-solid fa-plus">Додати заняття</SfButton>
+</div>
+
+@if (Course != null)
+{
+    @if (WarningsList.Any())
+    {
+        @foreach (var w in WarningsList)
+        {
+            <p style="margin: 7px 0"><SfMessage Severity="MessageSeverity.Warning" ShowIcon="true">@w</SfMessage></p>
+        }
+    }
+}
+else
+{
+    <EduTrackSpinner></EduTrackSpinner>
+}
+
+<SfDialog Width="25%" IsModal="true" @bind-Visible="@AddLessonsModalVisibility">
+    <DialogTemplates>
+        <Header> Створення занять </Header>
+        <Content>
+            <p>Оберіть тип заняття та кількість:</p><br />
+
+            <SfDropDownList TItem="KeyValuePair<LessonTypeDto, string>" TValue="LessonTypeDto" Placeholder="Тип заняття" FloatLabelType="FloatLabelType.Auto" @bind-Value="@AddLessonModelObj.Type" DataSource="@LessonTypes">
+                <DropDownListEvents TItem="KeyValuePair<LessonTypeDto, string>" TValue="LessonTypeDto" ValueChange="OnLessonTypeChange" />
+                <DropDownListFieldSettings Text="Value" Value="Key" />
+            </SfDropDownList>
+
+            <SfNumericTextBox Placeholder="Кількість занять" FloatLabelType="FloatLabelType.Auto" TValue="int" Min="1" Max="100" Format="##" @bind-Value="@AddLessonModelObj.Count"></SfNumericTextBox>
+
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Відмінити" IsPrimary="false" OnClick="@CloseAddLessonsModal" />
+        <DialogButton Content="Продовжити" IconCss="fa-regular fa-floppy-disk" IsPrimary="true" OnClick="@AddLessonsAsync" />
+    </DialogButtons>
+    <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
+</SfDialog>
+
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    bool AddLessonsModalVisibility = false;
+
+    CourseWithLessonsDto Course = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+    }
+
+    List<string> WarningsList = new List<string>();
+
+    List<LessonDto> LecturesLessons = null;
+
+    List<LessonDto> PracticeLessons = null;
+
+    List<LessonDto> LaboratoryLessons = null;
+
+    LessonDto ConsultationLesson = null;
+
+    LessonDto ExamLesson = null;
+
+    async Task AddLessonAsyncModal()
+    {
+        AddLessonsModalVisibility = true;
+    }
+
+    void CloseAddLessonsModal()
+    {
+        AddLessonsModalVisibility = false;
+    }
+
+
+    async Task AddLessonsAsync()
+    {
+
+    }
+
+    AddLessonModel AddLessonModelObj = new();
+
+    class AddLessonModel
+    {
+        public LessonTypeDto Type { get; set; } = LessonTypeDto.Lecture;
+        public int Count { get; set; } = 1;
+        public string Message { get; set; } = string.Empty;
+    }
+
+    public void OnLessonTypeChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<LessonTypeDto, KeyValuePair<LessonTypeDto, string>> args)
+    {
+        //this.ChangeValue = args.ItemData.Text;
+    }
+
+
+    List<KeyValuePair<LessonTypeDto, string>> LessonTypes = new List<KeyValuePair<LessonTypeDto, string>>
+    {
+        new KeyValuePair<LessonTypeDto, string>(LessonTypeDto.Lecture, "Леція"),
+        new KeyValuePair<LessonTypeDto, string>(LessonTypeDto.Pactice, "Практична"),
+        new KeyValuePair<LessonTypeDto, string>(LessonTypeDto.Laboratory, "Лабораторна"),
+        new KeyValuePair<LessonTypeDto, string>(LessonTypeDto.Consultation, "Консультація"),
+        new KeyValuePair<LessonTypeDto, string>(LessonTypeDto.Exam, "Екзамен"),
+    };
+
+}

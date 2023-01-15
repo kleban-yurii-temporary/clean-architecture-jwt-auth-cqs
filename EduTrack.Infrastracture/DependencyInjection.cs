@@ -19,12 +19,14 @@ namespace EduTrack.Infrastracture
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             ConfigurationManager configuration)
         {
-            services.AddDbContext<DataContext>(options => 
-                options.UseSqlite(configuration.GetConnectionString("SqliteConnection"))  
-            );
+            var connectionString = configuration.GetConnectionString("SqliteConnection");
+
+            services.AddDbContext<DataContext>(options =>
+    options.UseSqlite(connectionString)
+);
 
             var jwtSettings = new JwtSettings();
             configuration.Bind(JwtSettings.SectionName, jwtSettings);
@@ -43,7 +45,7 @@ namespace EduTrack.Infrastracture
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),              
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
                     RoleClaimType = ClaimTypes.Role,
                     ClockSkew = TimeSpan.Zero
                 }); ;
@@ -54,6 +56,10 @@ namespace EduTrack.Infrastracture
             services.AddScoped<IOtherCourseRepository, OtherCourseRepository>();
             services.AddScoped<ICourseTypeRepository, CourseTypeRepository>();
             services.AddScoped<IOptionsRepository, OptionsRepository>();
+            services.AddScoped<IInviteRepository, InviteRepository>();
+            services.AddScoped<ILessonsRepository, LessonRepository>();
+            services.AddScoped<ISubGroupsRepository, SubGroupRepository>();
+            services.AddScoped<IStudentRecordsRepository, StudentRecordsRepository>();
 
             return services;
         }

@@ -13,6 +13,8 @@ namespace EduTrack.Domain.Entities
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime ExpiryOn { get; set; } = DateTime.UtcNow.AddDays(10);
 
+        public bool IsDeactivated { get; set; } = false;
+
         [Required]
         public Course? Course { get; set; }
     }

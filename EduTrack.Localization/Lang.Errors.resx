@@ -129,8 +129,26 @@
   <data name="Authentication.RefreshTokenExpired" xml:space="preserve">
     <value>Термін дії RefreshToken-у закінчився</value>
   </data>
+  <data name="Course.Inactive" xml:space="preserve">
+    <value>Курс неактивний. Зверніться до викладача</value>
+  </data>
   <data name="Course.NotFound" xml:space="preserve">
     <value>Відсутній навчальний курс</value>
+  </data>
+  <data name="Course.StudentExists" xml:space="preserve">
+    <value>Студент/ка з такою адресою елетронної пошти уже додано на курс</value>
+  </data>
+  <data name="Course.Subgroup.HasStudents" xml:space="preserve">
+    <value>У підгрупі присутні студенти</value>
+  </data>
+  <data name="Invite.Deactivated" xml:space="preserve">
+    <value>Запрошення деактивовано викладачем</value>
+  </data>
+  <data name="Invite.Expired" xml:space="preserve">
+    <value>Термін дії запрошення закінчився. Отримайте нове запрошення у викладача</value>
+  </data>
+  <data name="Invite.NotFound" xml:space="preserve">
+    <value>Посилання на запрошення недійсне або видалене викладачем</value>
   </data>
   <data name="Option.EmptyValue" xml:space="preserve">
     <value>Значення для параметра {0} відсутнє. Перевірте налаштування</value>

@@ -1,0 +1,31 @@
+﻿@page "/course/{Id:guid}/invites"
+@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Courses
+@using EduTrack.WebUI.Shared.Dtos.Invites
+
+@layout PlainAdminLayout
+
+@inject HttpInviteService InviteService
+
+<PlainAdminPageTitle Title="Керування курсом / Запрошення">
+    <Breadcrumbs>
+        <SfBreadcrumb>
+            <BreadcrumbItems>
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
+                <BreadcrumbItem Text="Список курсів" Url="/teacher/courses" />
+                <BreadcrumbItem Text="@Course.Title" />
+            </BreadcrumbItems>
+        </SfBreadcrumb>
+    </Breadcrumbs>
+</PlainAdminPageTitle>
+
+<CourseMenu Active="lessons" Id="@Id" />
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    bool IsLoaded = true;
+
+    CourseReadDto Course = new();
+}

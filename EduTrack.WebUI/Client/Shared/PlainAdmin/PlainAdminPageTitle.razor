@@ -1,24 +1,20 @@
 ﻿<PageTitle>EduTrack - @Title</PageTitle>
-<div class="title-wrapper pt-30">
+
+<div class="title-wrapper pt-30 pb-1">
     <div class="row align-items-center">
-        <div class="col-md-6">
-            <div class="title d-flex align-items-center flex-wrap mb-30">
+        <div class="col-md-6 mb-10">
+            <div class="title d-flex align-items-center flex-wrap mb-10">
                 <h3 class="mr-30">@Title</h3>
                 @Buttons              
             </div>
+            @if (Breadcrumbs != null)
+            {
+                @Breadcrumbs            
+            }
         </div>
         <!-- end col -->
         <div class="col-md-6">
-            @if (Breadcrumbs != null)
-            {
-                <div class="breadcrumb-wrapper mb-10">
-                    <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        @Breadcrumbs
-                    </ol>
-                </nav>
-            </div>
-            }
+              
         </div>
         <!-- end col -->
     </div>

@@ -42,4 +42,13 @@
         await AuthStateProvider.GetAuthenticationStateAsync();
         Navigation.NavigateTo("/login");
     }
+
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("initMenuToogle");
+    }
+
 }

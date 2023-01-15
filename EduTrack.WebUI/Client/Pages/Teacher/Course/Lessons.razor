@@ -1,0 +1,103 @@
+﻿@page "/course/{Id:guid}/lessons"
+@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Courses
+@using EduTrack.WebUI.Shared.Dtos.Lessons
+
+@layout PlainAdminLayout
+
+@inject HttpTeacherCoursesService CourseService
+
+<PlainAdminPageTitle Title="Керування курсом / Заняття">
+    <Breadcrumbs>
+        <SfBreadcrumb>
+            <BreadcrumbItems>
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
+                <BreadcrumbItem Text="Список курсів" Url="/teacher/courses" />
+                <BreadcrumbItem Text="@Course.Title" />
+            </BreadcrumbItems>
+        </SfBreadcrumb>
+    </Breadcrumbs>
+</PlainAdminPageTitle>
+
+<style>
+    .e-rowcell {
+        padding:0 5px !important;
+    }
+    .e-headercell {
+        padding: 0 5px !important;
+        font-weight: bold;
+    }
+</style>
+
+<CourseMenu Active="lessons" Id="@Id" />
+
+<SfCard>
+    <CardContent>
+        @if (!IsLoaded)
+        {
+            <EduTrackSpinner></EduTrackSpinner>
+        }
+        else
+        {
+            <div class="row">
+                @if (Course.LecturesHours > 0)
+                {
+                    <CourseLessonsList CourseId="Id" LessonType="LessonTypeDto.Lecture" Title="Лекції" ActualHours="@Course.LecturesHours"></CourseLessonsList>
+                }
+
+                @if (Course.PracticeHours > 0)
+                {
+                    <CourseLessonsList HasSubGroups="@(Course.PracticeGroupsCount > 1)" CourseId="Id" LessonType="LessonTypeDto.Pactice" Title="Практичні" ActualHours="@Course.PracticeHours"></CourseLessonsList>
+                }
+
+                @if (Course.LaboratoryHours > 0)
+            {
+                    <CourseLessonsList HasSubGroups="@(Course.LabsGroupsCount > 1)" CourseId="Id" LessonType="LessonTypeDto.Laboratory" Title="Лабораторні" ActualHours="@Course.LaboratoryHours"></CourseLessonsList>
+                }
+
+                @if (Course.CounsultationHours > 0)
+                {
+                    <div class="col-lg-4">
+                    <h6>Консультація</h6>
+                </div>
+                }
+
+                @if (Course.ExamHours > 0)
+                    {
+                          <div class="col-lg-4">
+                        <h6>Екзамен</h6>
+                    </div>
+                }
+            </div>
+        }
+    </CardContent>
+</SfCard>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    bool IsLoaded = true;
+
+    CourseReadDto Course = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var response = await CourseService.GetDetailedAsync(Id);
+
+        if (response.IsError)
+        {
+            throw new NotImplementedException("AAAAAAAAAAAAAA");
+        }
+        else
+        {
+            Course = response.Value;
+        }
+
+        IsLoaded = true;
+    }
+    
+    List<string> WarningsList = new List<string>();
+  
+}

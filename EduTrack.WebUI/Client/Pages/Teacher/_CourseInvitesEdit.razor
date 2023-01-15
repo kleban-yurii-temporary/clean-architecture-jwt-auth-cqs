@@ -1,0 +1,116 @@
+﻿@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Invites;
+
+@inject HttpInviteService InviteService
+@inject HttpClient RestClient
+
+<div class="mt-2">
+    <SfButton OnClick="NewInviteShowModal" CssClass="e-success">Додати запрошення</SfButton>
+</div>
+<div style="padding:10px 0">
+ 
+    @if (Invites is null)
+    {
+        <EduTrackSpinner></EduTrackSpinner>
+    }
+    else if (!Invites.Any())
+    {
+        <SfMessage Severity="MessageSeverity.Info">Запрошення відсутні.</SfMessage>
+    }
+    else
+    {
+        @foreach(var i in Invites)
+        {
+            var url = $"{RestClient.BaseAddress}invites/{i.Id.ToString()}";
+            <p style="padding: 5px 10px; margin: 0 0 10px; border-radius:5px; border: 1px solid #ccc">
+                <div>
+                    <div style="margin: 5px 0 0 0" class="float-end">
+                    <SfButton CssClass="e-small e-outline e-danger"  IconCss="fa-regular fa-trash-can">Видалити</SfButton>
+                    </div>
+                    <small>
+                        Створено: <strong>@i.CreatedOn.ToString("dd.MM.yyyy HH:mm")</strong> | Дійсно до: <strong>@i.ExpiryOn.ToString("dd.MM.yyyy HH:mm")</strong>
+                    </small>
+                </div>
+                <SfTextBox Value="@url" Disabled="@(DateTime.UtcNow > i.ExpiryOn)" Width="w100"></SfTextBox>
+            </p>
+        }
+    }
+</div>
+
+<SfDialog Width="35%" IsModal="true" @bind-Visible="@NewInviteModalVisibility">
+    <DialogTemplates>
+        <Header> Створення нового запрошення </Header>
+        <Content>
+            <p>Ви справді бажаєте створити нове запрошення на курс?</p>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Відмінити" IsPrimary="false" OnClick="@CloseModal" />
+        <DialogButton Content="Продовжити" IsPrimary="true" OnClick="@CreateInviteAsync" />
+    </DialogButtons>
+    <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
+</SfDialog>
+
+<style>
+    .w100 {
+        width: 100% !important;
+    }
+
+    .e-inplaceeditor .e-editable-value-container .e-editable-overlay-icon {
+        visibility: visible;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    IEnumerable<InviteDto> Invites = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ReadInvitesList();
+    }
+
+    async Task ReadInvitesList()
+    {
+        var result = await InviteService.GetListAsync(Id);
+
+        if (result.IsError)
+        {
+            throw new NotImplementedException("List getting error!");
+        }
+        else
+        {
+            Invites = result.Value;
+        }
+    }
+
+    bool NewInviteModalVisibility = false;
+
+    void NewInviteShowModal()
+    {
+        NewInviteModalVisibility = true;
+    }
+
+    void CloseModal()
+    {
+        NewInviteModalVisibility = false;
+    }
+
+    async Task CreateInviteAsync()
+    {
+        var result = await InviteService.CreateAsync(Id);
+
+        CloseModal();
+
+        if (result.IsError)
+        {
+            throw new NotImplementedException("Add Invite Error!!!");
+        }
+        else
+        {
+            await ReadInvitesList();
+        }
+    }
+}

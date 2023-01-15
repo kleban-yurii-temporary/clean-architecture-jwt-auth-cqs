@@ -1,0 +1,182 @@
+﻿@page "/invites/{Id}"
+
+@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Invites;
+@using Syncfusion.Blazor.Grids;
+@using EduTrack.WebUI.Client.Shared.PlainAdmin;
+
+@layout PlainAdminCleanLayout
+
+@inject NavigationManager Navigation
+@inject HttpClient RestClient
+@inject HttpInviteService InviteService
+@inject AuthenticationStateProvider AuthStateProvider
+
+<style>
+    .auth_cover_img {
+        background-image: url("/plainadmin/assets/images/invites/preview1.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+    }
+
+    .signin-section .auth-row {
+        height: 400px !important;
+    }
+</style>
+
+<section class="">
+
+    <div class="container-fluid">
+
+        <div class="row g-0 auth-row">
+            <div class="col-lg-6 auth_cover_img">
+                <div class="auth-cover-wrapper bg-primary-100">
+                </div>
+            </div>
+            <!-- end col -->
+            <div class="col-lg-6">
+                <div class="signin-wrapper">
+                    <div class="form-wrapper">
+                        <div>
+                            <img src="/plainadmin/assets/images/logo/logo.png" style="height: 35px" />
+                        </div>
+                        <br />
+                        <p>- Запрошення на курс -</p>
+                        <br />
+                       
+                        @if (Invite == null & !IsError)
+                        {
+                            <EduTrackSpinner Text="Перевірка запрошення, зачекайте..."></EduTrackSpinner>
+                        } 
+                        else if(IsError)
+                        {
+                            <SfMessage Severity="MessageSeverity.Error">@ErrorMessage</SfMessage>
+                   
+                            <p class="text-center">
+                                <a href="/">на головну сторінку <i class="fa-solid fa-arrow-right-long"></i></a>
+                            </p>
+                        } 
+                        else
+                        {
+                            <div style="margin-bottom:10px">
+                                <small>
+                                    Курс: <strong>@Invite.CourseTitle</strong><br/>
+                                    Група: <strong>@Invite.GroupCode</strong>
+                                </small>
+                            </div>
+                        }
+
+                        @if(AuthState != null)
+                        {
+                            if (!AuthState.User.Identity.IsAuthenticated)
+                            {
+                                <div style="margin-bottom:10px">
+                                <SfMessage Severity="MessageSeverity.Warning">Увійдіть в систему, щоб прийняти запрошення</SfMessage>
+                                </div>
+                                <SfButton CssClass="e-success e-block" OnClick="@RedirectToLogin" type="submit">Увійти</SfButton>
+                            } else
+                            {
+                                <span>Auth</span>
+                            }
+                        }
+
+                        @*<EditForm Model="@model" OnValidSubmit="@LoginAsync">
+                            <DataAnnotationsValidator />
+                            <div class="row">
+                                <div class="col-12">
+                                    <SfTextBox @bind-Value="model.Email" Type="Syncfusion.Blazor.Inputs.InputType.Email" Placeholder="Email" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => model.Email)" class="text-danger" />
+                                </div>
+                                <br /><br />
+                                <!-- end col -->
+                                <div class="col-12">
+                                    <div class="input-style-1">
+                                        <SfTextBox @bind-Value="model.Password" Type="Syncfusion.Blazor.Inputs.InputType.Password" Placeholder="Пароль" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                                        <ValidationMessage For="@(() => model.Password)" class="text-danger" />
+                                    </div>
+                                </div>
+                                <br /><br />
+                                <!-- end col -->
+                                <div class="col-12">
+                                    <SfButton CssClass="e-success e-block" type="submit">Увійти</SfButton><br />
+                                    <SfButton CssClass="e-danger e-block" OnClick="InitDbAsync">Ре-ініціалізувти БД</SfButton>
+                                </div>
+                                <div class="col-12">
+                                    <div class="text-center text-danger" style="margin: 7px 10px; font-size: 14px">@ServerError</div>
+                                    <div class="text-center text-success" style="margin: 7px 10px; font-size: 14px">@InitMessage</div>
+                                </div>
+                            </div>
+                            <!-- end row -->
+                        </EditForm>*@
+                        <hr />
+                        <div class="text-center text-muted" style="margin-top: 10px; font-size: 14px;">&copy; @DateTime.Now.Year Юрій Клебан</div>
+                    </div>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+</section>
+<style>
+    .e-big {
+        padding: 10px 15px;
+        font-size: 18px;
+    }
+</style>
+
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    Guid parsedId = Guid.Empty;
+
+    DetailedInviteDto Invite = null;
+    AuthenticationState AuthState = null;
+    bool IsError = false;
+    string ErrorMessage = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Guid.TryParse(Id, out parsedId))
+        {
+            AuthState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var inviteResponse = await InviteService.GetDetailsAsync(parsedId);
+
+            if(inviteResponse.IsError)
+            {
+                IsError = true;
+                ErrorMessage = inviteResponse.Detail;
+            } 
+            else
+            {
+                Invite = inviteResponse.Value;
+            }
+
+
+
+        } 
+        else
+        {
+            IsError = true;
+            ErrorMessage = "Некоректний ідентифікатор запрошення. Зверніться до викладача";
+        }
+
+        
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }  
+
+    void RedirectToLogin()
+    {
+        var url = RestClient.BaseAddress + "/login?redirect_url=/invites/" + Id;
+        Navigation.NavigateTo(url);
+    }
+}

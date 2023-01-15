@@ -1,0 +1,350 @@
+﻿@using EduTrack.WebUI.Shared.Dtos.Lessons;
+@using EduTrack.WebUI.Shared.Dtos.SubGroups;
+@using EduTrack.WebUI.Shared.Dtos.WorkTypes;
+
+@inject HttpLessonService LessonService
+@inject HttpClient _httpClient
+@inject HttpSubGroupService SubGroupsService
+<style>
+    .short {
+    }
+
+    .ntb {
+        margin: -4px 7px 0 0;
+    }
+</style>
+
+<div class="@CssClass mt-2 mb-2" style="position: relative">
+
+
+    <SfButton CssClass="e-small float-end e-info" OnClick="@(e => AddModalShow(true))" IconCss="fa-solid fa-plus">Додати</SfButton>
+
+
+    <h6>
+        @Title (<span>@(Lessons is not null ? Lessons.Count() : "-")</span> з <span>@(ActualHours / 2)</span>)
+        @if (HasSubGroups)
+        {
+            <span class="text-primary">Підгр.: @string.Join(", ", SubGroups.Select(x=> x.Title).ToList())</span>
+        }
+    </h6>
+
+    @if (Lessons is null)
+    {
+        <EduTrackSpinner></EduTrackSpinner>       
+    }
+    else if (!Lessons.Any())
+    {
+        <br />
+        <SfMessage Severity="MessageSeverity.Warning">Інформація про заняття відсутня</SfMessage>
+        <br />
+    }
+    else
+    {
+        <br />
+
+        @if (HasSubGroups)
+        {
+            <SfGrid RowHeight="30" DataSource="@Lessons" AllowPaging="false" AllowTextWrap="true">
+                <GridColumns>
+                    <GridColumn HeaderText="Підгрупа" TextAlign="TextAlign.Center">
+                        <GridColumns>
+                            @foreach (var g in SubGroups)
+                            {
+                                <GridColumn HeaderText="@g.Title" TextAlign="TextAlign.Center">
+                                    <GridColumns>
+                                        <GridColumn Width="77px" Field=@nameof(LessonDto.DocumentedDate) HeaderText="Звіт" Format="d" TextAlign="TextAlign.Center"></GridColumn>
+                                        <GridColumn Width="77px" Field=@nameof(LessonDto.RealDate) HeaderText="Факт" Format="d" TextAlign="TextAlign.Center"></GridColumn>
+                                        <GridColumn Width="40px" Field=@nameof(LessonDto.Num) HeaderText="#" TextAlign="TextAlign.Center"></GridColumn>
+                                    </GridColumns>
+                                </GridColumn>
+                            }
+                        </GridColumns>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(LessonDto.SubGroupUniteCode) IsPrimaryKey="true" Visible="false"></GridColumn>
+
+                    <GridColumn Width="150px" Field=@nameof(LessonDto.SubGroupUniteCode) HeaderText="#sguc" TextAlign="TextAlign.Center"></GridColumn>
+
+                    <GridColumn Width="50%" Field=@nameof(LessonDto.Title) HeaderText="Тема"></GridColumn>
+                    <GridColumn Width="20%" Field=@nameof(LessonDto.WorkType.Title) HeaderText="Тип"></GridColumn>
+                    <GridColumn Width="65px" Field=@nameof(LessonDto.MaxGrade) TextAlign="TextAlign.Center" HeaderText="Макс. оцінка"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-9">
+                    <SfGrid @ref="NoGroupLessonsGrid" RowHeight="30" DataSource="@Lessons" AllowPaging="false" AllowTextWrap="true">
+                        <GridEvents RowSelected="NoGroupLessonsGridRowSelectHandler" RowDeselected="NoGroupLessonsGridRowDeSelectHandler" TValue="LessonDto"></GridEvents>
+                        <GridEditSettings AllowDeleting="true"></GridEditSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(LessonDto.Id) IsPrimaryKey="true" Visible="false"></GridColumn>
+                            <GridColumn HeaderText="Дати" TextAlign="TextAlign.Center">
+                                <GridColumns>
+                                    <GridColumn Width="80px" Field=@nameof(LessonDto.DocumentedDate) HeaderText="Звіт" Format="d" TextAlign="TextAlign.Center"></GridColumn>
+                                    <GridColumn Width="80px" Field=@nameof(LessonDto.RealDate) HeaderText="Факт" Format="d" TextAlign="TextAlign.Center"></GridColumn>
+                                </GridColumns>
+                            </GridColumn>
+                            <GridColumn Width="70px" Field=@nameof(LessonDto.Num) HeaderText="#" TextAlign="TextAlign.Center"></GridColumn>
+                            <GridColumn Width="50%" Field=@nameof(LessonDto.Title) HeaderText="Тема"></GridColumn>
+                            <GridColumn Width="30%" Field=@nameof(LessonDto.WorkType.Title) HeaderText="Тип роботи (для звіту)"></GridColumn>
+                            <GridColumn Width="70px" Field=@nameof(LessonDto.MaxGrade) TextAlign="TextAlign.Center" HeaderText="Макс. оцінка"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                </div>
+                <div class="col-md-3">
+
+                    <EditForm Model="@SelectedLessonDto">
+                        <DataAnnotationsValidator />
+                        <div class="row">
+                            <div class="form-group col-md-12 col-xl-12">
+                                <SfDatePicker ShowTodayButton="true" AllowEdit="false" CssClass="w100 e-block" @bind-Value="@SelectedLessonDto.DocumentedDate" Enabled="@LessonDtoEditEnabled" Placeholder="Звітна дата" FloatLabelType="FloatLabelType.Always"></SfDatePicker>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedLessonDto.DocumentedDate)" />
+                            </div>
+                            <div class="form-group col-md-12 col-xl-12">
+                                <SfDatePicker ShowTodayButton="true" AllowEdit="false" CssClass="w100 e-block" @bind-Value="@SelectedLessonDto.RealDate" Enabled="@LessonDtoEditEnabled" Placeholder="Фактична дата" FloatLabelType="FloatLabelType.Always"></SfDatePicker>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedLessonDto.RealDate)" />
+                            </div>
+                            <div class="form-group col-md-12  col-xl-12">
+                            <SfCheckBox CheckedChanged="@DatesBindedChanged" Label="Зв'язати дати" @bind-Checked="DatesBinded"></SfCheckBox>
+                                </div>
+                            <div class="form-group col-md-12  col-xl-6">
+                                <SfDropDownList @bind-Value="@SelectedLessonDto.Num" TItem="int" Enabled="@LessonDtoEditEnabled" Placeholder="Номер заняття" FloatLabelType="FloatLabelType.Always" TValue="int" DataSource="@LessonNumbers">
+                                    <DropDownListFieldSettings Value="Num" Text="Num"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                            <div class="form-group col-md-12 col-xl-6">
+                                <SfNumericTextBox Step="0.05" CssClass="w100 e-block" Min="0" Max="100" Decimals="2" @bind-Value="@SelectedLessonDto.MaxGrade" Enabled="@LessonDtoEditEnabled" Placeholder="Макс. оцінка [0;100]" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedLessonDto.MaxGrade)" />
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <SfTextBox CssClass="w100 e-block" @bind-Value="@SelectedLessonDto.Title" Enabled="@LessonDtoEditEnabled" Placeholder="Тема" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedLessonDto.Title)" />
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <SfDropDownList @bind-Value="@SelectedLessonDto.WorkType.Id" TItem="WorkTypeDto" Enabled="@LessonDtoEditEnabled" Placeholder="Тип роботи (звіт)" FloatLabelType="FloatLabelType.Always" TValue="Guid" DataSource="@WorkTypes">
+                                    <DropDownListFieldSettings Value="Id" Text="Title"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+
+                        </div>
+                    </EditForm>
+                    <div class="temp">
+                        <SfButton OnClick="LessonSimpleSave" CssClass="e-success mb-1 e-block" Disabled="@LessonDtoEditDisabled">Зберегти</SfButton>
+                        <SfButton OnClick="LessonSimpleDelete" CssClass="e-primary mb-1 e-block" Disabled="@LessonDtoEditDisabled">Видалити</SfButton>
+                        <SfButton OnClick="LessonSimpleCancel" CssClass="e-block" Disabled="@LessonDtoEditDisabled">Відмінити</SfButton>
+                    </div>
+
+                </div>
+            </div>
+
+        }
+    }
+</div>
+
+<hr />
+
+<SfDialog Width="250px" IsModal="true" @bind-Visible="@AddLessonsModalVisibility">
+    <DialogTemplates>
+        <Header> Створення занять </Header>
+        <Content>
+            <p>Введіть кількість занять, які Ви бажаєте додати:</p><br />
+
+            <SfNumericTextBox @bind-Value="CountToAdd" Min=1 Max=100 Placeholder="Кількість занять" FloatLabelType="FloatLabelType.Auto" TValue="int" Format="##"></SfNumericTextBox>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Відмінити" IsPrimary="false" OnClick="@(e => AddModalShow(false))" />
+        <DialogButton Content="Продовжити" IconCss="fa-regular fa-floppy-disk" IsPrimary="true" OnClick="@AddLessonsAsync" />
+    </DialogButtons>
+    <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
+</SfDialog>
+
+<SfDialog Width="250px" IsModal="true" @bind-Visible="@DeleteLessonModalVisibility">
+    <DialogTemplates>
+        <Header> Видалення заняття </Header>
+        <Content>
+            <p>Ви справді бажаєет видалити заняття:</p><br />
+
+            <p>
+                Звітна дата:  <strong>@DeleteLessonDto.DocumentedDate.ToString("dd.MM.yyyy")</strong><br />
+                Фактична дата:  <strong>@DeleteLessonDto.RealDate.ToString("dd.MM.yyyy")</strong><br />
+                Номер заняття (#):  <strong>@DeleteLessonDto.Num</strong><br />
+                Номер заняття (#):  <strong>@DeleteLessonDto.Title</strong><br />
+                тип:  <strong>@DeleteLessonDto.WorkType.Title</strong><br />
+                Макс. оцінка:  <strong>@DeleteLessonDto.MaxGrade</strong>
+            </p>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Відмінити" IsPrimary="false" OnClick="@(e => DeleteModalShow(false))" />
+        <DialogButton Content="Продовжити" IconCss="fa-regular fa-floppy-disk" IsPrimary="true" OnClick="@DeleteLessonAsync" />
+    </DialogButtons>
+    <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
+</SfDialog>
+
+@code {
+
+    IEnumerable<LessonDto> Lessons { get; set; } = null;
+    IEnumerable<SubGroupDto> SubGroups { get; set; } = new List<SubGroupDto>();
+    List<WorkTypeDto> WorkTypes { get; set; } = new List<WorkTypeDto>() { WorkTypeDto.Empty };
+    IEnumerable<int> LessonNumbers { get; set; } = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
+    [Parameter]
+    public Guid CourseId { get; set; }
+
+    [Parameter]
+    public LessonTypeDto LessonType { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = String.Empty;
+
+    [Parameter]
+    public string CssClass { get; set; } = String.Empty;
+
+    [Parameter]
+    public double ActualHours { get; set; } = 0;
+
+    [Parameter]
+    public bool HasSubGroups { get; set; } = false;
+
+    int CountToAdd = 1;
+    bool AddLessonsModalVisibility = false;
+    bool DeleteLessonModalVisibility = false;
+    bool DatesBinded = true;
+    #region NoGroupLessonsGrid
+
+    SfGrid<LessonDto> NoGroupLessonsGrid;
+    LessonDto SelectedLessonDto = new LessonDto { WorkType = WorkTypeDto.Empty };
+    LessonDto DeleteLessonDto = new LessonDto { WorkType = WorkTypeDto.Empty };
+
+    bool LessonDtoEditCheck = false;
+    bool LessonDtoEditDisabled = true;
+    bool LessonDtoEditEnabled = false;
+
+    public void NoGroupLessonsGridRowSelectHandler(RowSelectEventArgs<LessonDto> args)
+    {
+        SelectedLessonDto = new LessonDto()
+            {
+                Id = args.Data.Id,
+                DocumentedDate = args.Data.DocumentedDate,
+                RealDate = args.Data.RealDate,
+                Num = args.Data.Num,
+                Title = args.Data.Title,
+                WorkType = args.Data.WorkType??WorkTypeDto.Empty,
+                MaxGrade = args.Data.MaxGrade
+            };
+        this.LessonDtoEditDisabled = false;
+        this.LessonDtoEditEnabled = true;
+    }
+
+    public void NoGroupLessonsGridRowDeSelectHandler(RowDeselectEventArgs<LessonDto> args)
+    {
+        SelectedLessonDto = new LessonDto { WorkType = WorkTypeDto.Empty };
+        this.LessonDtoEditDisabled = true;
+        this.LessonDtoEditEnabled = false;
+    }
+
+    public async Task LessonSimpleSave()
+    {
+        if ((SelectedLessonDto.Id != Guid.Empty))
+        {
+            var wtId = SelectedLessonDto.WorkType.Id;
+            SelectedLessonDto.WorkType = WorkTypes.First(x => x.Id == wtId);
+            var result = await LessonService.UpdateAsync(SelectedLessonDto, HasSubGroups);
+
+            var updLesson = result.Value;
+
+            await this.NoGroupLessonsGrid.SetRowDataAsync(SelectedLessonDto.Id, SelectedLessonDto);
+            await LessonSimpleCancel();
+        }
+    }
+
+    public async Task LessonSimpleDelete()
+    {
+        if (SelectedLessonDto.Id != Guid.Empty)
+        {
+            //var response = await LessonService.DeleteAsync(SelectedLessonDto.Id);
+
+            // if(response.IsError)
+            {
+                //await ToastObj.ShowAsync(ErrorToast(response.Title));
+            }
+            // else
+            {
+                await this.NoGroupLessonsGrid.DeleteRecordAsync("Id", SelectedLessonDto);
+                //await ToastObj.ShowAsync(SuccessToast("Підгрупу видалено."));
+                await LessonSimpleCancel();
+                //checkWarning();
+            }
+
+        }
+    }
+
+    public async Task LessonSimpleCancel()
+    {
+        SelectedLessonDto = new();
+        await this.NoGroupLessonsGrid.ClearSelectionAsync();
+    }
+
+    #endregion
+
+    async Task AddLessonsAsync()
+    {
+        await LessonService.CreateAsync(CourseId, LessonType, CountToAdd);
+        CountToAdd = 1;
+        NoGroupLessonsGridRowDeSelectHandler(null);
+        AddModalShow(false);
+        await UpdateAsync();
+    }
+
+    async Task DeleteLessonAsync()
+    {
+        await LessonService.DeleteAsync(CourseId, HasSubGroups);
+        DeleteModalShow(false);
+        NoGroupLessonsGridRowDeSelectHandler(null);
+        await UpdateAsync();
+    }
+
+    void AddModalShow(bool val)
+    {
+        AddLessonsModalVisibility = val;
+    }
+
+    void DeleteModalShow(bool val)
+    {
+        if(val) 
+            DeleteLessonDto = SelectedLessonDto;
+        else {
+            DeleteLessonDto = new LessonDto { WorkType = WorkTypeDto.Empty };        
+        }
+
+        AddLessonsModalVisibility = val;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateAsync();
+    }
+
+    public async Task UpdateAsync()
+    {
+        Lessons = await LessonService.GetList(CourseId, LessonType);
+        WorkTypes.AddRange((await _httpClient.GetFromJsonAsync<IEnumerable<WorkTypeDto>>(ApiUrl.WorkTypes.All)).ToList());
+
+        if (HasSubGroups)
+        {
+            SubGroups = await SubGroupsService.GetListAsync(CourseId);
+        }
+    }
+
+    void ConvertLessonsToGrouped()
+    {
+        //var grouped = Lessons.GroupBy(x => x.SubGroupUniteCode);
+        //var distinct = Lessons.Distinct()
+
+    }
+
+}

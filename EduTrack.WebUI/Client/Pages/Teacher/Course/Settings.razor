@@ -1,0 +1,356 @@
+﻿@page "/course/{Id:guid}/settings"
+
+@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Courses;
+
+@layout PlainAdminLayout
+
+@inject HttpTeacherCoursesService CourseService
+@inject HttpCourseTypeService CourseTypes
+
+<PlainAdminPageTitle Title="Керування курсом / Налаштування">
+    <Breadcrumbs>
+        <SfBreadcrumb>
+            <BreadcrumbItems>
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
+                <BreadcrumbItem Text="Список курсів" Url="/teacher/courses" />
+                <BreadcrumbItem Text="@Course.Title" />
+            </BreadcrumbItems>
+        </SfBreadcrumb>
+    </Breadcrumbs>
+</PlainAdminPageTitle>
+
+<CourseMenu Active="settings" Id="@Id"  />
+
+<SfCard CssClass="pt-2 pl-2 pr-2">
+    <CardContent>
+        @if (!IsLoaded)
+        {
+            <EduTrackSpinner></EduTrackSpinner>
+        }
+        else
+        {
+            <h5>Загальна інформація</h5>
+            <div class="row mt-2 mb-4">
+                <div class="col-md-4">
+                    <label class="pa-label text-muted">- Повна назва -</label>
+                    <SfInPlaceEditor CssClass="w100" @bind-Value="@Course.Title" TValue="string" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="string" OnActionSuccess="@OnActionSuccessStringHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfTextBox @bind-Value="@Course.Title"></SfTextBox>
+                                <ValidationMessage For=@(() => Course.Title) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Коротка назва -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.ShortTitle" TValue="string" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="string" OnActionSuccess="@OnActionSuccessStringHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfTextBox @bind-Value="@Course.ShortTitle"></SfTextBox>
+                                <ValidationMessage For=@(() => Course.ShortTitle) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Тип -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.CourseTypeId" TValue="Guid" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.DropDownList" ShowButtons="true" SubmitOnEnter="true">
+                           <InPlaceEditorEvents TValue="Guid" OnActionSuccess="@OnActionSuccessGuidHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfDropDownList TValue="Guid" TItem="CourseTypeDto" @bind-Value="@Course.CourseTypeId" DataSource="@CourseTypesList">
+                                    <DropDownListFieldSettings Value="Id" Text="Title"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                                <ValidationMessage For=@(() => Course.CourseTypeId) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Навч.рік -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.EduYear" TValue="string" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="string" OnActionSuccess="@OnActionSuccessStringHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfTextBox @bind-Value="@Course.EduYear"></SfTextBox>
+                                <ValidationMessage For=@(() => Course.EduYear) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Семестр -</label>
+                    <SfInPlaceEditor CssClass="w100" @bind-Value="@Course.Semestr" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Min="1" Max="2" @bind-Value="@Course.Semestr"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.Semestr) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                
+            </div>
+            <h5>Група/и</h5>
+            <div class="row mt-2 mb-4">
+                    <div class="col-md-2">
+                    <label class="pa-label text-muted">- Група -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.GroupCode" TValue="string" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="string" OnActionSuccess="@OnActionSuccessStringHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfTextBox @bind-Value="@Course.GroupCode"></SfTextBox>
+                                <ValidationMessage For=@(() => Course.GroupCode) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Практичні, груп -</label>
+                    <SfInPlaceEditor CssClass="w100" @bind-Value="@Course.PracticeGroupsCount" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="2" Min="1" Max="5" @bind-Value="@Course.PracticeGroupsCount"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.PracticeGroupsCount) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        У системі: <strong>@Course.GroupsActualy</strong>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Лабораторні, груп -</label>
+                    <SfInPlaceEditor CssClass="w100" @bind-Value="@Course.LabsGroupsCount" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="2" Min="1" Max="5" @bind-Value="@Course.LabsGroupsCount"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.LabsGroupsCount) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        У системі: <strong>@Course.GroupsActualy</strong>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Студентів -</label>
+                    <SfInPlaceEditor CssClass="w100" @bind-Value="@Course.StudentsCount" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="1" Min="0" Max="100" @bind-Value="@Course.StudentsCount"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.StudentsCount) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        У системі: <strong>@Course.StudentsCountActualy</strong>
+                    </div>
+                </div>
+            </div>
+            <h5>Навантаження, год</h5>
+            <div class="row mt-2 mb-4">
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Лекції, год -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.LecturesHours" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="2" Min="0" Max="100" @bind-Value="@Course.LecturesHours"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.LecturesHours) />                               
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                     <div class="edit-info">Кількість: <strong>@(Course.LecturesHours/2)</strong><br>
+                                У системі: <strong>@Course.LecturesActualy</strong></div>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Практичні, год -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.PracticeHours" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox TValue="int" Step="2" Min="0" Max="100" @bind-Value="@Course.PracticeHours"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.PracticeHours) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        Кількість: <strong>@(Course.PracticeHours / 2)</strong><br>
+                        У системі: <strong>@Course.PracticeActualy</strong>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Лабораторні, год -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.LaboratoryHours" TValue="int" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="int" OnActionSuccess="@OnActionSuccessIntHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="2" Min="0" Max="100" @bind-Value="@Course.LaboratoryHours"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.LaboratoryHours) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        Кількість: <strong>@(Course.LaboratoryHours / 2)</strong><br>
+                        У системі: <strong>@Course.LaboratoryActualy</strong>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Консультації, год -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.CounsultationHours" TValue="double" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="double" OnActionSuccess="@OnActionSuccessDoubleHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="1" Min="0" Max="100" @bind-Value="@Course.CounsultationHours"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.CounsultationHours) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        У системі: <strong>@Course.CounsultationHoursActualy</strong>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Екзамен, год -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.ExamHours" TValue="double" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="double" OnActionSuccess="@OnActionSuccessDoubleHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <EditForm Model="@Course">
+                                <DataAnnotationsValidator />
+                                <SfNumericTextBox Step="0.25" Min="0" Max="100" @bind-Value="@Course.ExamHours"></SfNumericTextBox>
+                                <ValidationMessage For=@(() => Course.ExamHours) />
+                            </EditForm>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                    <div class="edit-info">
+                        У системі: <strong>@Course.ExamHoursActualy</strong>
+                    </div>
+                </div>
+            </div>
+             <h5>Інші налаштування</h5>
+            <div class="row mt-2 mb-4">
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Максимальна дата -</label>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.MaxDate" TValue="DateTime?" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Date" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="DateTime?" OnActionSuccess="@OnActionSuccessDateHandler"></InPlaceEditorEvents>
+                        <EditorComponent>
+                            <SfDatePicker AllowEdit="false" TValue="DateTime?" @bind-Value="@Course.MaxDate" ShowClearButton="true"></SfDatePicker>
+                        </EditorComponent>
+                    </SfInPlaceEditor>
+                </div>
+                <div class="col-md-2">
+                    <label class="pa-label text-muted">- Статус -</label>
+                    <br>
+                    <SfSwitch @bind-Checked="@Course.IsActive" ValueChange="StatusChangedAsync" TChecked="bool"></SfSwitch>
+                    <br>
+                    @if(Course.IsActive)
+                    {
+                        <span class="badge bg-success" style="font-weight: normal; font-size: 13px">Активний</span>
+                    } 
+                    else 
+                    {
+                        <span class="badge bg-danger" style="font-weight: normal; font-size: 13px">Неактивний</span>
+                    }
+                </div>
+                </div>
+        }
+    </CardContent>
+</SfCard>
+
+<style>
+   
+    .edit-info {
+        border: 1px solid #ccc;
+        font-size:12px;
+        background:#eee;
+        padding: 4px 6px;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    bool IsLoaded = false;
+    CourseReadDto? Course = new CourseReadDto { Title = "" };
+
+    List<CourseTypeDto> CourseTypesList = new();
+
+    async Task UpdateAsync()
+    {
+        var updResul = await CourseService.UpdateCourse(Course);
+    }
+
+    async Task OnActionSuccessStringHandler(Syncfusion.Blazor.InPlaceEditor.ActionEventArgs<string> args)
+    {
+        await UpdateAsync();
+    }
+    async Task OnActionSuccessGuidHandler(Syncfusion.Blazor.InPlaceEditor.ActionEventArgs<Guid> args)
+    {
+        await UpdateAsync();
+    }
+    async Task OnActionSuccessIntHandler(Syncfusion.Blazor.InPlaceEditor.ActionEventArgs<int> args)
+    {
+        await UpdateAsync();
+    }
+
+    async Task OnActionSuccessDoubleHandler(Syncfusion.Blazor.InPlaceEditor.ActionEventArgs<double> args)
+    {
+        await UpdateAsync();
+    }
+
+    async Task OnActionSuccessDateHandler(Syncfusion.Blazor.InPlaceEditor.ActionEventArgs<DateTime?> args)
+    {
+        await UpdateAsync();
+    }
+
+    async Task StatusChangedAsync(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> obj)
+    {
+        await UpdateAsync();
+    }
+           
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await CourseService.GetDetailedAsync(Id);
+
+        CourseTypesList = await CourseTypes.GetCourseTypesAsync();
+
+        if (result.IsError)
+        {
+            throw new NotImplementedException("Alert. No course!");
+        }
+        else
+        {
+            Course = result.Value;
+            IsLoaded = true;
+        }
+    }
+
+     private SfDatePicker<DateTime?> MaxDatePicker { get; set; } 
+ 
+    private void FocusHandlerMaxDate(Syncfusion.Blazor.Calendars.FocusEventArgs args) 
+    { 
+        this.MaxDatePicker.Show(); 
+    } 
+}

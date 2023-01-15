@@ -1,0 +1,409 @@
+﻿@page "/course/{Id:guid}/students"
+
+@using EduTrack.WebUI.Shared.Courses;
+@using EduTrack.WebUI.Shared.Dtos.Courses;
+@using EduTrack.WebUI.Shared.Dtos.StudentRecords;
+@using EduTrack.WebUI.Shared.Dtos.SubGroups;
+
+@layout PlainAdminLayout
+
+@inject HttpTeacherCoursesService CourseService
+@inject HttpStudentRecordService StudentService
+@inject HttpSubGroupService SubGroupService
+
+<PlainAdminPageTitle Title="Керування курсом / Студенти">
+    <Breadcrumbs>
+        <SfBreadcrumb>
+            <BreadcrumbItems>
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
+                <BreadcrumbItem Text="Список курсів" Url="/teacher/courses" />
+                <BreadcrumbItem Text="@Course.Title" />
+            </BreadcrumbItems>
+        </SfBreadcrumb>
+    </Breadcrumbs>
+</PlainAdminPageTitle>
+
+<CourseMenu Active="students" Id="@Id" />
+
+<SfCard>
+    <CardContent>
+        @if (!IsLoaded && Course.Id == Guid.Empty)
+        {
+            <EduTrackSpinner></EduTrackSpinner>
+        }
+        else
+        {
+            <div class="row">
+                <div class="mb-2">
+                    <SfButton CssClass="e-warning e-outline" OnClick="@AddStudentAsync" IconCss="fa-solid fa-user-plus">Додати студента/ку</SfButton>
+                    <SfButton CssClass="e-warning e-outline" OnClick="@ImportFromGoogleSpreadsheetAsync" Disabled="true" IconCss="fa-brands fa-google-drive">Імпорт з Google Spreadsheet</SfButton>
+                    @if (Course is not null && Course.GroupsCount > 1)
+                    {
+                        <span>&nbsp;</span>
+                        <SfButton CssClass="e-success e-outline" OnClick="@AddSubGroupAsync" IconCss="fa-solid fa-users-viewfinder">Додати підгрупу</SfButton>
+                    }
+                </div>
+            </div>
+
+            @if (WarningsList.Any())
+            {
+                @foreach (var w in WarningsList)
+                {
+                    <p style="margin: 7px 0"><SfMessage Severity="MessageSeverity.Warning" ShowIcon="true">@w</SfMessage></p>
+                }
+            }
+
+            @if (Students.Any())
+            {
+                <h5 class="mb-2">Студенти</h5>
+                <div class="row">
+                    <div class="col-md-8">
+                        <SfGrid DataSource="@Students" RowHeight="30" @ref="StudentsGrid" AllowPaging="true">
+                            <GridEvents RowSelected="StudentRowSelectHandler" RowDeselected="StudentRowDeSelectHandler" TValue="StudentRecordReadDto"></GridEvents>
+                            <GridColumns>
+                                <GridColumn Field=@nameof(StudentRecordReadDto.Id) HeaderText="#" IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+                                <GridColumn Field=@nameof(StudentRecordReadDto.LastName) HeaderText="Прізвище"></GridColumn>
+                                <GridColumn Field=@nameof(StudentRecordReadDto.FirstName) HeaderText="Ім'я"></GridColumn>
+                                <GridColumn Field=@nameof(StudentRecordReadDto.Email) HeaderText="Email"></GridColumn>
+                                @if (Course.GroupsCount > 1)
+                                {
+                                    <GridColumn Field=@nameof(StudentRecordReadDto.SubGroup.Title) HeaderText="Підгрупа">
+                                        <Template>
+                                            @{
+                                                var std = context as StudentRecordReadDto;
+                                                if (std.SubGroup != null)
+                                                {
+                                                    <span>@std.SubGroup.Title</span>
+                                                }
+                                            }
+                                        </Template>
+                                    </GridColumn>
+                                }
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                    <div class="col-md-4">
+                        <EditForm Model="@SelectedStudent" OnInvalidSubmit="StudentSave">
+                            <DataAnnotationsValidator />
+
+                            <div class="form-group col-md-12">
+                                <SfTextBox ID="Id" CssClass="w100 e-block" @bind-Value="@SelectedStudent.LastName" Enabled="@StudentEditEnabled" Placeholder="Прізвище" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedStudent.LastName)" />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <SfTextBox ID="Id" CssClass="w100 e-block" @bind-Value="@SelectedStudent.FirstName" Enabled="@StudentEditEnabled" Placeholder="Ім'я" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedStudent.FirstName)" />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <SfTextBox ID="Id" CssClass="w100 e-block" @bind-Value="@SelectedStudent.Email" Enabled="@StudentEditEnabled" Placeholder="Email" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedStudent.Email)" />
+                            </div>
+                            @if (SubGroups.Count > 1)
+                            {
+                                <div class="form-group col-md-12">
+                                    <SfDropDownList ID="Id" @bind-Value="@SelectedStudent.SubGroup.Id" TItem="SubGroupDto" Enabled="@StudentEditEnabled" Placeholder="Підгрупа" FloatLabelType="FloatLabelType.Auto" TValue="Guid" DataSource="@SubGroups">
+                                        <DropDownListFieldSettings Value="Id" Text="Title"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            }
+                        </EditForm>
+                        <div class="temp">
+                            <SfButton OnClick="StudentSave" CssClass="e-primary" Disabled="@StudentEditDisabled">Зберегти</SfButton>&nbsp;
+                            <SfButton OnClick="StudentCancel" Disabled="@StudentEditDisabled">Відмінити</SfButton>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (SubGroups.Count > 1)
+            {
+                <hr />
+                <h5 class="mb-2">Підгрупи</h5>
+                <div class="row">
+                    <div class="col-md-8">
+                        <SfGrid DataSource="@SubGroups" @ref="GroupsGrid" RowHeight="30" AllowPaging="true">
+                            <GridEvents RowSelected="GroupRowSelectHandler" RowDeselected="GroupRowDeSelectHandler" TValue="SubGroupDto"></GridEvents>
+                            <GridEditSettings AllowDeleting="true"></GridEditSettings>
+                            <GridColumns>
+                                <GridColumn Field=@nameof(SubGroupDto.Id) HeaderText="#" IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+                                <GridColumn Field=@nameof(SubGroupDto.Title) HeaderText="Назва"></GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                    <div class="col-md-4">
+                        <EditForm Model="@SelectedGroup">
+                            <DataAnnotationsValidator />
+                            <div class="form-group col-md-12">
+                                <SfTextBox ID="Id" CssClass="w100 e-block" @bind-Value="@SelectedGroup.Title" Enabled="@GroupEditEnabled" Placeholder="Назва" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                <ValidationMessage class="text-danger" For="@(() => SelectedGroup.Title)" />
+                            </div>
+                        </EditForm>
+                        <div class="temp">
+                            <SfButton OnClick="GroupSave" CssClass="e-success" Disabled="@GroupEditDisabled">Зберегти</SfButton>
+                            <SfButton OnClick="GroupDelete" CssClass="e-primary" Disabled="@GroupEditDisabled">Видалити</SfButton>
+                            <SfButton OnClick="GroupCancel" Disabled="@GroupEditDisabled">Відмінити</SfButton>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </CardContent>
+</SfCard>
+
+<SfToast @ref="ToastObj" ShowProgressBar="true">
+    <ToastPosition X="Right" Y="Top"></ToastPosition>
+</SfToast>
+@*
+<SfDialog Width="35%" IsModal="true" @bind-Visible="@ImportModalVisibility">
+    <DialogTemplates>
+        <Header> Імпорт дани </Header>
+        <Content>
+            <p>Вставте у поле нижче Url-адресу документа зі списком студентів:</p>
+            <br />
+            <SfTextBox  CssClass="w100" @bind-Value="ImportFromGoogleSpreadsheetUrl"></SfTextBox>
+            <SfMessage Severity="MessageSeverity.Warning">Порядок даних повинен відповідати формату <code>Прізвище|Ім'я|Email</code></SfMessage>
+        </Content>
+    </DialogTemplates>
+     <DialogButtons>
+        <DialogButton Content="Відмінити" IsPrimary="false" OnClick="@CloseModal" />
+        <DialogButton Content="Продовжити" IsPrimary="true" OnClick="@ImportAsync" />
+    </DialogButtons>
+    <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
+</SfDialog>*@
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    SfToast ToastObj;
+    bool ImportModalVisibility = false;
+    string ImportFromGoogleSpreadsheetUrl;
+
+    ToastModel SuccessToast(string message)
+    {
+        return new ToastModel
+            {
+                Title = "Успішно!",
+                Content = message,
+                CssClass = "e-toast-success",
+                Icon = "fa-solid fa-check"
+            };
+    }
+
+    ToastModel ErrorToast(string message)
+    {
+        return new ToastModel
+            {
+                Title = "Помилка!",
+                Content = message,
+                CssClass = "e-toast-danger",
+                Icon = "fa-solid fa-xmark"
+            };
+    }
+
+    bool IsLoaded = false;
+
+    CourseWithGroupsAndStudentsDto Course = new();
+
+    List<StudentRecordReadDto> Students = new List<StudentRecordReadDto>();
+
+    List<SubGroupDto> SubGroups = new List<SubGroupDto>
+    {
+        new SubGroupDto{Id = Guid.Empty, Title = "- без групи -" }
+    };
+
+    async Task ImportFromGoogleSpreadsheetAsync()
+    {
+        
+    }
+    async Task UpdateAll()
+    {
+        var response = await CourseService.GetStudentsAndGroupsAsync(Id);
+
+        if (response.IsError)
+        {
+            throw new NotImplementedException("Date from client is incorrect!");
+        }
+        else
+        {
+            Course = response.Value;
+            Students = Course.Students.OrderBy(x => x.LastName).ToList();
+            SubGroups.AddRange(Course.SubGroups.OrderBy(x => x.Title).ToList());
+            IsLoaded = true;
+        }
+
+        checkWarning();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateAll();
+    }
+
+    async Task AddStudentAsync()
+    {
+        var response = await StudentService.CreateAsync(new StudentRecordCreateDto("0", "0", "e@mail.ua"), Id);
+
+        if (response.IsError)
+        {
+            await ToastObj.ShowAsync(ErrorToast(response.Title));
+        }
+        else
+        {
+            await UpdateAll();
+            checkWarning();
+
+            await ToastObj.ShowAsync(SuccessToast("Запис про студента додано у систему."));
+        }
+    }
+
+    async Task AddSubGroupAsync()
+    {
+        var response = await SubGroupService.CreateAsync(Id);
+
+        if (response.IsError)
+        {
+            await ToastObj.ShowAsync(ErrorToast(response.Title));
+        }
+        else
+        {
+            await UpdateAll();
+            checkWarning();
+            await ToastObj.ShowAsync(SuccessToast("Запис про групу додано у систему."));
+        }
+    }
+    StudentRecordReadDto SelectedStudent = new();
+    SubGroupDto SelectedGroup = new();
+
+    SfGrid<StudentRecordReadDto> StudentsGrid;
+    SfGrid<SubGroupDto> GroupsGrid;
+
+    private bool StudentEditCheck = false;
+    private bool StudentEditDisabled = true;
+    private bool StudentEditEnabled = false;
+
+    private bool GroupEditCheck = false;
+    private bool GroupEditDisabled = true;
+    private bool GroupEditEnabled = false;
+
+
+    List<string> WarningsList = new List<string>();
+
+    void checkWarning()
+    {
+        WarningsList = new List<string>();
+
+        if (!Students.Any())
+            WarningsList.Add("Відсутні записи про студентів. Додайте студентів у групу/підгрупи");
+
+        if (SubGroups.Count == 1 && Course.GroupsCount > 1)
+            WarningsList.Add("Відсутні записи про підгрупи");
+
+        else if (Course.GroupsCount > 1 && (SubGroups.Count - 1) != Course.GroupsCount)
+            WarningsList.Add("Перевірте кількість підгруп");
+
+        if (Course.StudentsCount != Course.Students.Count())
+            WarningsList.Add($"Додано лише {Course.Students.Count()} студентів з {Course.StudentsCount}.");
+    }
+
+
+    public void StudentRowSelectHandler(RowSelectEventArgs<StudentRecordReadDto> args)
+    {
+        SelectedStudent = new StudentRecordReadDto()
+            {
+                Id = args.Data.Id,
+                FirstName = args.Data.FirstName,
+                LastName = args.Data.LastName,
+                Email = args.Data.Email
+            };
+        this.StudentEditDisabled = false;
+        this.StudentEditEnabled = true;
+    }
+
+    public void GroupRowSelectHandler(RowSelectEventArgs<SubGroupDto> args)
+    {
+        if (args.Data.Id == Guid.Empty) return;
+
+        SelectedGroup = new SubGroupDto()
+            {
+                Id = args.Data.Id,
+                Title = args.Data.Title
+            };
+        this.GroupEditDisabled = false;
+        this.GroupEditEnabled = true;
+    }
+
+    public void StudentRowDeSelectHandler(RowDeselectEventArgs<StudentRecordReadDto> args)
+    {
+        SelectedStudent = new StudentRecordReadDto();
+        this.StudentEditDisabled = true;
+        this.StudentEditEnabled = false;
+    }
+
+    public void GroupRowDeSelectHandler(RowDeselectEventArgs<SubGroupDto> args)
+    {
+        SelectedGroup = new SubGroupDto();
+        this.GroupEditDisabled = true;
+        this.GroupEditEnabled = false;
+    }
+
+    public async Task StudentSave()
+    {
+        if ((SelectedStudent.Id != Guid.Empty) && (SelectedStudent.FirstName != string.Empty) && (SelectedStudent.LastName != null) && (SelectedStudent.Email != null))
+        {
+            var sgId = SelectedStudent.SubGroup.Id;
+            SelectedStudent.SubGroup = SubGroups.First(x => x.Id == sgId);
+            Console.WriteLine($"SG: {SelectedStudent.SubGroup.Title}");
+            var updStudent = await StudentService.UpdateAsync(SelectedStudent, Id);
+
+            await this.StudentsGrid.SetRowDataAsync(updStudent.Value.Id, updStudent.Value);
+            await StudentCancel();
+        }
+    }
+
+    public async Task GroupSave()
+    {
+        if (SelectedGroup.Id != Guid.Empty && SelectedGroup.Title != string.Empty)
+        {
+            await SubGroupService.UpdateAsync(SelectedGroup, Id);
+
+            await this.GroupsGrid.SetRowDataAsync(SelectedGroup.Id, SelectedGroup);
+            await GroupCancel();
+        }
+    }
+
+    public async Task GroupDelete()
+    {
+        if (SelectedGroup.Id != Guid.Empty && SelectedGroup.Title != string.Empty)
+        {
+            var response = await SubGroupService.DeleteAsync(SelectedGroup.Id);
+
+           
+            if(response.IsError)
+            {
+                await ToastObj.ShowAsync(ErrorToast(response.Title));
+            } 
+            else
+            {
+                await this.GroupsGrid.DeleteRecordAsync("Id", SelectedGroup);
+                 await ToastObj.ShowAsync(SuccessToast("Підгрупу видалено."));
+            await GroupCancel();
+                checkWarning();
+            }
+            
+        }
+    }
+
+    public async Task StudentCancel()
+    {
+        SelectedStudent = new StudentRecordReadDto();
+        await this.StudentsGrid.ClearSelectionAsync();
+    }
+    public async Task GroupCancel()
+    {
+        SelectedGroup = new SubGroupDto();
+        await this.GroupsGrid.ClearSelectionAsync();
+    }
+}
+

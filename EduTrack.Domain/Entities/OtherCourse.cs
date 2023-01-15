@@ -21,5 +21,7 @@ namespace EduTrack.Domain.Entities
 
         [ForeignKey("Owner")]
         public Guid OwnerId { get; set; }
+
+        public virtual ICollection<OtherWorkHours> WorkHours { get; set; }
     }
 }

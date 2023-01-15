@@ -17,7 +17,12 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<HttpAuthenticationService>();
 builder.Services.AddScoped<HttpTeacherCoursesService>();
+builder.Services.AddScoped<HttpInviteService>();
+builder.Services.AddScoped<HttpCourseTypeService>();
+builder.Services.AddScoped<HttpStudentRecordService>();
+builder.Services.AddScoped<HttpSubGroupService>();
 builder.Services.AddScoped<HttpTeacherOtherCoursesService>();
+builder.Services.AddScoped<HttpLessonService>();
 builder.Services.AddScoped<TokenManagerService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

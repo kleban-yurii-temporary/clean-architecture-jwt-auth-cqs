@@ -8,8 +8,12 @@
 
 <PlainAdminPageTitle Title="Довідник типів навчальних робіт">
     <Breadcrumbs>
-        <ETBreadcrumbItem Title="Панель керування" NavigationLink="/" />
-        <ETBreadcrumbItem Title="Довідник типів навч. робіт" />
+        <SfBreadcrumb>
+            <BreadcrumbItems>
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
+                <BreadcrumbItem Text="Довідник видів робіт" />
+            </BreadcrumbItems>
+        </SfBreadcrumb>
     </Breadcrumbs>
 </PlainAdminPageTitle>
 
@@ -30,6 +34,7 @@
                     <GridColumn Field=@nameof(WorkTypeDto.Title) HeaderText="Назва"></GridColumn>
                     <GridColumn Field=@nameof(WorkTypeDto.ShortTitle) HeaderText="Назва скор."></GridColumn>
                     <GridColumn Field=@nameof(WorkTypeDto.PerStudentNorm) HeaderText="Норма на студ., год"></GridColumn>
+                    <GridColumn Field=@nameof(WorkTypeDto.LessonType) HeaderText="Тип"></GridColumn>
                 </GridColumns>
             </SfGrid>
         }

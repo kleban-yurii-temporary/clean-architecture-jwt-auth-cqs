@@ -99,3 +99,16 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading...");
     }
+
+.w100 {
+    width: 100% !important;
+}
+
+label.pa-label {
+    display: block;
+    margin: 0 0 0 0 !important;
+}
+
+.e-inplaceeditor .e-editable-value-container .e-editable-overlay-icon {
+    visibility: visible;
+}

@@ -16,7 +16,6 @@ namespace EduTrack.WebUI.Shared.Courses
         [MinLength(5)]
         public string Title { get; set; }
 
-        [Required]
         public string ShortTitle { get; set; }
 
         public string EduYear { get; set; }
@@ -30,8 +29,16 @@ namespace EduTrack.WebUI.Shared.Courses
         public int PracticeActualy { get; set; }
         public int LaboratoryHours { get; set; }
         public int LaboratoryActualy { get; set; }
-        public CourseTypeDto Type { get; set; }
+        public double CounsultationHours { get; set; }
+        public double CounsultationHoursActualy { get; set; }
+        public double ExamHours { get; set; }
+        public double ExamHoursActualy { get; set; }
+        public Guid CourseTypeId { get; set; }
+        public int PracticeGroupsCount { get; set; } 
+        public int LabsGroupsCount { get; set; }
         public int GroupsCount { get; set; }
+        public int GroupsActualy { get; set; }
         public bool IsActive { get; set; }
+        public DateTime? MaxDate { get; set; }
     }
 }

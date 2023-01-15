@@ -13,7 +13,7 @@ namespace EduTrack.Infrastracture.Persistence
     public class OtherCourseRepository : BaseContextRepository, IOtherCourseRepository
     {
         public OtherCourseRepository(DataContext ctx)
-            : base(ctx) {}
+            : base(ctx) { }
 
         public async Task<Guid> AddAsync(OtherCourse course)
         {
@@ -30,6 +30,11 @@ namespace EduTrack.Infrastracture.Persistence
         public async Task<IEnumerable<OtherCourse>> GetListAsync()
         {
             return await _dbCtx.OtherCourses.ToListAsync();
+        }
+
+        public Guid GetOwnerId(Guid objectId)
+        {
+            return _dbCtx.OtherCourses.First(x => x.Id == objectId).OwnerId;
         }
     }
 }

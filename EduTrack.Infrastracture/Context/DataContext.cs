@@ -12,7 +12,10 @@ namespace EduTrack.Infrastracture.Context
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) 
-            : base(options) {}
+            : base(options) 
+        {
+            //Database.EnsureCreated();
+        }
 
         public DbSet<User> Users => Set<User>();
         public DbSet<Course> Courses => Set<Course>();
@@ -20,13 +23,23 @@ namespace EduTrack.Infrastracture.Context
         public DbSet<WorkType> WorkTypes => Set<WorkType>();
         public DbSet<Option> Options => Set<Option>();
         public DbSet<OtherCourse> OtherCourses=> Set<OtherCourse>();
-
+        public DbSet<StudentRecord> StudentRecords => Set<StudentRecord>();
         public DbSet<CourseInvite> CourseInvites => Set<CourseInvite>();
-
+        public DbSet<SubGroup> SubGroups => Set<SubGroup>();
+        public DbSet<GradeAndPresense> GradesAndPresenses=> Set<GradeAndPresense>();
+        public DbSet<ComplexGradeItem> ComplexGradeItems=> Set<ComplexGradeItem>();
+        public DbSet<ComplexGradeItemHeader> ComplexGradeItemHeaders => Set<ComplexGradeItemHeader>();
+        public DbSet<Lesson> Lessons => Set<Lesson>();
+        public DbSet<LessonTime> LessonTimes => Set<LessonTime>();
+        public DbSet<OtherWorkHours> OtherWorkHours => Set<OtherWorkHours>();
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasMany(x => x.OwnedCourses).WithOne(x => x.Owner);
+            base.OnModelCreating(modelBuilder);
+            var userId = modelBuilder.SeedUser();
+            modelBuilder.SeedWorkTypes(); 
+            modelBuilder.SeedLessonTimes();
+            modelBuilder.SeedOptions(userId);
         }
     }
 }

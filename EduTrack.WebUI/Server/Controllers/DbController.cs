@@ -37,9 +37,8 @@ namespace EduTrack.WebUI.Server.Controllers
             _ctx.Database.EnsureDeleted();
             _ctx.Database.EnsureCreated();
 
-            var teacherId = await initUsersAsync();
-            await initWorkTypes();
-            await initOptions();
+            var teacherId = _ctx.Users.First().Id;
+
             await initCourses(teacherId);
             await initOtherCourses(teacherId);
 
@@ -130,145 +129,6 @@ namespace EduTrack.WebUI.Server.Controllers
             await _ctx.SaveChangesAsync();
         }
 
-        #region Options
-
-        private async Task initOptions()
-        {
-            await _ctx.Options.AddRangeAsync(
-                new List<Option>
-                {
-                    new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.General.BaseUrl,
-                        Value = "https://api.zoom.us/v2",
-                        CantBeRemoved = true
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.Users.Me,
-                        Value = "https://api.zoom.us/v2/users/me",
-                        CantBeRemoved = true
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.Users.Meetings,
-                        Value = "https://api.zoom.us/v2/users/me/meetings?type=previous_meetings",
-                        CantBeRemoved = true
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.Users.Recordings,
-                        Value = "https://api.zoom.us/v2/users/me/recordings",
-                        CantBeRemoved = true
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.Users.Webinars,
-                        Value = "https://api.zoom.us/v2/users/me/webinars",
-                        CantBeRemoved = true
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.General.ClientId, 
-                        Value = "Yo_UM8esSOqJCHMRHCJVg", 
-                        CantBeRemoved = true, 
-                        Owner = await _ctx.Users.FirstAsync(x=> x.Email == "yurakleban@gmail.com")
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group, 
-                        Key = ZoomApiKeys.General.ClientSecret, 
-                        Value = "PsF2x0mNgKwe77LhROffARNyI6rDCZeO", 
-                        CantBeRemoved = true,
-                        Owner = await _ctx.Users.FirstAsync(x=> x.Email == "yurakleban@gmail.com")
-                    },
-                    new Option {
-                        Group = ZoomApiKeys.Group, 
-                        Key = ZoomApiKeys.Authorize.AuthUrl, 
-                        Value = "https://zoom.us/oauth/authorize", 
-                        CantBeRemoved = true
-                    },
-                new Option {
-                        Group = ZoomApiKeys.Group,
-                        Key = ZoomApiKeys.Token.AccessTokenUrl,
-                        Value = "https://zoom.us/oauth/token",
-                        CantBeRemoved = true
-                    }});
-
-            await _ctx.SaveChangesAsync();
-        }
-
-        #endregion
-
-        #region WorkTypes 
-
-        private async Task initWorkTypes()
-        {
-            await Task.CompletedTask;
-
-            var wts = new string[]
-            {
-                "Лекційні заняття",
-                "Групові заняття",
-                "Лабораторні заняття",
-                "Консультації до екзамену",
-                "Консультації впродовж семестру",
-                "Проміжний контроль",
-                "Залік",
-                "Екзамен",
-                "Курсові роботи",
-                "Керівництво кваліфікаційними роботами",
-                "Рецензування",
-                "Участь у роботі ЕК(захист)",
-                "Участь у роботі ЕК(екзамен)",
-                "Керівництво практикою",
-                "Керівництво аспірантами",
-                "Керівництво стажистами",
-                "Контрольні відвідування"
-            };
-
-            var wts_s = new string[]
-            {
-                "Лекц.",
-                "Груп.",
-                "Лаб.",
-                "Конс. екз.",
-                "Конс. сем",
-                "Пром. контр.",
-                "Залік",
-                "Екзамен",
-                "Курс. роб.",
-                "Кваліф. роб.",
-                "Реценз.",
-                "ЕК(захист)",
-                "ЕК(екзамен)",
-                "Кер. практ.",
-                "Кер. асп.",
-                "Кер. стаж.",
-                "Контр. відв."
-            };
-
-            for (int i = 1; i <= wts.Length; i++)
-            {
-                var wt = new WorkType
-                {
-                    Order = i,
-                    Title = wts[i - 1],
-                    ShortTitle = wts_s[i - 1]                    
-                };
-
-                if (wt.Order == 6 || wt.Order == 7) wt.PerStudentNorm = 0.25;
-                if (wt.Order == 8) wt.PerStudentNorm = 0.33;
-                if (wt.Order == 9) wt.PerStudentNorm = 3;
-                if (wt.Order == 10) wt.PerStudentNorm = 15;
-                if (wt.Order == 13) wt.PerStudentNorm = 0.5;
-                if (wt.Order == 14) wt.PerStudentNorm = 2;
-                await _ctx.WorkTypes.AddAsync(wt);
-            }
-
-            await _ctx.SaveChangesAsync();
-        }
-
-        #endregion
   
         #region Courses
 
@@ -288,7 +148,7 @@ namespace EduTrack.WebUI.Server.Controllers
                 LecturesHours = 10,
                 LaboratoryHours= 26,
                 GroupCode = "Ек-1",
-                GroupsCount = 1,
+                LabsGroupsCount = 1,
                 EduYear = "2022/2023",
                 Semestr = 2,
                 IsActive = false,
@@ -302,12 +162,55 @@ namespace EduTrack.WebUI.Server.Controllers
                 LecturesHours = 0,
                 Type = obovyaz.Entity,
                 LaboratoryHours = 26,
-                GroupsCount = 1,
                 EduYear = "2022/2023",
                 Semestr = 2,
                 GroupCode = "Фк-1",
                 IsActive = false, 
                 OwnerId = teacherId
+            });
+
+            var opCourseEc = await _ctx.Courses.AddAsync(new Course
+            {
+                Title = "Основи програмування",
+                StudentsCount = 21,
+                LecturesHours = 10,
+                Type = vybirk.Entity,
+                PracticeHours = 54,
+                EduYear = "2022/2023",
+                Semestr = 2,
+                GroupCode = "Ек-1",
+                IsActive = false,
+                OwnerId = teacherId
+            });
+
+            var daCourseEc = await _ctx.Courses.AddAsync(new Course
+            {
+                Title = "Аналіз даних",
+                StudentsCount = 25,
+                LecturesHours = 30,
+                Type = vybirk.Entity,
+                PracticeHours = 14,
+                LaboratoryHours = 28,
+                LabsGroupsCount= 2,
+                EduYear = "2022/2023",
+                ConsultationHours=2,
+                ExamHours = 8.25,
+                Semestr = 2,
+                GroupCode = "Ек-2",
+                IsActive = false,
+                OwnerId = teacherId
+            });
+
+            await _ctx.OtherCourses.AddAsync(new OtherCourse
+            {
+                Title = "Курсова робота",
+                EduYear = "2022/2023",
+                Semestr = 2,
+                GroupCode = "ЕК-3",
+                StudentsCount= 7,
+                Hours = 21,
+                IsActive= false,
+                OwnerId = teacherId                
             });
 
             await _ctx.SaveChangesAsync();
@@ -317,23 +220,6 @@ namespace EduTrack.WebUI.Server.Controllers
 
         #endregion
 
-        #region Users
-
-        private async Task<Guid> initUsersAsync()
-        {
-            await Task.CompletedTask;
-
-            var command1 = _mapper.Map<RegisterCommand>(
-                new UserRegisterDto("yurakleban@gmail.com", "demoPA$$W0RD", "Юрій", "Клебан"));
-
-            var result = await _mediator.Send(command1);
-
-            await _mediator.Send(new UpdateRoleCommand(result.Value, "teacher"));
-            await _mediator.Send(new UpdateApproveStatusCommand(result.Value, true));
-
-            return result.Value;
-        }
-
-        #endregion        
+      
     }
 }

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EduTrack.WebUI\Shared\EduTrack.WebUI.Shared.Dtos.csproj" />
+  </ItemGroup>
+
 </Project>

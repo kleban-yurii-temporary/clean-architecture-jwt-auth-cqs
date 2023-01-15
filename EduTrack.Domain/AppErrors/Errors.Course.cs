@@ -19,6 +19,20 @@ namespace EduTrack.Domain.AppErrors
             public static Error AccessDenied
                = Error.Conflict("Course.AccessDenied",
                    description: "");
+
+            public static Error Inactive
+               = Error.Conflict("Course.Inactive",
+                   description: Lang_Errors.Course_Inactive);
+
+            public static Error StudentExists
+               = Error.Conflict("Course.StudentExists",
+                   description: Lang_Errors.Course_StudentExists);
+
+
+            public static Error SubGroupHasStudents
+              = Error.Conflict("Course.Subgroup.HasStudents",
+                  description: Lang_Errors.Course_Subgroup_HasStudents);
+
         }
     }
 }

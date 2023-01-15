@@ -1,19 +1,49 @@
-﻿
-<div class="text-center" style="margin: 15px 0">    
-    <img src="/plainadmin/assets/images/loader/loader.gif" width="32" alt="" />
-    @if(Type == EduTrackSpinnerType.Horizontal)
-    {
-        <span style="padding: 7px 0 0 7px; ">Завантаження...</span>
-    } 
-    else
-    {
-        <div style="padding: 7px 0 0; ">Завантаження...</div>
-    }  
-</div>
+﻿@if (!IsLoader)
+{
+    <SfSkeleton CssClass="skeletonText" Shape=SkeletonType.Text Width="100%" Height="15px"></SfSkeleton>
+    <SfSkeleton CssClass="skeletonTextMedium" Width="@array[0]" Height="15px"></SfSkeleton>
+    <br />
+    <SfSkeleton CssClass="skeletonTextSmall" Width="@array[1]" Height="15px"></SfSkeleton>
+    <br />
+    <SfSkeleton CssClass="skeletonTextMedium1" Width="@array[2]" Height="15px"></SfSkeleton>
+    <br />
+    <SfSkeleton CssClass="skeletonTextSmall1" Width="@array[3]" Height="15px"></SfSkeleton>
+}
+else
+{
+    <div class="text-center" style="margin: 15px 0">
+        <img src="/plainadmin/assets/images/loader/loader.gif" width="32" alt="" />
+        @if (Type == EduTrackSpinnerType.Horizontal)
+        {
+            <span style="padding: 7px 0 0 7px; ">@Text</span>
+        }
+        else
+        {
+            <div style="padding: 7px 0 0; ">@Text</div>
+        }
+    </div>
+}
 
 @code {
     [Parameter]
     public EduTrackSpinnerType Type { get; set; } = EduTrackSpinnerType.Horizontal;
+
+    [Parameter]
+    public string Text { get; set; } = "Завантаження...";
+
+    [Parameter]
+    public bool IsLoader { get; set; } = false;
+
+    Random r = new Random();
+
+    string[] array = new string[4];
+
+    protected override void OnParametersSet()
+    {
+        if (!IsLoader)
+            for (int i = 0; i < array.Length; i++)
+                array[i] = $"{r.Next(20, 100)}%";
+    }
 
     public enum EduTrackSpinnerType
     {

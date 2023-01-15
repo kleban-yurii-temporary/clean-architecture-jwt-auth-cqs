@@ -1,4 +1,5 @@
-﻿using EduTrack.Application.Courses.Queries.GetCourses;
+﻿using EduTrack.Application.Courses.Commands.CreateCourse;
+using EduTrack.Application.Courses.Queries.GetCourses;
 using EduTrack.Domain.Entities;
 using EduTrack.WebUI.Shared.Authentication;
 using EduTrack.WebUI.Shared.Courses;
@@ -21,7 +22,7 @@ namespace EduTrack.WebUI.Server.Controllers
         public CoursesController(IMediator mediator, IMapper mapper)
             : base(mediator, mapper) { }
 
-        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.All)]
+        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Default)]
         [Authorize(Roles = "teacher")]
         public async Task<IActionResult> GetTeachersListAsync()
         {
@@ -32,7 +33,7 @@ namespace EduTrack.WebUI.Server.Controllers
                 errors => Problem(errors));
         }
 
-        [HttpPost(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Create)]
+        [HttpPost(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Default)]
         [Authorize(Roles = "teacher")]
         public async Task<IActionResult> CreateAsync(CourseCreateTypeEnum type)
         {
@@ -57,7 +58,7 @@ namespace EduTrack.WebUI.Server.Controllers
             return BadRequest();
         }
 
-        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Details)]
+        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.DefaultItemServer)]
         [Authorize(Roles = "teacher")]
         public async Task<IActionResult> GetCourse(Guid id)
         {
@@ -67,5 +68,30 @@ namespace EduTrack.WebUI.Server.Controllers
                     result => Ok(_mapper.Map<CourseReadDto>(result)),
                     errors => Problem(errors));
         }
+
+        [HttpGet(Shared.ApiHelpers.ApiUrl.Courses.Teacher.DStudentsAndGroupsServer)]
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> GetCourseWithStudentsAndGroups(Guid id)
+        {
+            var result = await _mediator.Send(new GetStudentsAndGroupsQuery(id, (Guid)CurrentUserId));
+
+            return result.Match(
+                    result => Ok(_mapper.Map<CourseWithGroupsAndStudentsDto>(result)),
+                    errors => Problem(errors));
+        }
+
+        [HttpPut(Shared.ApiHelpers.ApiUrl.Courses.Teacher.Default)]
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> UpdateAsync(CourseUpdateDto course)
+        {
+            var result = await _mediator.Send(new UpdateCourseCommand(
+                _mapper.Map<Course>(course), (Guid)CurrentUserId));
+
+            return result.Match(
+                    result => Ok(result),
+                    errors => Problem(errors));
+        }
+
+       
     }
 }

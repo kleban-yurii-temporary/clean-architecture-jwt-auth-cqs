@@ -12,10 +12,16 @@ namespace EduTrack.WebUI.Shared.ApiHelpers
         {
             public static class Teacher
             {
-                public const string All = "/api/teacher/courses";
-                public const string Details = "/api/teacher/courses/{id}";
-                public const string Create = "/api/teacher/courses";
-            } 
+                public const string Default = "/api/teacher/courses";
+
+                public static string DefaultItemClient(Guid id) => $"/api/teacher/courses/{id}";
+                public const string DefaultItemServer = "/api/teacher/courses/{id}";
+
+                public static string StudentsAndGroupsClient(Guid id) => $"/api/teacher/courses/{id}/students";
+                public const string DStudentsAndGroupsServer = "/api/teacher/courses/{id}/students";
+            }
+
+            public const string Types = "/api/coursetypes";
         }
 
         public static class OtherCourses

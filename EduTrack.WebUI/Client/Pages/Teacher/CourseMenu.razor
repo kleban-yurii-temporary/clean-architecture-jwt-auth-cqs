@@ -1,0 +1,24 @@
+﻿<SfMenu TValue="MenuItem" EnableScrolling="true">
+    <MenuItems>
+        <MenuItem Disabled="@(Active == "lessons")" Text="Заняття" Url="@string.Format("/course/{0}/lessons", Id)" IconCss="fa-solid fa-person-chalkboard"></MenuItem>
+        <MenuItem Disabled="@(Active == "students")" Text="Студенти" Url="@string.Format("/course/{0}/students", Id)" IconCss="fa-solid fa-users"></MenuItem>
+        <MenuItem Disabled="@(Active == "presense")" Text="Присутність" Url="@string.Format("/course/{0}/presense", Id)" IconCss="fa-solid fa-user-check"></MenuItem>
+        <MenuItem Disabled="@(Active == "grades")"Text="Успішність" Url="@string.Format("/course/{0}/grades", Id)" IconCss="fa-solid fa-user-graduate"></MenuItem>
+        <MenuItem Disabled="@(Active == "settings")" Text="Налаштування" Url="@string.Format("/course/{0}/settings", Id)" IconCss="fa-solid fa-screwdriver-wrench"></MenuItem>
+        <MenuItem Disabled="@(Active == "invites")"Text="Запрошення" Url="@string.Format("/course/{0}/invites", Id)" IconCss="fa-solid fa-envelope-circle-check"></MenuItem>
+        <MenuItem Disabled="@(Active == "vidomist")"Text="Відомість" Url="@string.Format("/course/{0}/vidomist", Id)" IconCss="fa-solid fa-table-list"></MenuItem>
+        <MenuItem Disabled="@(Active == "journal")" Text="Журнал" Url="@string.Format("/course/{0}/journal", Id)" IconCss="fa-solid fa-calendar-check"></MenuItem>
+    </MenuItems>
+</SfMenu>
+
+
+<div style="padding: 0px 0; line-height:1%; height:5px">&nbsp;</div>
+
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public string Active { get; set; } = string.Empty;
+}

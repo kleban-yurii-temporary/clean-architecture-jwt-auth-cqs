@@ -19,7 +19,9 @@ namespace EduTrack.Domain.Entities
         public bool IsApproved { get; set; } = false;
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime RefreshTokenExpiryTime { get; set; }
-        public virtual ICollection<Course> OwnedCourses { get; set; }
-        public virtual ICollection<OtherCourse> OwnederCourses { get; set; }
+        public virtual ICollection<Course> OwnedCourses { get; set; } = new List<Course>();
+        public virtual ICollection<OtherCourse> OwnederCourses { get; set; } = new List<OtherCourse>();
+        public virtual ICollection<StudentRecord> StudentRecords { get; set; } = new List<StudentRecord>();
+
     }
 }

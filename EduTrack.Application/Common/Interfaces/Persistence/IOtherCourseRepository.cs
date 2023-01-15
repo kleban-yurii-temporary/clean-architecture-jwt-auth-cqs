@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Application.Common.Interfaces.Persistence
 {
-    public interface IOtherCourseRepository
+    public interface IOtherCourseRepository : ICourseOwner<Guid>
     {
         Task<IEnumerable<OtherCourse>> GetListAsync();
         Task<OtherCourse> GetAsync(Guid id);
