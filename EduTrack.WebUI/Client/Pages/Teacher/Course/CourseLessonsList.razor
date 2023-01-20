@@ -1,12 +1,16 @@
 ﻿@using EduTrack.WebUI.Shared.Dtos.Lessons;
 @using EduTrack.WebUI.Shared.Dtos.SubGroups;
 @using EduTrack.WebUI.Shared.Dtos.WorkTypes;
+@using Syncfusion.Blazor.Calendars
 
+@inject NavigationManager Navigation
 @inject HttpLessonService LessonService
 @inject HttpClient _httpClient
 @inject HttpSubGroupService SubGroupsService
+
 <style>
     .short {
+
     }
 
     .ntb {
@@ -16,9 +20,7 @@
 
 <div class="@CssClass mt-2 mb-2" style="position: relative">
 
-
     <SfButton CssClass="e-small float-end e-info" OnClick="@(e => AddModalShow(true))" IconCss="fa-solid fa-plus">Додати</SfButton>
-
 
     <h6>
         @Title (<span>@(Lessons is not null ? Lessons.Count() : "-")</span> з <span>@(ActualHours / 2)</span>)
@@ -30,7 +32,7 @@
 
     @if (Lessons is null)
     {
-        <EduTrackSpinner></EduTrackSpinner>       
+        <EduTrackSpinner></EduTrackSpinner>
     }
     else if (!Lessons.Any())
     {
@@ -66,6 +68,27 @@
 
                     <GridColumn Width="50%" Field=@nameof(LessonDto.Title) HeaderText="Тема"></GridColumn>
                     <GridColumn Width="20%" Field=@nameof(LessonDto.WorkType.Title) HeaderText="Тип"></GridColumn>
+                    <GridColumn Width="50px" TextAlign="TextAlign.Center" HeaderText="Лінк">
+                        <Template>
+                            @{
+                                var obj = context as LessonDto;
+                            
+                                if (!string.IsNullOrEmpty(obj.MeetingUrl))
+                                {
+                                    <SfTooltip Content="Скопіювати" MouseTrail="true">
+                                        <SfButton IconCss="fa-solid fa-link" CssClass="e-small e-success e-outline"></SfButton>
+                                    </SfTooltip>
+                                } 
+                                else
+                                {
+                                <SfTooltip Content="Посилання відсутнє" MouseTrail="true">
+                                        <SfButton IconCss="fa-solid fa-link-slash" Disabled="true" CssClass="e-small e-danger e-outline"></SfButton>
+                                    </SfTooltip>
+                                }
+                            }
+                            
+                        </Template>
+                    </GridColumn>
                     <GridColumn Width="65px" Field=@nameof(LessonDto.MaxGrade) TextAlign="TextAlign.Center" HeaderText="Макс. оцінка"></GridColumn>
                 </GridColumns>
             </SfGrid>
@@ -87,8 +110,21 @@
                             </GridColumn>
                             <GridColumn Width="70px" Field=@nameof(LessonDto.Num) HeaderText="#" TextAlign="TextAlign.Center"></GridColumn>
                             <GridColumn Width="50%" Field=@nameof(LessonDto.Title) HeaderText="Тема"></GridColumn>
-                            <GridColumn Width="30%" Field=@nameof(LessonDto.WorkType.Title) HeaderText="Тип роботи (для звіту)"></GridColumn>
+                            <GridColumn Width="30%" Field=@nameof(LessonDto.WorkType.Title) HeaderText="Тип роботи (для звіту)">
+                                <Template>
+                                    @{
+                                        var type = (context as LessonDto).WorkType?.Title ?? "-";
+                                    }
+                                    <span>@type</span>
+                                </Template>
+                            </GridColumn>
                             <GridColumn Width="70px" Field=@nameof(LessonDto.MaxGrade) TextAlign="TextAlign.Center" HeaderText="Макс. оцінка"></GridColumn>
+                            <GridColumn Width="60px" TextAlign="TextAlign.Center" HeaderText="Деталі">
+                                <Template>
+                                    @{ var id = (context as LessonDto).Id; }
+                                    <SfButton CssClass="e-mall" OnClick="@(e => GoToLessonDetails(id))" IsPrimary="true" IconCss="fa-regular fa-file-lines"></SfButton>
+                                </Template>
+                            </GridColumn>
                         </GridColumns>
                     </SfGrid>
                 </div>
@@ -97,17 +133,22 @@
                     <EditForm Model="@SelectedLessonDto">
                         <DataAnnotationsValidator />
                         <div class="row">
+
                             <div class="form-group col-md-12 col-xl-12">
-                                <SfDatePicker ShowTodayButton="true" AllowEdit="false" CssClass="w100 e-block" @bind-Value="@SelectedLessonDto.DocumentedDate" Enabled="@LessonDtoEditEnabled" Placeholder="Звітна дата" FloatLabelType="FloatLabelType.Always"></SfDatePicker>
+                                <SfDatePicker ShowTodayButton="true" AllowEdit="false" CssClass="w100 e-block" Value="@SelectedLessonDto.DocumentedDate" Enabled="@LessonDtoEditEnabled" Placeholder="Звітна дата" FloatLabelType="FloatLabelType.Always">
+                                    <DatePickerEvents TValue="DateTime" ValueChange="@onDocumentedDateChange"></DatePickerEvents>
+                                </SfDatePicker>
                                 <ValidationMessage class="text-danger" For="@(() => SelectedLessonDto.DocumentedDate)" />
                             </div>
                             <div class="form-group col-md-12 col-xl-12">
-                                <SfDatePicker ShowTodayButton="true" AllowEdit="false" CssClass="w100 e-block" @bind-Value="@SelectedLessonDto.RealDate" Enabled="@LessonDtoEditEnabled" Placeholder="Фактична дата" FloatLabelType="FloatLabelType.Always"></SfDatePicker>
+                                <SfDatePicker ShowTodayButton="true" AllowEdit="false" CssClass="w100 e-block" Value="@SelectedLessonDto.RealDate" Enabled="@LessonDtoEditEnabled" Placeholder="Фактична дата" FloatLabelType="FloatLabelType.Always">
+                                    <DatePickerEvents TValue="DateTime" ValueChange="@onRealDateChange"></DatePickerEvents>
+                                </SfDatePicker>
                                 <ValidationMessage class="text-danger" For="@(() => SelectedLessonDto.RealDate)" />
                             </div>
                             <div class="form-group col-md-12  col-xl-12">
-                            <SfCheckBox CheckedChanged="@DatesBindedChanged" Label="Зв'язати дати" @bind-Checked="DatesBinded"></SfCheckBox>
-                                </div>
+                                <SfCheckBox Label="Зв'язати дати" @bind-Checked="@DatesBinded" Disabled="@(!LessonDtoEditEnabled)"></SfCheckBox>
+                            </div>
                             <div class="form-group col-md-12  col-xl-6">
                                 <SfDropDownList @bind-Value="@SelectedLessonDto.Num" TItem="int" Enabled="@LessonDtoEditEnabled" Placeholder="Номер заняття" FloatLabelType="FloatLabelType.Always" TValue="int" DataSource="@LessonNumbers">
                                     <DropDownListFieldSettings Value="Num" Text="Num"></DropDownListFieldSettings>
@@ -173,7 +214,7 @@
                 Фактична дата:  <strong>@DeleteLessonDto.RealDate.ToString("dd.MM.yyyy")</strong><br />
                 Номер заняття (#):  <strong>@DeleteLessonDto.Num</strong><br />
                 Номер заняття (#):  <strong>@DeleteLessonDto.Title</strong><br />
-                тип:  <strong>@DeleteLessonDto.WorkType.Title</strong><br />
+                Тип:  <strong>@DeleteLessonDto.WorkType.Title</strong><br />
                 Макс. оцінка:  <strong>@DeleteLessonDto.MaxGrade</strong>
             </p>
         </Content>
@@ -214,6 +255,29 @@
     bool AddLessonsModalVisibility = false;
     bool DeleteLessonModalVisibility = false;
     bool DatesBinded = true;
+
+    void onDocumentedDateChange(Syncfusion.Blazor.Calendars.ChangedEventArgs<DateTime> args)
+    {
+        if (SelectedLessonDto is null) return;
+
+        if (DatesBinded)
+            SelectedLessonDto.RealDate = (DateTime)args.Value;
+
+        SelectedLessonDto.DocumentedDate = (DateTime)args.Value;
+        StateHasChanged();
+    }
+
+    void onRealDateChange(Syncfusion.Blazor.Calendars.ChangedEventArgs<DateTime> args)
+    {
+        if (SelectedLessonDto is null) return;
+
+        if (DatesBinded)
+            SelectedLessonDto.DocumentedDate = (DateTime)args.Value;
+        SelectedLessonDto.RealDate = (DateTime)args.Value;
+        StateHasChanged();
+    }
+
+
     #region NoGroupLessonsGrid
 
     SfGrid<LessonDto> NoGroupLessonsGrid;
@@ -224,6 +288,11 @@
     bool LessonDtoEditDisabled = true;
     bool LessonDtoEditEnabled = false;
 
+    public void ValueDateChangeHandler(ChangedEventArgs<DateTime?> args)
+    {
+
+    }
+
     public void NoGroupLessonsGridRowSelectHandler(RowSelectEventArgs<LessonDto> args)
     {
         SelectedLessonDto = new LessonDto()
@@ -233,7 +302,7 @@
                 RealDate = args.Data.RealDate,
                 Num = args.Data.Num,
                 Title = args.Data.Title,
-                WorkType = args.Data.WorkType??WorkTypeDto.Empty,
+                WorkType = args.Data.WorkType ?? WorkTypeDto.Empty,
                 MaxGrade = args.Data.MaxGrade
             };
         this.LessonDtoEditDisabled = false;
@@ -315,10 +384,11 @@
 
     void DeleteModalShow(bool val)
     {
-        if(val) 
+        if (val)
             DeleteLessonDto = SelectedLessonDto;
-        else {
-            DeleteLessonDto = new LessonDto { WorkType = WorkTypeDto.Empty };        
+        else
+        {
+            DeleteLessonDto = new LessonDto { WorkType = WorkTypeDto.Empty };
         }
 
         AddLessonsModalVisibility = val;
@@ -340,11 +410,15 @@
         }
     }
 
+    void GoToLessonDetails(Guid id)
+    {
+        Navigation.NavigateTo($"/lesson/{id}");
+    }
+
     void ConvertLessonsToGrouped()
     {
         //var grouped = Lessons.GroupBy(x => x.SubGroupUniteCode);
         //var distinct = Lessons.Distinct()
-
     }
 
 }

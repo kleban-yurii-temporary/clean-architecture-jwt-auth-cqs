@@ -24,6 +24,9 @@ namespace EduTrack.Domain.Entities
         public GradeType GradeType { get; set; } = GradeType.Simple;
         public double MaxGrade { get; set; }
         public bool Unlist { get; set; }
+
+        public string MeetingUrl { get; set; } = string.Empty;
+        public string MeetingUrlDetails { get; set; } = string.Empty;
         public virtual ICollection<GradeAndPresense> GradesAndPresenses { get; set; } = new List<GradeAndPresense>();
         public virtual ICollection<ComplexGradeItemHeader> ComplexGradeItems { get; set; } = new List<ComplexGradeItemHeader>();
     }

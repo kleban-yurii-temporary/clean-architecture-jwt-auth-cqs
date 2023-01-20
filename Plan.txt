@@ -35,3 +35,5 @@
 
 [] ngrok
 ngrok http https://localhost:44303 --host-header="localhost:44303"
+
+cd Edutrack.WebUI/Server

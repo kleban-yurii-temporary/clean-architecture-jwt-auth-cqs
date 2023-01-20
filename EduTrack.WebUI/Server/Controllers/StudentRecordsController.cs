@@ -14,6 +14,8 @@ namespace EduTrack.WebUI.Server.Controllers
     [ApiController]
     public class StudentRecordsController : ApiController
     {
+        private readonly IWebHostEnvironment env;
+
         public StudentRecordsController(IMediator mediator, IMapper mapper)
             : base(mediator, mapper) { }
 
@@ -37,6 +39,13 @@ namespace EduTrack.WebUI.Server.Controllers
             return result.Match(
                     result => Ok(_mapper.Map<StudentRecordReadDto>(result)),
                     errors => Problem(errors));
+        }
+
+        [HttpPost(ApiUrl.StudentRecords.UploadDatatServer)]
+        public async Task<IActionResult> UploadData(Guid courseId, IFormFile file)
+        {
+            var fileL = file.ContentType;
+            return Ok("--");
         }
     }
 }

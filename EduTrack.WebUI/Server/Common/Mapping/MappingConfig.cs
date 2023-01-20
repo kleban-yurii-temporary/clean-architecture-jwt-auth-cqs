@@ -10,7 +10,7 @@ using Mapster;
 
 namespace EduTrack.WebUI.Server.Common.Mapping
 {
-    public class AuthenticationMappingConfig : IRegister
+    public class MappingConfig : IRegister
     {
         public void Register(TypeAdapterConfig config)
         {
@@ -30,6 +30,8 @@ namespace EduTrack.WebUI.Server.Common.Mapping
 
             config.NewConfig<StudentRecord, StudentRecordReadDto>()
              .Map(dest => dest.SubGroup, src => src.SubGroup);
+
+
 
             /*config.NewConfig<AuthenticationResult, AuthenticationResponseDto>()
                 .Map(dest => dest.Token, src => src.Token)

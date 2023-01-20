@@ -22,6 +22,8 @@ namespace EduTrack.WebUI.Shared.ApiHelpers
             }
 
             public const string Types = "/api/coursetypes";
+
+            public const string EduYears = "/api/eduyears";
         }
 
         public static class OtherCourses

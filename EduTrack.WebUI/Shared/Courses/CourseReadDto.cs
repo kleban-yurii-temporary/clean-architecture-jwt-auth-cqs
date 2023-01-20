@@ -18,7 +18,8 @@ namespace EduTrack.WebUI.Shared.Courses
 
         public string ShortTitle { get; set; }
 
-        public string EduYear { get; set; }
+        public EduYearDto EduYear { get; set; }
+        public Guid EduYearId { get; set; }
         public string GroupCode { get; set; }
         public int Semestr { get; set; }
         public int StudentsCount { get; set; }

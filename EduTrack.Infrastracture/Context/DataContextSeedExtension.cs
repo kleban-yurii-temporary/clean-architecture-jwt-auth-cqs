@@ -190,5 +190,12 @@ namespace EduTrack.Infrastracture.Context
                     CantBeRemoved = true
                 });
         }
+        public static void SeedEduYears(this ModelBuilder builder)
+        {
+            builder.Entity<EduYear>().HasData(
+                new EduYear { Start = 2022, End = 2023 }
+                );
+        }
     }
+
 }

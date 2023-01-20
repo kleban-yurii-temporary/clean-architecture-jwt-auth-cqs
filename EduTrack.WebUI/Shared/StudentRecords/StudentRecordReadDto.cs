@@ -25,5 +25,11 @@ namespace EduTrack.WebUI.Shared.Dtos.StudentRecords
         public SubGroupDto SubGroup { get; set; } = new SubGroupDto { Id = Guid.Empty, Title = "" };
     }
 
-    public record StudentRecordCreateDto(string FirstName, string LastName, string Email);
+    public class StudentRecordCreateDto 
+    {
+        public  string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+    }
+    
 }

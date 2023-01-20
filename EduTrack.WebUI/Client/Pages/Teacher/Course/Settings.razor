@@ -7,6 +7,7 @@
 
 @inject HttpTeacherCoursesService CourseService
 @inject HttpCourseTypeService CourseTypes
+@inject HttpEduYearService EduYearService
 
 <PlainAdminPageTitle Title="Керування курсом / Налаштування">
     <Breadcrumbs>
@@ -75,13 +76,13 @@
                 </div>
                 <div class="col-md-2">
                     <label class="pa-label text-muted">- Навч.рік -</label>
-                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.EduYear" TValue="string" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.Text" ShowButtons="true" SubmitOnEnter="true">
-                        <InPlaceEditorEvents TValue="string" OnActionSuccess="@OnActionSuccessStringHandler"></InPlaceEditorEvents>
+                    <SfInPlaceEditor EmptyText="- не вказано -" CssClass="w100" @bind-Value="@Course.EduYearId" TValue="Guid" Mode="RenderMode.Inline" EditableOn="EditableType.Click" Type="Syncfusion.Blazor.InPlaceEditor.InputType.DropDownList" ShowButtons="true" SubmitOnEnter="true">
+                        <InPlaceEditorEvents TValue="Guid" OnActionSuccess="@OnActionSuccessGuidHandler"></InPlaceEditorEvents>
                         <EditorComponent>
                             <EditForm Model="@Course">
-                                <DataAnnotationsValidator />
-                                <SfTextBox @bind-Value="@Course.EduYear"></SfTextBox>
-                                <ValidationMessage For=@(() => Course.EduYear) />
+                                <SfDropDownList TValue="Guid" TItem="EduYearDto" @bind-Value="@Course.EduYearId" DataSource="@EduYearsList">
+                                    <DropDownListFieldSettings Value="Id" Text="Year"></DropDownListFieldSettings>
+                                </SfDropDownList>
                             </EditForm>
                         </EditorComponent>
                     </SfInPlaceEditor>
@@ -296,6 +297,7 @@
     CourseReadDto? Course = new CourseReadDto { Title = "" };
 
     List<CourseTypeDto> CourseTypesList = new();
+    IEnumerable<EduYearDto>EduYearsList = new List<EduYearDto>();
 
     async Task UpdateAsync()
     {
@@ -334,7 +336,7 @@
     {
         var result = await CourseService.GetDetailedAsync(Id);
 
-        CourseTypesList = await CourseTypes.GetCourseTypesAsync();
+        
 
         if (result.IsError)
         {
@@ -342,6 +344,10 @@
         }
         else
         {
+            CourseTypesList = await CourseTypes.GetCourseTypesAsync();
+            EduYearsList = await EduYearService.GetListAsync();
+
+            Console.WriteLine($"eduyears: {EduYearsList.Count()}");
             Course = result.Value;
             IsLoaded = true;
         }

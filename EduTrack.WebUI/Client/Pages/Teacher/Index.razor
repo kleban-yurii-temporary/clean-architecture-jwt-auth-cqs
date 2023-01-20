@@ -20,13 +20,22 @@
     <Breadcrumbs>
         <SfBreadcrumb>
             <BreadcrumbItems>
-                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />               
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
                 <BreadcrumbItem Text="Список курсів" />
             </BreadcrumbItems>
         </SfBreadcrumb>
     </Breadcrumbs>
 </PlainAdminPageTitle>
+<style>
+    .e-rowcell {
+        padding: 7px 10px !important;
+    }
 
+    .e-headercell {
+        padding: 7px 10px !important;
+        font-weight: bold;
+    }
+</style>
 <PlainAdminCard>
     <CardBody>
         <h6 class="mb-20">Навчальні курси</h6>
@@ -51,28 +60,7 @@
                             @{
                                 var c = (context as CourseReadDto);
                                 <h6>@c.Title</h6>
-                                <p><small>Навч. рік: <span class="text-primary">@c.EduYear</span>, семестр: <span class="text-primary">@c.Semestr</span></small></p>
-                                <p>
-                                    <small>
-                                        Група/и: <span class="text-primary">@c.GroupCode</span>;
-                                        @if (c.GroupsCount > 1)
-                                        {
-                                            <span>(підгруп: @c.GroupsCount)</span>
-                                            ;
-                                        }
-                                        студ.: <span class="text-primary">@c.StudentsCountActualy/@c.StudentsCount</span>
-                                    </small>
-                                </p>
-                                <p>
-                                    @if (c.IsActive)
-                                    {
-                                        <span style="font-size:12px; font-weight:normal" class="badge bg-success"><i class="fa-solid fa-check"></i> Активний</span>
-                                    }
-                                    else
-                                    {
-                                        <span style="font-size:12px; font-weight:normal" class="badge bg-danger"><i class="fa-solid fa-xmark"></i> Неактивний</span>
-                                    }
-                                </p>
+                                <p><small><span class="text-primary">@c.EduYear.Year</span> навч. р., <span class="text-primary">@c.Semestr-й</span> сем., <span class="text-primary">@c.GroupCode</span></small></p>
                             }
                         </Template>
                     </GridColumn>
@@ -80,7 +68,7 @@
                         <Template>
                             @{
                                 var c = (context as CourseReadDto);
-                                <p>
+                                <p style="line-height:110%">
                                     <small>
                                         @if (c.LecturesHours > 0)
                                         {
@@ -94,7 +82,7 @@
                                         {
                                             <span>
                                                 Лабораторні: (<span class="text-primary">@c.LaboratoryHours</span>) год.,
-                                                <span class="text-primary">@(c.LaboratoryHours / 2)/@c.LaboratoryActualy</span>
+                                                <span class="text-primary">@(c.LaboratoryHours / 2)x@(c.LabsGroupsCount)/@c.LaboratoryActualy</span>
                                             </span>
                                             <br />
                                         }
@@ -102,7 +90,7 @@
                                         {
                                             <span>
                                                 Практичні: (<span class="text-primary">@c.PracticeHours</span>) год.,
-                                                <span class="text-primary">@(c.PracticeHours / 2)/@c.PracticeActualy</span>
+                                                <span class="text-primary">@(c.PracticeHours / 2)x@(c.PracticeGroupsCount)/@c.PracticeActualy</span>
                                             </span>
                                             <br />
                                         }
@@ -111,11 +99,24 @@
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn HeaderText="Деталі" TextAlign="TextAlign.Center" Width="150">
+                    <GridColumn HeaderText="Статус" Width="82px" HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center">
+                        <Template>
+                            @{
+                                var c = context as CourseReadDto;
+
+                                <SfTooltip Content="@(c.IsActive?"Активний":"Неактивний")" MouseTrail="true">
+                                    <SfCheckBox TChecked="bool" Disabled="true" @bind-Checked="@c.IsActive"></SfCheckBox>
+                                </SfTooltip>
+
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn HeaderText="Дії" HeaderTextAlign="TextAlign.Center" TextAlign="TextAlign.Center" Width="100px">
                         <Template>
                             @{
                                 var c = (context as CourseReadDto);
                                 <SfButton OnClick="@(e => ViewCourseDetails(c.Id))" IsPrimary="true" IconCss="fa-regular fa-file-lines"></SfButton>
+                                <SfButton OnClick="@(e => ViewCourseDetails(c.Id))" CssClass="e-success" IconCss="fa-regular fa-file-lines"></SfButton>
                             }
                         </Template>
                     </GridColumn>
@@ -253,7 +254,7 @@
     {
         Navigation.NavigateTo($"teacher/othercourse/{id}");
     }
-   
+
     string courseTypeChecked = "course";
 
     async Task CreateCourseAsync()

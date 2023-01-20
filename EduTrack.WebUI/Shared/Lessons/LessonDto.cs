@@ -18,7 +18,8 @@ namespace EduTrack.WebUI.Shared.Dtos.Lessons
         public long SubGroupUniteCode { get; set; }
         public WorkTypeDto WorkType { get; set; }
         public double MaxGrade { get; set; }
-
+        public string MeetingUrl { get; set; } = string.Empty;
+        public string MeetingUrlDetails { get; set; } = string.Empty;
         public List<SubGroupLessonDate> GroupDates { get; set; } = new List<SubGroupLessonDate>();
     }
 

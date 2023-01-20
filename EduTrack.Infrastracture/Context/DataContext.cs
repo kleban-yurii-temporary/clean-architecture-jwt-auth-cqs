@@ -17,6 +17,7 @@ namespace EduTrack.Infrastracture.Context
             //Database.EnsureCreated();
         }
 
+        public DbSet<EduYear> EduYears => Set<EduYear>();
         public DbSet<User> Users => Set<User>();
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<CourseType> CourseTypes => Set<CourseType>();
@@ -37,6 +38,7 @@ namespace EduTrack.Infrastracture.Context
         {
             base.OnModelCreating(modelBuilder);
             var userId = modelBuilder.SeedUser();
+            modelBuilder.SeedEduYears();
             modelBuilder.SeedWorkTypes(); 
             modelBuilder.SeedLessonTimes();
             modelBuilder.SeedOptions(userId);

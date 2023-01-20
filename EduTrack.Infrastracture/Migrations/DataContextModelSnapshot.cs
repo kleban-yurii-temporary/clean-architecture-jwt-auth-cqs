@@ -73,7 +73,7 @@ namespace EduTrack.Infrastracture.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EduYear")
+                    b.Property<Guid>("EduYearId")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("ExamHours")
@@ -122,6 +122,8 @@ namespace EduTrack.Infrastracture.Migrations
 
                     b.HasIndex("CourseTypeId");
 
+                    b.HasIndex("EduYearId");
+
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Courses");
@@ -164,6 +166,31 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CourseTypes");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.EduYear", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("End")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Start")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EduYears");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("f49e19d5-9605-43c1-b9a7-f189586090eb"),
+                            End = 2023,
+                            Start = 2022
+                        });
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.GradeAndPresense", b =>
@@ -268,63 +295,63 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("52bd289d-a43e-4b3c-a80e-961eb86f8d2f"),
+                            Id = new Guid("1222602e-e78e-4049-a93f-5b1529ad1248"),
                             End = new DateTime(1, 1, 1, 8, 50, 0, 0, DateTimeKind.Unspecified),
                             Num = 0,
                             Start = new DateTime(1, 1, 1, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("ceeb5b30-ff30-4236-8b9b-4696ced117c4"),
+                            Id = new Guid("fb20014b-6370-40ef-99f3-ea09879a9445"),
                             End = new DateTime(1, 1, 1, 8, 50, 0, 0, DateTimeKind.Unspecified),
                             Num = 1,
                             Start = new DateTime(1, 1, 1, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("712d3a26-a3c4-4cdb-9d32-dac82965d6d4"),
+                            Id = new Guid("727e22a3-e9a7-4c70-9ae9-7d73ad9d56ba"),
                             End = new DateTime(1, 1, 1, 10, 20, 0, 0, DateTimeKind.Unspecified),
                             Num = 2,
                             Start = new DateTime(1, 1, 1, 9, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("a5c99223-8cc3-4299-be9c-9a5c916402b1"),
+                            Id = new Guid("84b936e9-7c25-465f-b9f3-4083020aefde"),
                             End = new DateTime(1, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Num = 3,
                             Start = new DateTime(1, 1, 1, 10, 40, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("1366cece-852d-4142-95b0-9173feb77334"),
+                            Id = new Guid("156551d4-6855-4926-9e06-41921df6ceee"),
                             End = new DateTime(1, 1, 1, 13, 50, 0, 0, DateTimeKind.Unspecified),
                             Num = 4,
                             Start = new DateTime(1, 1, 1, 12, 30, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("0195be5b-0c15-4d92-a6e1-4cc8bf75f728"),
+                            Id = new Guid("3793be03-38de-4f88-be5f-79087d9e48a7"),
                             End = new DateTime(1, 1, 1, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             Num = 5,
                             Start = new DateTime(1, 1, 1, 14, 10, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("7904d201-9456-4086-ac1f-d71128486c2f"),
+                            Id = new Guid("17903d08-d58c-4af2-bec9-aa495f2665ae"),
                             End = new DateTime(1, 1, 1, 17, 0, 0, 0, DateTimeKind.Unspecified),
                             Num = 6,
                             Start = new DateTime(1, 1, 1, 15, 40, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("b84a5454-0f8a-499f-80c0-8d6effffc860"),
+                            Id = new Guid("944f07af-5433-43cd-8f90-0d9ebf8e2ad3"),
                             End = new DateTime(1, 1, 1, 18, 30, 0, 0, DateTimeKind.Unspecified),
                             Num = 7,
                             Start = new DateTime(1, 1, 1, 17, 10, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("76a3fb7d-d243-47cc-907a-258c5a1a0c99"),
+                            Id = new Guid("d8efe94a-203b-4550-8d8b-0a9b7f1fe696"),
                             End = new DateTime(1, 1, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             Num = 8,
                             Start = new DateTime(1, 1, 1, 18, 40, 0, 0, DateTimeKind.Unspecified)
@@ -364,7 +391,7 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("25e3698f-3ccb-4754-b855-fb16d76e2591"),
+                            Id = new Guid("b9c755a4-6dfe-4850-bcfe-c90a5eeb8976"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_base_url",
@@ -372,7 +399,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("938ea27a-22af-4ea9-b1ea-d6c407d66fbd"),
+                            Id = new Guid("a8a3b4a6-de1c-4559-a3cf-bac2f2a2dd43"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_users_me",
@@ -380,7 +407,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fe014504-4b3e-4f3a-9bec-d829557704ce"),
+                            Id = new Guid("86fe5e77-b92d-43f5-8ef5-94f5ee037ce2"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_users_me_meetings",
@@ -388,7 +415,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("596ed383-b842-4909-8926-9b86fe827456"),
+                            Id = new Guid("4e5daa7a-75fb-4b3f-8fdf-efdb683b57f9"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_users_me_recordings",
@@ -396,7 +423,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("41814cfd-2d26-4ccf-ad45-24b8dc29fb66"),
+                            Id = new Guid("3cb3c841-ec48-4841-8487-aee0873783e3"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_users_me_webinars",
@@ -404,25 +431,25 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0519aba1-f713-4f44-a552-816ae73a458b"),
+                            Id = new Guid("4945473e-cb1b-4e95-a8ab-c4699b0d3ef6"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_client_id",
-                            OwnerId = new Guid("df132ae6-4c80-4282-bcf3-89b2850c9341"),
+                            OwnerId = new Guid("4c5b022e-c82f-41c3-b1fb-c936a4132e33"),
                             Value = "Yo_UM8esSOqJCHMRHCJVg"
                         },
                         new
                         {
-                            Id = new Guid("108ee04d-af96-4c3a-929d-492132e22e25"),
+                            Id = new Guid("189e79f4-08ca-4dae-a48e-7405811ec434"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_client_secret",
-                            OwnerId = new Guid("df132ae6-4c80-4282-bcf3-89b2850c9341"),
+                            OwnerId = new Guid("4c5b022e-c82f-41c3-b1fb-c936a4132e33"),
                             Value = "PsF2x0mNgKwe77LhROffARNyI6rDCZeO"
                         },
                         new
                         {
-                            Id = new Guid("d2f45476-ed43-4c73-8f13-8bb7d9c7a911"),
+                            Id = new Guid("ebe39b42-3746-40f0-8b39-afabdf619269"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_auth_url",
@@ -430,7 +457,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3eaa1e02-92a7-4d24-9144-5dcb7a80a549"),
+                            Id = new Guid("c427798f-cd2a-4185-a5dd-fbde35609d92"),
                             CantBeRemoved = true,
                             Group = "zoom",
                             Key = "zoom_api_access_token_url",
@@ -444,7 +471,7 @@ namespace EduTrack.Infrastracture.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EduYear")
+                    b.Property<Guid?>("EduYearId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GroupCode")
@@ -472,6 +499,8 @@ namespace EduTrack.Infrastracture.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EduYearId");
 
                     b.HasIndex("OwnerId");
 
@@ -596,13 +625,13 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("df132ae6-4c80-4282-bcf3-89b2850c9341"),
+                            Id = new Guid("4c5b022e-c82f-41c3-b1fb-c936a4132e33"),
                             Email = "yurakleban@gmail.com",
                             FirstName = "Юрій",
                             IsApproved = true,
                             LastName = "Клебан",
-                            PasswordHash = "ghTVSMIJ/5biUBiG5UkVBEv1mJa94uydbkXP9rYE5Hs=",
-                            PasswordSalt = new byte[] { 172, 136, 149, 206, 135, 12, 2, 149, 179, 113, 214, 7, 168, 134, 186, 182 },
+                            PasswordHash = "Rjd8FlRSK8EDkfbzJXM634vij+q61B/qHIXpBwIjZLk=",
+                            PasswordSalt = new byte[] { 65, 241, 174, 237, 48, 162, 27, 87, 47, 28, 153, 88, 147, 245, 216, 44 },
                             RefreshToken = "",
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "teacher"
@@ -642,7 +671,7 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("368b3f7a-107f-4f83-a486-8c0f8fc69707"),
+                            Id = new Guid("e125b5c7-2b01-4958-b7b8-b5c257198da1"),
                             LessonType = 1,
                             Order = 1,
                             ShortTitle = "Лекц.",
@@ -650,7 +679,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c81099c5-6058-45bd-94e7-955284ea60e2"),
+                            Id = new Guid("e13493ad-0a12-4c0e-8b1d-3f6b7c5c08ab"),
                             LessonType = 2,
                             Order = 2,
                             ShortTitle = "Груп.",
@@ -658,7 +687,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fdc77966-adf6-4843-b925-4014a0367514"),
+                            Id = new Guid("ad25bbb9-c56e-4adc-9b76-2c84a7e8051c"),
                             LessonType = 3,
                             Order = 3,
                             ShortTitle = "Лаб.",
@@ -666,7 +695,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8d930a69-5707-4880-9916-0ebd9726d7fd"),
+                            Id = new Guid("6a7f1a57-00d7-456f-93ee-9f307eb0c0df"),
                             LessonType = 4,
                             Order = 4,
                             ShortTitle = "Конс. екз.",
@@ -674,7 +703,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9a53d3fa-59db-41ac-b882-49ec7afea7b9"),
+                            Id = new Guid("b319a8d3-3995-4315-b99d-cde41c7f4195"),
                             LessonType = -1,
                             Order = 5,
                             ShortTitle = "Конс. сем",
@@ -682,7 +711,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5004f8b6-d3fa-4edc-a66c-db45ec648f77"),
+                            Id = new Guid("72fb6e65-b1ec-4217-8e31-3dcd5ee3bd65"),
                             LessonType = -1,
                             Order = 6,
                             PerStudentNorm = 0.25,
@@ -691,7 +720,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("05575ebf-c53d-4148-aff9-dc546da8ca94"),
+                            Id = new Guid("0f962e0e-c6fc-482f-b541-1cab9d088b6e"),
                             LessonType = -1,
                             Order = 7,
                             PerStudentNorm = 0.25,
@@ -700,7 +729,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8bddca39-d2f6-44ad-8ba9-9b776f9ee08d"),
+                            Id = new Guid("4853e8db-30bc-4b05-bb0a-4107ddcfdcb8"),
                             LessonType = 5,
                             Order = 8,
                             PerStudentNorm = 0.33000000000000002,
@@ -709,7 +738,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a16b62b3-5f8e-4919-81b7-bc853be65035"),
+                            Id = new Guid("2606a254-5f5d-4f03-b4e9-479f65893d20"),
                             LessonType = -1,
                             Order = 9,
                             PerStudentNorm = 3.0,
@@ -718,7 +747,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("22cd573e-226b-45f9-88af-be26b3604081"),
+                            Id = new Guid("20ea3cb2-ebff-4401-b7da-adf12b7f49cf"),
                             LessonType = -1,
                             Order = 10,
                             PerStudentNorm = 15.0,
@@ -727,7 +756,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("26aa70d9-27b3-4c8a-b426-a7cab749a829"),
+                            Id = new Guid("c1b8eec2-7c15-491d-b48d-2b73663ec270"),
                             LessonType = -1,
                             Order = 11,
                             ShortTitle = "Реценз.",
@@ -735,7 +764,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c4dd361b-33dd-469e-988e-22dbc46d2764"),
+                            Id = new Guid("5f8fa6e5-b408-4043-80a2-e94f66d35b18"),
                             LessonType = -1,
                             Order = 12,
                             ShortTitle = "ЕК(захист)",
@@ -743,7 +772,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("65740572-ba41-4281-9ed7-c72e12adcb0a"),
+                            Id = new Guid("493ceb9f-28ca-4fad-b8a6-1c1655f6dbdd"),
                             LessonType = -1,
                             Order = 13,
                             PerStudentNorm = 0.5,
@@ -752,7 +781,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("54ca67a4-21e4-45fd-9951-a44bcfd31af6"),
+                            Id = new Guid("db5bfafb-2f2e-4c03-872a-2940034c3e66"),
                             LessonType = -1,
                             Order = 14,
                             PerStudentNorm = 2.0,
@@ -761,7 +790,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f9a1624f-1fd4-4f50-9531-e608ad7972bc"),
+                            Id = new Guid("9904944f-403c-4f79-9847-b5353baa23fa"),
                             LessonType = -1,
                             Order = 15,
                             ShortTitle = "Кер. асп.",
@@ -769,7 +798,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("99d5aca9-dacb-41ba-898b-c09a130bc515"),
+                            Id = new Guid("1157afc3-4546-4a67-ae28-4615b71e4dc2"),
                             LessonType = -1,
                             Order = 16,
                             ShortTitle = "Кер. стаж.",
@@ -777,7 +806,7 @@ namespace EduTrack.Infrastracture.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fbac5ad3-4111-4e8f-b793-6708ab4b7482"),
+                            Id = new Guid("24d3da74-b1a4-4d8a-b404-df4cd2f0fc3d"),
                             LessonType = -1,
                             Order = 17,
                             ShortTitle = "Контр. відв.",
@@ -807,11 +836,19 @@ namespace EduTrack.Infrastracture.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EduTrack.Domain.Entities.EduYear", "EduYear")
+                        .WithMany()
+                        .HasForeignKey("EduYearId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EduTrack.Domain.Entities.User", "Owner")
                         .WithMany("OwnedCourses")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EduYear");
 
                     b.Navigation("Owner");
 
@@ -882,6 +919,10 @@ namespace EduTrack.Infrastracture.Migrations
 
             modelBuilder.Entity("EduTrack.Domain.Entities.OtherCourse", b =>
                 {
+                    b.HasOne("EduTrack.Domain.Entities.EduYear", "EduYear")
+                        .WithMany()
+                        .HasForeignKey("EduYearId");
+
                     b.HasOne("EduTrack.Domain.Entities.User", "Owner")
                         .WithMany("OwnederCourses")
                         .HasForeignKey("OwnerId")
@@ -891,6 +932,8 @@ namespace EduTrack.Infrastracture.Migrations
                     b.HasOne("EduTrack.Domain.Entities.WorkType", "WorkType")
                         .WithMany()
                         .HasForeignKey("WorkTypeId");
+
+                    b.Navigation("EduYear");
 
                     b.Navigation("Owner");
 

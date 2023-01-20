@@ -8,25 +8,30 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Domain.Entities
 {
+    public class EduYear : BaseEntity
+    {
+        public int Start { get; set; }
+        public int End { get; set; }
+    } 
+
     public class Course : BaseNamedEntity
     {
         public string? GroupCode { get; set; }
-        public string? EduYear { get; set; }
+        public EduYear EduYear { get; set; }
         public string? ShortTitle { get; set; } = String.Empty;
-
         public CourseType? Type { get; set; }
 
         [ForeignKey("CourseType")]
         public Guid CourseTypeId { get; set; }
+        [ForeignKey("EduYear")]
+        public Guid EduYearId { get; set; }
         public int Semestr { get; set; } = 1;
         public int StudentsCount { get; set; }
-
         public int PracticeGroupsCount { get; set; } = 1;
         public int LabsGroupsCount { get; set; } = 1;
-
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-
         public bool IsActive { get; set; } = false;
+        public bool IsArchived { get; set; } = false;
         public double LecturesHours { get; set; }
         public double PracticeHours { get; set; }
         public double LaboratoryHours { get; set; }

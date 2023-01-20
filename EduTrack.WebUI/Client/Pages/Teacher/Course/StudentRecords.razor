@@ -4,6 +4,9 @@
 @using EduTrack.WebUI.Shared.Dtos.Courses;
 @using EduTrack.WebUI.Shared.Dtos.StudentRecords;
 @using EduTrack.WebUI.Shared.Dtos.SubGroups;
+@using OfficeOpenXml;
+@using Syncfusion.XlsIO;
+@using System.Data;
 
 @layout PlainAdminLayout
 
@@ -36,7 +39,7 @@
             <div class="row">
                 <div class="mb-2">
                     <SfButton CssClass="e-warning e-outline" OnClick="@AddStudentAsync" IconCss="fa-solid fa-user-plus">Додати студента/ку</SfButton>
-                    <SfButton CssClass="e-warning e-outline" OnClick="@ImportFromGoogleSpreadsheetAsync" Disabled="true" IconCss="fa-brands fa-google-drive">Імпорт з Google Spreadsheet</SfButton>
+                    <SfButton CssClass="e-success e-outline" OnClick="@ImportFromExcelAsync" IconCss="fa-solid fa-file-excel">Імпорт з XLSX</SfButton>
                     @if (Course is not null && Course.GroupsCount > 1)
                     {
                         <span>&nbsp;</span>
@@ -153,23 +156,45 @@
 <SfToast @ref="ToastObj" ShowProgressBar="true">
     <ToastPosition X="Right" Y="Top"></ToastPosition>
 </SfToast>
-@*
-<SfDialog Width="35%" IsModal="true" @bind-Visible="@ImportModalVisibility">
+
+
+
+<SfDialog Width="40%" IsModal="true" ShowCloseIcon="true" @bind-Visible="@ImportModalVisibility">
     <DialogTemplates>
-        <Header> Імпорт дани </Header>
+        <Header> Імпорт даних з MS Excel </Header>
         <Content>
-            <p>Вставте у поле нижче Url-адресу документа зі списком студентів:</p>
+            <p>Оберіть файл для завантаження:</p>
             <br />
-            <SfTextBox  CssClass="w100" @bind-Value="ImportFromGoogleSpreadsheetUrl"></SfTextBox>
-            <SfMessage Severity="MessageSeverity.Warning">Порядок даних повинен відповідати формату <code>Прізвище|Ім'я|Email</code></SfMessage>
+            <SfUploader AllowMultiple="false" AutoUpload="false" AllowedExtensions=".xlsx">
+                <UploaderEvents ValueChange="OnImportXlsxChange"></UploaderEvents>
+            </SfUploader>
+
+            @if (Worksheets.Any())
+            {
+                <div class="row">
+                    <div class="col-md-7">
+                        <SfDropDownList ID="Id" @bind-Value="@SelectedWorkSheet" TItem="string" Placeholder="Лист" FloatLabelType="FloatLabelType.Auto" TValue="string" DataSource="@Worksheets"></SfDropDownList>
+                    </div>
+                    <div class="col-md-5">
+                        <div style="line-height:1%; height:20px"></div>
+                        <SfButton OnClick="@TryImportXlsx" CssClass="e-block w100" IsPrimary="true" IconCss="fa-solid fa-file-arrow-up">Імпортувати</SfButton>
+                    </div>
+                </div>
+            }
+
+            <br />
+            
+            <SfMessage Severity="MessageSeverity.Warning">Порядок даних повинен відповідати формату<br /><code>Прізвище|Ім'я|Email</code></SfMessage>
         </Content>
     </DialogTemplates>
-     <DialogButtons>
-        <DialogButton Content="Відмінити" IsPrimary="false" OnClick="@CloseModal" />
-        <DialogButton Content="Продовжити" IsPrimary="true" OnClick="@ImportAsync" />
-    </DialogButtons>
     <DialogAnimationSettings Effect="@DialogEffect.None"></DialogAnimationSettings>
-</SfDialog>*@
+</SfDialog>
+
+<style>
+    .e-rowcell {
+        padding: 7px 7px !important;
+    }
+</style>
 
 @code {
 
@@ -177,8 +202,87 @@
     public Guid Id { get; set; }
 
     SfToast ToastObj;
+
+    #region Import From Xlsx
+
     bool ImportModalVisibility = false;
-    string ImportFromGoogleSpreadsheetUrl;
+    List<string> Worksheets = new();
+    List<StudentRecordCreateDto> ImportedStudents = new();
+    string SelectedWorkSheet = "";
+    UploadFiles xlsxFile;
+
+    void ImportFromExcelAsync()
+    {
+        ImportModalVisibility = true;
+    }
+
+    async Task TryImportXlsx()
+    {
+        using (ExcelEngine excelEngine = new ExcelEngine())
+        {
+            IApplication application = excelEngine.Excel;
+            application.DefaultVersion = ExcelVersion.Xlsx;
+            var filestream = xlsxFile.Stream;
+            filestream.Seek(0, SeekOrigin.Begin);
+            IWorkbook wb = application.Workbooks.Open(filestream);  
+            IWorksheet ws = wb.Worksheets.First(x => x.Name == SelectedWorkSheet);
+            var dataRows = ws.ExportDataTable(ws.UsedRange, ExcelExportDataTableOptions.None).AsEnumerable().ToArray();
+
+            ImportedStudents = dataRows.Select(x => new StudentRecordCreateDto
+                {
+                    LastName = x.ItemArray[0].ToString(),
+                    FirstName = x.ItemArray[1].ToString(),
+                    Email = x.ItemArray[2].ToString()
+                }).ToList();
+
+            foreach(var imp in ImportedStudents)
+            {
+                await StudentService.CreateAsync(imp, Id);
+            }
+
+            xlsxFile.Stream.Close();
+            Worksheets = new();
+            SelectedWorkSheet = "";
+            xlsxFile = null;
+            ImportedStudents = new();
+            ImportModalVisibility = false;
+            Students = null;
+            await UpdateAll();
+        }
+    }
+
+    async Task OnImportXlsxChange(UploadChangeEventArgs args)
+    {
+        if (xlsxFile != null)
+            xlsxFile.Stream.Close();
+
+        xlsxFile = args.Files[0];
+
+        using (ExcelEngine excelEngine = new ExcelEngine())
+        {
+            IApplication application = excelEngine.Excel;
+            application.DefaultVersion = ExcelVersion.Xlsx;
+            var filestream = xlsxFile.Stream;
+            filestream.Seek(0, SeekOrigin.Begin);
+            IWorkbook wb = application.Workbooks.Open(filestream);
+            Worksheets = wb.Worksheets.Select(x => x.Name).ToList();
+            SelectedWorkSheet = Worksheets.First();            
+            //xlsxFile.Stream.Close();
+        }
+
+
+
+        await Task.CompletedTask;
+    }
+
+    #endregion
+
+    public class StudentRecordReadObj
+    {
+        public string LastName { get; set; }
+        public string FirstName {get;set;}
+        public string Email {get;set; }
+    }
 
     ToastModel SuccessToast(string message)
     {
@@ -215,7 +319,7 @@
 
     async Task ImportFromGoogleSpreadsheetAsync()
     {
-        
+
     }
     async Task UpdateAll()
     {
@@ -243,7 +347,12 @@
 
     async Task AddStudentAsync()
     {
-        var response = await StudentService.CreateAsync(new StudentRecordCreateDto("0", "0", "e@mail.ua"), Id);
+        var response = await StudentService.CreateAsync(new StudentRecordCreateDto
+        {
+            LastName = "0",
+            FirstName = "0",
+            Email = "e@mail.ua"
+        }, Id);
 
         if (response.IsError)
         {
@@ -379,19 +488,17 @@
         {
             var response = await SubGroupService.DeleteAsync(SelectedGroup.Id);
 
-           
-            if(response.IsError)
+            if (response.IsError)
             {
                 await ToastObj.ShowAsync(ErrorToast(response.Title));
-            } 
+            }
             else
             {
                 await this.GroupsGrid.DeleteRecordAsync("Id", SelectedGroup);
-                 await ToastObj.ShowAsync(SuccessToast("Підгрупу видалено."));
-            await GroupCancel();
+                await ToastObj.ShowAsync(SuccessToast("Підгрупу видалено."));
+                await GroupCancel();
                 checkWarning();
             }
-            
         }
     }
 

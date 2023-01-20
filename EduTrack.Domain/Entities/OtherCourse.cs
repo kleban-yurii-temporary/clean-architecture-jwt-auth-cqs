@@ -13,7 +13,7 @@ namespace EduTrack.Domain.Entities
         public int Semestr { get; set; }
         public int StudentsCount { get; set; }
         public string? GroupCode { get; set; }
-        public string? EduYear { get; set; }
+        public EduYear? EduYear { get; set; }
         public bool IsActive { get; set; }
         public WorkType? WorkType { get; set; }
         public double? Hours { get; set; }

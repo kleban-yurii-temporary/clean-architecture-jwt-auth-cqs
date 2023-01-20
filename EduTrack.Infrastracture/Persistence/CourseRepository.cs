@@ -21,6 +21,8 @@ namespace EduTrack.Infrastracture.Persistence
                 ? new DateTime(DateTime.UtcNow.Year, 12, 25).Date
                 : new DateTime(DateTime.UtcNow.Year + 1, 6, 25).Date;
 
+            course.EduYear = _dbCtx.EduYears.Last();
+
             var itm = await _dbCtx.Courses.AddAsync(course);
             await SaveAsync();
             return itm.Entity.Id;
@@ -29,13 +31,14 @@ namespace EduTrack.Infrastracture.Persistence
         public async Task<Course> GetAsync(Guid id)
         {
             return await _dbCtx.Courses
+                .Include(x=> x.EduYear)
                 .Include(x => x.Type)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Course>> GetListAsync()
         {
-            return await _dbCtx.Courses.ToListAsync();
+            return await _dbCtx.Courses.Include(x=> x.EduYear).ToListAsync();
         }
 
         public Guid GetOwnerId(Guid objectId)
@@ -71,7 +74,7 @@ namespace EduTrack.Infrastracture.Persistence
 
             if (updCourse.CourseTypeId != course.CourseTypeId) updCourse.CourseTypeId = course.CourseTypeId;
             if (updCourse.GroupCode != course.GroupCode) updCourse.GroupCode = course.GroupCode;
-            if (updCourse.EduYear != course.EduYear) updCourse.EduYear = course.EduYear;
+            if (updCourse.EduYear.Id != course.EduYear.Id) updCourse.EduYear = course.EduYear;
             if (updCourse.Semestr != course.Semestr) updCourse.Semestr = course.Semestr;
             if (updCourse.MaxDate.Date != course.MaxDate.Date) updCourse.MaxDate = course.MaxDate.Date;
             if (updCourse.IsActive != course.IsActive) updCourse.IsActive = course.IsActive;

@@ -53,7 +53,7 @@ namespace EduTrack.WebUI.Server.Controllers
         {
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 GroupCode = "Ек-3",
                 Hours = 21,
                 IsActive= true,
@@ -66,7 +66,7 @@ namespace EduTrack.WebUI.Server.Controllers
 
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 GroupCode = "Ек-4",
                 Hours = 6,
                 IsActive = true,
@@ -79,7 +79,7 @@ namespace EduTrack.WebUI.Server.Controllers
 
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 GroupCode = "Кн-2",
                 Hours = 16,
                 IsActive = true,
@@ -92,7 +92,7 @@ namespace EduTrack.WebUI.Server.Controllers
 
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 GroupCode = "Кн-4",
                 Hours = 75,
                 IsActive = true,
@@ -105,7 +105,7 @@ namespace EduTrack.WebUI.Server.Controllers
 
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 GroupCode = "Кн-4",
                 Hours = 7.5,
                 IsActive = true,
@@ -118,7 +118,7 @@ namespace EduTrack.WebUI.Server.Controllers
 
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 Hours = 17,
                 IsActive = true,
                 OwnerId = teacherId,
@@ -149,7 +149,7 @@ namespace EduTrack.WebUI.Server.Controllers
                 LaboratoryHours= 26,
                 GroupCode = "Ек-1",
                 LabsGroupsCount = 1,
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 Semestr = 2,
                 IsActive = false,
                 OwnerId = teacherId
@@ -162,7 +162,7 @@ namespace EduTrack.WebUI.Server.Controllers
                 LecturesHours = 0,
                 Type = obovyaz.Entity,
                 LaboratoryHours = 26,
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 Semestr = 2,
                 GroupCode = "Фк-1",
                 IsActive = false, 
@@ -176,7 +176,7 @@ namespace EduTrack.WebUI.Server.Controllers
                 LecturesHours = 10,
                 Type = vybirk.Entity,
                 PracticeHours = 54,
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 Semestr = 2,
                 GroupCode = "Ек-1",
                 IsActive = false,
@@ -192,8 +192,8 @@ namespace EduTrack.WebUI.Server.Controllers
                 PracticeHours = 14,
                 LaboratoryHours = 28,
                 LabsGroupsCount= 2,
-                EduYear = "2022/2023",
-                ConsultationHours=2,
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
+                ConsultationHours =2,
                 ExamHours = 8.25,
                 Semestr = 2,
                 GroupCode = "Ек-2",
@@ -204,7 +204,7 @@ namespace EduTrack.WebUI.Server.Controllers
             await _ctx.OtherCourses.AddAsync(new OtherCourse
             {
                 Title = "Курсова робота",
-                EduYear = "2022/2023",
+                EduYear = _ctx.EduYears.OrderBy(x => x.End).Last(),
                 Semestr = 2,
                 GroupCode = "ЕК-3",
                 StudentsCount= 7,

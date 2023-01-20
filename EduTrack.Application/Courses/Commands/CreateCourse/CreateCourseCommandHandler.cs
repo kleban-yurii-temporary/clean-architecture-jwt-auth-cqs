@@ -28,7 +28,6 @@ namespace EduTrack.Application.Courses.Commands.CreateCourse
             var id = await courseRepository.AddAsync(new Course
             {
                 OwnerId = request.TeacherUserId,
-                EduYear = "-",
                 GroupCode = "-",
                 Semestr = 1,
                 Type = (await courseTypeRepository.GetListAsync()).First(),

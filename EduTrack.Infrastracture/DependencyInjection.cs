@@ -25,8 +25,8 @@ namespace EduTrack.Infrastracture
             var connectionString = configuration.GetConnectionString("SqliteConnection");
 
             services.AddDbContext<DataContext>(options =>
-    options.UseSqlite(connectionString)
-);
+                options.UseSqlite(connectionString)
+            );
 
             var jwtSettings = new JwtSettings();
             configuration.Bind(JwtSettings.SectionName, jwtSettings);
@@ -60,6 +60,7 @@ namespace EduTrack.Infrastracture
             services.AddScoped<ILessonsRepository, LessonRepository>();
             services.AddScoped<ISubGroupsRepository, SubGroupRepository>();
             services.AddScoped<IStudentRecordsRepository, StudentRecordsRepository>();
+            services.AddScoped<IEduYearsRepository, EduYearsRepository>();
 
             return services;
         }
